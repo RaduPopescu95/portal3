@@ -122,6 +122,16 @@ const SidebarMenu = ({ partenerId }) => {
                 <span>Lista anunturi angajare</span>
               </Link>
             </li>
+            <li
+              className={`treeview ${
+                isSinglePageActive("/lista-aplicatii", pathname) ? "active" : ""
+              }`}
+            >
+              <Link href="/lista-aplicatii">
+                <i className="flaticon-layers"></i>
+                <span>Lista aplicatii</span>
+              </Link>
+            </li>
             {manageAccount.map((item) => (
               <li
                 className={

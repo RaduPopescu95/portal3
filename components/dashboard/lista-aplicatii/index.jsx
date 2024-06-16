@@ -1,21 +1,38 @@
-"use client";
-
-import { useDataWithPaginationAndSearch } from "@/hooks/useDataWithPaginationAndSearch";
-import Header from "../../common/header/dashboard-master/Header";
-import SidebarMenu from "../../common/header/dashboard-master/SidebarMenu";
+import Header from "../../common/header/dashboard/Header";
+import SidebarMenu from "../../common/header/dashboard/SidebarMenu";
 import MobileMenu from "../../common/header/MobileMenu";
-import Pagination from "../lista-doctori/Pagination";
-import SearchData from "../lista-tranzactii/SearchData";
+import Filtering from "./Filtering";
+import Pagination from "./Pagination";
+import TableData from "./TableData";
 import SearchBox from "./SearchBox";
+import { handleGetFirestore } from "@/utils/firestoreUtils";
+import { useAuth } from "@/context/AuthContext";
 
-const index = ({ oferteInregistrate }) => {
+import { db } from "@/firebase";
+import { useEffect, useState } from "react";
+import {
+  collection,
+  endAt,
+  endBefore,
+  getDocs,
+  limit,
+  limitToLast,
+  onSnapshot,
+  orderBy,
+  query,
+  startAfter,
+} from "firebase/firestore";
+import { useCollectionPagination } from "@/hooks/useCollectionPagination";
+import { useDataWithPaginationAndSearch } from "@/hooks/useDataWithPaginationAndSearch";
+
+const index = ({ cereri }) => {
   const {
     currentData,
     setCurrentPage,
     totalPages,
     setSearchTerm,
     currentPage,
-  } = useDataWithPaginationAndSearch(oferteInregistrate, "titluOferta");
+  } = useDataWithPaginationAndSearch(cereri, "titluOferta");
 
   return (
     <>
@@ -53,45 +70,50 @@ const index = ({ oferteInregistrate }) => {
                         data-bs-target="#DashboardOffcanvasMenu"
                         aria-controls="DashboardOffcanvasMenu"
                       >
-                        <i className="fa fa-bars pr10"></i> Navigatie Panou de
+                        <i className="fa fa-bars pr10"></i> Navigatie panou de
                         administrare
                       </button>
                     </div>
                   </div>
                 </div>
                 {/* End Dashboard Navigation */}
-              </div>
-              {/* End .row */}
 
-              <div className="row align-items-center">
-                <div className="col-md-8 col-lg-8 col-xl-9 mb20">
+                <div className="col-lg-4 col-xl-4 mb10">
                   <div className="breadcrumb_content style2 mb30-991">
-                    <h2 className="breadcrumb_title">Lista Aplicațiilor</h2>
-                    {/* <p>We are glad to see you again!</p> */}
+                    <h2 className="breadcrumb_title">
+                      Lista anunturi angajare
+                    </h2>
                   </div>
                 </div>
                 {/* End .col */}
-                <div className="col-md-4 col-lg-4 col-xl-3 mb20">
-                  <ul className="sasw_list mb0">
-                    <li className="search_area">
-                      <SearchBox onSearch={setSearchTerm} />
-                    </li>
-                  </ul>
+
+                <div className="col-lg-8 col-xl-8">
+                  <div className="candidate_revew_select style2 text-end mb30-991">
+                    <ul className="mb0">
+                      <li className="list-inline-item">
+                        <div className="candidate_revew_search_box course fn-520">
+                          <SearchBox onSearch={setSearchTerm} />
+                        </div>
+                      </li>
+                      {/* End li */}
+
+                      {/* <li className="list-inline-item">
+                        <Filtering />
+                      </li> */}
+                      {/* End li */}
+                    </ul>
+                  </div>
                 </div>
                 {/* End .col */}
-              </div>
-              {/* End .row */}
 
-              <div className="row">
                 <div className="col-lg-12">
                   <div className="my_dashboard_review mb40">
-                    <div className="col-lg-12">
-                      <div className="savesearched_table">
-                        <div className="table-responsive mt0">
-                          <SearchData oferteInregistrate={currentData} />
-                        </div>
+                    <div className="property_table">
+                      <div className="table-responsive mt0">
+                        <TableData oferte={currentData} />
                       </div>
-                      {/* End .packages_table */}
+                      {/* End .table-responsive */}
+
                       <div className="mbp_pagination">
                         <Pagination
                           currentPage={currentPage}
@@ -99,9 +121,12 @@ const index = ({ oferteInregistrate }) => {
                           setCurrentPage={setCurrentPage}
                         />
                       </div>
+                      {/* End .mbp_pagination */}
                     </div>
+                    {/* End .property_table */}
                   </div>
                 </div>
+                {/* End .col */}
               </div>
               {/* End .row */}
             </div>

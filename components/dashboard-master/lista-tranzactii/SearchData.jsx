@@ -77,29 +77,20 @@ const SearchData = ({ oferteInregistrate }) => {
       <thead className="thead-light">
         <tr>
           <th scope="col">Titlu Anunt</th>
-          <th scope="col">Tip oferta</th>
-          <th scope="col">Nume partener</th>
-          <th scope="col">Nume doctor</th>
-          <th scope="col">status</th>
-          <th scope="col">Data</th>
+          <th scope="col">Nume clinica</th>
+          <th scope="col">Nume cadru medical</th>
+          <th scope="col">Data aplicare</th>
           <th scope="col">Actiune</th>
         </tr>
       </thead>
       <tbody>
         {oferteInregistrate.map((row, index) => (
           <tr key={index} className={row.active ? "title active" : "title"}>
-            <td className="para">{row.oferta?.titluOferta}</td>
-            <td className="para">{row.oferta?.tipOferta}</td>
-            <td className="para">{row.numePartener}</td>
+            <td className="para">{row.titluOferta}</td>
+            <td className="para">{row.partener?.denumireBrand}</td>
             <td className="para">{row.utilizator?.numeUtilizator}</td>
-            <td>
-              {row.status === "Neconfirmata" ? (
-                <span className="status_tag redbadge">Neconfirmata</span>
-              ) : row.status === "Confirmata" ? (
-                <span className="status_tag badge">Confirmata</span>
-              ) : null}
-            </td>
             <td className="para">{row.firstUploadDate}</td>
+
             <td>
               <ul className="view_edit_delete_list mb0">
                 <li
@@ -112,7 +103,7 @@ const SearchData = ({ oferteInregistrate }) => {
                     <span className="flaticon-view"></span>
                   </Link>
                 </li>
-                <li
+                {/* <li
                   className="list-inline-item"
                   data-toggle="tooltip"
                   data-placement="top"
@@ -147,7 +138,7 @@ const SearchData = ({ oferteInregistrate }) => {
                       ></span>
                     )}
                   </a>
-                </li>
+                </li> */}
                 {/* End li */}
               </ul>
             </td>
