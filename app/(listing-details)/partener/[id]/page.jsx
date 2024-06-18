@@ -17,17 +17,15 @@ import {
 
 const ListingDynamicDetailsV1 = async ({ params, searchParams }) => {
   const id = params.id;
-  const parts = id.split("-");
-  const number = parseFloat(parts[0]);
+
+  const number = parseFloat(searchParams.id);
   const titluOferta = searchParams.slug;
   let partenerId = number;
+  console.log("searchParams", searchParams);
+  console.log("id.parts..", partenerId);
   let partener = await handleQueryFirestore("Users", "id", partenerId);
-  console.log("test oferte...", partener);
-  console.log("test oferte...", id);
-  console.log("searchParams...", searchParams);
-  console.log("titluOferta...", titluOferta);
-  console.log("test oferte...", parts[1]);
-  console.log("test oferte...", partenerId);
+  console.log("id.parts..", partener);
+
   let oferte = await handleQueryFirestoreSubcollection(
     `Oferte`,
     "collectionId",

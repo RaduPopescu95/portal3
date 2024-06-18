@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useEffect } from "react";
 import { useState } from "react";
@@ -43,7 +43,11 @@ const FilterTopBar = () => {
             {length !== 0 ? (
               "Rezultate"
             ) : (
-              <span className="text-danger">{isLoading ? "Se cauta parteneri" : "Nu au fost gasite rezultate"}</span>
+              <span className="text-danger">
+                {isLoading
+                  ? "Se cauta anunturi"
+                  : "Nu au fost gasite rezultate"}
+              </span>
             )}
           </p>
         </div>

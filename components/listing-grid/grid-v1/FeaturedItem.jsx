@@ -658,10 +658,8 @@ const FeaturedItem = ({ params }) => {
       {currentUser ? (
         <Link
           href={{
-            pathname: `/partener/${item?.partener?.id}-${toUrlSlug(
-              item?.titluOferta
-            )}`,
-            query: { slug: item?.titluOferta },
+            pathname: `/partener/${toUrlSlug(item?.titluOferta)}`,
+            query: { slug: item?.titluOferta, id: item?.partener?.id },
           }}
           key={item?.id}
           passHref

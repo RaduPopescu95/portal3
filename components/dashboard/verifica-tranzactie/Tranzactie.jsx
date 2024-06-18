@@ -19,58 +19,26 @@ import TransactionVerification from "@/components/dashboard/verificare-tranzacti
 import { useAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
 
-const Tranzactie = ({ partenerId, utilizator, oferta }) => {
-  const { userData, loading } = useAuth();
-  const [isVerified, setIsVerified] = useState(false);
-
-  useEffect(() => {
-    const verifyCurrentUser = () => {
-      if (partenerId) {
-        console.log("is partener id...");
-        if (
-          (!loading && userData?.userType !== "Partener") ||
-          (!loading && userData.user_uid !== partenerId)
-        ) {
-          console.log("not first...");
-          setIsVerified(false);
-        } else {
-          console.log("is first...");
-          setIsVerified(true);
-        }
-      } else {
-        if (!loading && userData?.userType !== "Partener") {
-          console.log("not second...");
-          setIsVerified(false);
-        } else {
-          console.log("is second...");
-          setIsVerified(true);
-        }
-      }
-    };
-
-    verifyCurrentUser();
-  }, [partenerId, userData, loading]);
-
+const Tranzactie = ({ idCerere, cerere }) => {
   return (
     <>
       {/* <!-- Main Header Nav --> */}
-      {isVerified && <Header />}
+      <Header />
 
       {/* <!--  Mobile Menu --> */}
-      {isVerified && <MobileMenu />}
+      <MobileMenu />
 
-      {isVerified && (
-        <div className="dashboard_sidebar_menu">
-          <div
-            className="offcanvas offcanvas-dashboard offcanvas-start"
-            tabIndex="-1"
-            id="DashboardOffcanvasMenu"
-            data-bs-scroll="true"
-          >
-            <SidebarMenu partenerId={partenerId} />
-          </div>
+      <div className="dashboard_sidebar_menu">
+        <div
+          className="offcanvas offcanvas-dashboard offcanvas-start"
+          tabIndex="-1"
+          id="DashboardOffcanvasMenu"
+          data-bs-scroll="true"
+        >
+          <SidebarMenu />
         </div>
-      )}
+      </div>
+
       {/* End sidebar_menu */}
 
       {/* <!-- Our Dashbord --> */}
@@ -80,30 +48,25 @@ const Tranzactie = ({ partenerId, utilizator, oferta }) => {
             <div className="col-lg-12 maxw100flex-992">
               <div className="row">
                 {/* Start Dashboard Navigation */}
-                {isVerified && (
-                  <div className="col-lg-12">
-                    <div className="dashboard_navigationbar dn db-1024">
-                      <div className="dropdown">
-                        <button
-                          className="dropbtn"
-                          data-bs-toggle="offcanvas"
-                          data-bs-target="#DashboardOffcanvasMenu"
-                          aria-controls="DashboardOffcanvasMenu"
-                        >
-                          <i className="fa fa-bars pr10"></i> Navigatie cont
-                        </button>
-                      </div>
+
+                <div className="col-lg-12">
+                  <div className="dashboard_navigationbar dn db-1024">
+                    <div className="dropdown">
+                      <button
+                        className="dropbtn"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#DashboardOffcanvasMenu"
+                        aria-controls="DashboardOffcanvasMenu"
+                      >
+                        <i className="fa fa-bars pr10"></i> Navigatie cont
+                      </button>
                     </div>
                   </div>
-                )}
+                </div>
+
                 {/* End Dashboard Navigation */}
 
-                <TransactionVerification
-                  isVerified={isVerified}
-                  utilizator={utilizator}
-                  oferta={oferta}
-                  partenerId={partenerId}
-                />
+                <TransactionVerification idCerere={idCerere} cerere={cerere} />
               </div>
               {/* End .row */}
             </div>

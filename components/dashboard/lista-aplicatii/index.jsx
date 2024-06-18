@@ -80,9 +80,7 @@ const index = ({ cereri }) => {
 
                 <div className="col-lg-4 col-xl-4 mb10">
                   <div className="breadcrumb_content style2 mb30-991">
-                    <h2 className="breadcrumb_title">
-                      Lista anunturi angajare
-                    </h2>
+                    <h2 className="breadcrumb_title">Lista cereri</h2>
                   </div>
                 </div>
                 {/* End .col */}

@@ -7,7 +7,7 @@ import React, { useState } from "react";
 import { AlertModal } from "../common/AlertModal";
 import CommonLoader from "../common/CommonLoader";
 
-const ReviewBox = ({ partener, oferte, titluOferta }) => {
+const ReviewBox = ({ partener, oferta, titluOferta }) => {
   const { userData } = useAuth();
   const [files, setFiles] = useState([]);
   const [name, setName] = useState(userData?.numeUtilizator || "");
@@ -52,8 +52,8 @@ const ReviewBox = ({ partener, oferte, titluOferta }) => {
   };
 
   const handleTrimiteCerere = async (e) => {
-    setIsLoading(true); // Setează starea de încărcare la true pentru a indica începutul procesului
     e.preventDefault(); // Previne comportamentul default al formularului de a reîncărca pagina
+    setIsLoading(true); // Setează starea de încărcare la true pentru a indica începutul procesului
     // console.log("numele oferte....", oferte.titluOferta);
     try {
       const docsUrls = await handleUploadDocs(files); // Încarcă documentele și obține URL-urile
@@ -67,6 +67,7 @@ const ReviewBox = ({ partener, oferte, titluOferta }) => {
         utilizator,
         idUtilizator: userData.user_uid,
         titluOferta,
+        oferta,
       }; // Creează un obiect de date cu informațiile necesare
       // console.log("numele oferte....", oferte.titluOferta);
       const actionText = `${name} a trimis o cerere de aplicare pentru anuntul ${titluOferta} catre ${partener.denumireBrand}`;
