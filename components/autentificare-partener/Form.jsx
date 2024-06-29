@@ -85,7 +85,7 @@ const Form = ({ partenerId }) => {
     <>
       <form action="#" onSubmit={handleSubmit}>
         <div className="heading text-center">
-          <h3>Autentificare Partener - Verificare Tranzactie</h3>
+          <h3>Autentificare Clinica - Verificare Tranzactie</h3>
         </div>
         {error && (
           <div className="alert alert-danger" role="alert">

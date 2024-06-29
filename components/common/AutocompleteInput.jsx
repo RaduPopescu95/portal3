@@ -41,7 +41,7 @@ const AutocompleteInput = ({ onPlaceChanged, adresa, buttonPressed }) => {
     <Autocomplete
       onLoad={onLoad}
       onPlaceChanged={onPlaceChangedLocal}
-      className="autocomplete-dropdown"
+      className="autocomplete-dropdown mb-3"
     >
       <input
         type="text"

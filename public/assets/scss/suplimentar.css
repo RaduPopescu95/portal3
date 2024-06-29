@@ -102,3 +102,10 @@
   background-color: #007bff; /* Albastru Bootstrap pentru .btn-primary */
   color: white;
 }
+
+.file-color {
+  color: white; /* Culoarea inițială */
+}
+.file-color:hover {
+  color: var(--color-primary); /* Schimbă în culoarea dorită la hover */
+}

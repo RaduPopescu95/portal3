@@ -210,33 +210,55 @@ export const deleteMultipleImages = async (
 
 //UPLOAD DOCUMENTE
 
-export const handleUploadDocs = async (files) => {
+export const handleUploadDocs = async (files, deletedFiles = []) => {
   const docsUrls = [];
 
+  // Gestionarea fișierelor de șters
+  if (deletedFiles.length > 0) {
+    console.log("Start....delete.....", deletedFiles);
+    for (const file of deletedFiles) {
+      const deleteRef = ref(storage, `Documente/${file}`);
+      try {
+        await deleteObject(deleteRef);
+        console.log(`${file} deleted successfully`);
+      } catch (error) {
+        console.error(`Error deleting file ${file}:`, error);
+      }
+    }
+  }
+  // Gestionarea fișierelor de încărcat
   for (const [index, file] of files.entries()) {
-    const timestamp = new Date().getTime();
-    const fileExtension = file.name.split(".").pop();
-    const docName = `${timestamp}_${index}.${fileExtension}`;
-    const storageRef = ref(storage, `Documente/${docName}`);
-
-    try {
-      // Încarcă fișierul în storage
-      const snapshot = await uploadBytes(storageRef, file);
-
-      const docUrl = await getDownloadURL(snapshot.ref);
-      console.log("File uploaded successfully. Download URL:", docUrl);
-
-      // Adaugă URL-ul și numele fișierului în array-ul docsUrls
+    if (file.docUrl) {
+      // Dacă fișierul are deja un docUrl, îl adăugăm direct în lista docsUrls
       docsUrls.push({
-        docUrl: docUrl,
-        docName: docName,
+        docUrl: file.docUrl,
+        docName: file.docName,
+        fileName: file.fileName,
       });
+    } else {
+      // Procesăm și încărcăm fișierele noi
+      const timestamp = new Date().getTime();
+      const fileExtension = file.name.split(".").pop();
+      const docName = `${timestamp}_${index}.${fileExtension}`;
+      const fileName = file.name;
+      const storageRef = ref(storage, `Documente/${docName}`);
 
-      // Salvează URL-ul în Firestore (opțional)
+      try {
+        const snapshot = await uploadBytes(storageRef, file);
+        const docUrl = await getDownloadURL(snapshot.ref);
+        console.log("File uploaded successfully. Download URL:", docUrl);
 
-      console.log(`Document ${docName} uploaded and URL stored in Firestore.`);
-    } catch (error) {
-      console.error("Error uploading document:", error);
+        // Adaugă URL-ul și numele fișierului în array-ul docsUrls
+        docsUrls.push({
+          docUrl,
+          docName,
+          fileName,
+        });
+
+        console.log(`Document ${fileName} uploaded and URL stored.`);
+      } catch (error) {
+        console.error("Error uploading document:", error);
+      }
     }
   }
 

@@ -357,7 +357,7 @@ const LoginSignupPartener = () => {
               <div className="login_form">
                 <form onSubmit={handleLogIn} action="#">
                   <div className="heading">
-                    <h4>Autentificare partener</h4>
+                    <h4>Autentificare clinica</h4>
                   </div>
                   {/* End heading */}
                   {/* <div className="row mt25">
@@ -529,7 +529,120 @@ const LoginSignupPartener = () => {
                   </div>
                   {/* End .row */}
 
-                  <div className="form-group input-group  mb-3">
+                  <AutocompleteInput
+                    onPlaceChanged={handleLocationSelect}
+                    adresaSediu={adresaSediu}
+                    buttonPressed={buttonPressed}
+                  />
+
+                  {/* End .row */}
+
+                  <div className="form-group input-group mb-3">
+                    <input
+                      type="text"
+                      className={`form-control ${
+                        !cui && buttonPressed && "border-danger"
+                      }`}
+                      id="exampleInputName"
+                      placeholder="CUI"
+                      value={cui}
+                      onChange={(e) => setCui(e.target.value)}
+                    />
+                    <div className="input-group-prepend">
+                      <div className="input-group-text">
+                        <i className="flaticon-user"></i>
+                      </div>
+                    </div>
+                  </div>
+                  {/* End .row */}
+
+                  <div className="form-group ui_kit_select_search mb-3">
+                    <select
+                      className={`form-select ${
+                        !judet && buttonPressed && "border-danger"
+                      }`}
+                      data-live-search="true"
+                      data-width="100%"
+                      value={judet}
+                      onChange={handleJudetChange}
+                    >
+                      <option value="">Selectează județ</option>
+                      {judete &&
+                        judete.map((judet, index) => (
+                          <option key={index} value={judet.judet}>
+                            {judet.judet}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                  {/* End from-group */}
+
+                  <div className="form-group ui_kit_select_search mb-3">
+                    <select
+                      className={`form-select ${
+                        !localitate && buttonPressed && "border-danger"
+                      }`}
+                      data-live-search="true"
+                      data-width="100%"
+                      value={localitate}
+                      onChange={(e) => setLocalitate(e.target.value)}
+                    >
+                      <option value="">Selectează localitate</option>
+                      {localitati.map((location, index) => (
+                        <option key={index} value={location.localitate}>
+                          {location.localitate}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {/* End from-group */}
+
+                  {/* End .form */}
+                </div>
+              </div>
+              {/* End . left side image for register */}
+
+              <div className="col-lg-6 col-xl-6">
+                <div className="form-group input-group mb-3">
+                  <input
+                    type="text"
+                    className={`form-control ${
+                      !numeContact && buttonPressed && "border-danger"
+                    }`}
+                    id="exampleInputName"
+                    placeholder="Nume si prenume persoana de contact"
+                    value={numeContact}
+                    onChange={(e) => setNumeContact(e.target.value)}
+                  />
+                  <div className="input-group-prepend">
+                    <div className="input-group-text">
+                      <i className="flaticon-user"></i>
+                    </div>
+                  </div>
+                </div>
+                {/* End .row */}
+
+                <div className="sign_up_form">
+                  <div className="form-group input-group mb-3">
+                    <input
+                      type="text"
+                      className={`form-control ${
+                        !telefonContact && buttonPressed && "border-danger"
+                      }`}
+                      id="exampleInputName"
+                      placeholder="Număr de telefon persoana de contact"
+                      value={telefonContact}
+                      onChange={(e) => setTelefonContact(e.target.value)}
+                    />
+                    <div className="input-group-prepend">
+                      <div className="input-group-text">
+                        <i className="flaticon-user"></i>
+                      </div>
+                    </div>
+                  </div>
+                  {/* End .row */}
+
+                  <div className="form-group input-group mb-3">
                     <input
                       type="email"
                       className={`form-control ${
@@ -628,93 +741,7 @@ const LoginSignupPartener = () => {
                     </div>
                   )}
 
-                  <div className="form-group input-group mb-3">
-                    <input
-                      type="text"
-                      className={`form-control ${
-                        !numeContact && buttonPressed && "border-danger"
-                      }`}
-                      id="exampleInputName"
-                      placeholder="Nume si prenume persoana de contact"
-                      value={numeContact}
-                      onChange={(e) => setNumeContact(e.target.value)}
-                    />
-                    <div className="input-group-prepend">
-                      <div className="input-group-text">
-                        <i className="flaticon-user"></i>
-                      </div>
-                    </div>
-                  </div>
-                  {/* End .row */}
-
-                  {/* End .form */}
-                </div>
-              </div>
-              {/* End . left side image for register */}
-
-              <div className="col-lg-6 col-xl-6">
-                <div className="sign_up_form">
-                  <div className="form-group input-group mb-3">
-                    <input
-                      type="text"
-                      className={`form-control ${
-                        !telefonContact && buttonPressed && "border-danger"
-                      }`}
-                      id="exampleInputName"
-                      placeholder="Număr de telefon persoana de contact"
-                      value={telefonContact}
-                      onChange={(e) => setTelefonContact(e.target.value)}
-                    />
-                    <div className="input-group-prepend">
-                      <div className="input-group-text">
-                        <i className="flaticon-user"></i>
-                      </div>
-                    </div>
-                  </div>
-                  {/* End .row */}
-
-                  <div className="form-group ui_kit_select_search mb-3">
-                    <select
-                      className={`form-select ${
-                        !judet && buttonPressed && "border-danger"
-                      }`}
-                      data-live-search="true"
-                      data-width="100%"
-                      value={judet}
-                      onChange={handleJudetChange}
-                    >
-                      <option value="">Selectează județ</option>
-                      {judete &&
-                        judete.map((judet, index) => (
-                          <option key={index} value={judet.judet}>
-                            {judet.judet}
-                          </option>
-                        ))}
-                    </select>
-                  </div>
-                  {/* End from-group */}
-
-                  <div className="form-group ui_kit_select_search mb-3">
-                    <select
-                      className={`form-select ${
-                        !localitate && buttonPressed && "border-danger"
-                      }`}
-                      data-live-search="true"
-                      data-width="100%"
-                      value={localitate}
-                      onChange={(e) => setLocalitate(e.target.value)}
-                    >
-                      <option value="">Selectează localitate</option>
-                      {localitati.map((location, index) => (
-                        <option key={index} value={location.localitate}>
-                          {location.localitate}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  {/* End from-group */}
-
-                  <div className="form-group ui_kit_select_search mb-3">
+                  {/* <div className="form-group ui_kit_select_search mb-3">
                     <select
                       className={`form-select ${
                         !categorie && buttonPressed && "border-danger"
@@ -732,27 +759,8 @@ const LoginSignupPartener = () => {
                       <option data-tokens="Imobiliare">Imobiliare</option>
                       <option data-tokens="Altele">Altele</option>
                     </select>
-                  </div>
+                  </div> */}
                   {/* End from-group */}
-
-                  <div className="form-group input-group mb-3">
-                    <input
-                      type="text"
-                      className={`form-control ${
-                        !cui && buttonPressed && "border-danger"
-                      }`}
-                      id="exampleInputName"
-                      placeholder="CUI"
-                      value={cui}
-                      onChange={(e) => setCui(e.target.value)}
-                    />
-                    <div className="input-group-prepend">
-                      <div className="input-group-text">
-                        <i className="flaticon-user"></i>
-                      </div>
-                    </div>
-                  </div>
-                  {/* End .row */}
 
                   {/* <div className="form-group input-group mb-3">
                     <input
@@ -770,12 +778,6 @@ const LoginSignupPartener = () => {
                     </div>
                   </div> */}
                   {/* End .row */}
-
-                  <AutocompleteInput
-                    onPlaceChanged={handleLocationSelect}
-                    adresaSediu={adresaSediu}
-                    buttonPressed={buttonPressed}
-                  />
 
                   {/* End .form */}
                 </div>

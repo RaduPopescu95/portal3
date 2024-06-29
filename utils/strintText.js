@@ -20,3 +20,10 @@ export const emailWithoutSpace = (email) => {
 export const handleDiacrtice = (text) => {
   return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 };
+
+export function formatTitulatura(title) {
+  return title
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+}

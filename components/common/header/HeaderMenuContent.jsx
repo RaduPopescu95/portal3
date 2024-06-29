@@ -180,7 +180,7 @@ const HeaderMenuContent = ({ float = "" }) => {
                 priority // Încarcă imaginea cât mai rapid posibil
                 className="mr5 mb-1"
               />
-              <span className="dn-lg"> Parteneri</span>
+              <span className="dn-lg ml5">Clinici</span>
             </a>
           </li>
           {/* End .dropitem */}

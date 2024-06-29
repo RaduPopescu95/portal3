@@ -150,7 +150,7 @@ const MobileMenuContent = () => {
                     priority // Încarcă imaginea cât mai rapid posibil
                     className="mr5 mb-1"
                   />
-                  <span className="pl5">Parteneri</span>
+                  <span className="pl5">Clinici</span>
                 </a>
               </MenuItem>
               <MenuItem>

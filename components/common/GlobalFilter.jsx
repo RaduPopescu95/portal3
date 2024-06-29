@@ -15,6 +15,8 @@ import {
 } from "@/utils/firestoreUtils";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { TITLES_AND_SPECIALTIES } from "@/utils/constanteTitulatura";
+import { formatTitulatura } from "@/utils/strintText";
 
 const GlobalFilter = ({ className = "" }) => {
   const router = useRouter();
@@ -26,6 +28,19 @@ const GlobalFilter = ({ className = "" }) => {
   const [isJudetSelected, setIsJudetSelected] = useState(true);
   const [isLocalitateSelected, setIsLocalitateSelected] = useState(true);
   const [isCateogireSelected, setIsCategorieSelected] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSpecialty, setSelectedSpecialty] = useState("");
+
+  // Funcție pentru gestionarea schimbărilor pe selectul de categorii
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+    setSelectedSpecialty(""); // Resetăm specialitatea atunci când schimbăm categoria
+  };
+
+  // Funcție pentru gestionarea schimbărilor pe selectul de specialități
+  const handleSpecialtyChange = (event) => {
+    setSelectedSpecialty(event.target.value);
+  };
 
   // Handler pentru schimbarea selectiei de judete
   const handleJudetChange = async (e) => {
@@ -133,17 +148,40 @@ const GlobalFilter = ({ className = "" }) => {
                 className={`selectpicker w100 form-select show-tick ${
                   !isCateogireSelected ? "border-danger" : ""
                 }`}
-                onChange={handleCategorieChange}
-                value={selectedCategorie}
+                onChange={handleCategoryChange}
+                value={selectedCategory}
               >
-                <option value="">Categorie</option>
-                <option data-tokens="Autovehicule">Autovehicule</option>
-                <option data-tokens="Servicii">Servicii</option>
-                <option data-tokens="Cafenele">Cafenele</option>
-                <option data-tokens="Restaurante">Restaurante</option>
-                <option data-tokens="Hoteluri">Hoteluri</option>
-                <option data-tokens="Imobiliare">Imobiliare</option>
-                <option data-tokens="Altele">Altele</option>
+                <option value="">Selectați Titulatura</option>
+                {Object.keys(TITLES_AND_SPECIALTIES).map((key) => (
+                  <option key={key} value={key}>
+                    {formatTitulatura(key)}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </li>
+        {/* End li */}
+        <li className="list-inline-item">
+          <div className="search_option_two">
+            <div className="candidate_revew_select">
+              <select
+                className={`selectpicker w100 form-select show-tick ${
+                  !isCateogireSelected ? "border-danger" : ""
+                }`}
+                onChange={handleSpecialtyChange}
+                value={selectedSpecialty}
+              >
+                <option value="">Selectați specialitatea</option>
+                {selectedCategory &&
+                  TITLES_AND_SPECIALTIES[selectedCategory] &&
+                  TITLES_AND_SPECIALTIES[selectedCategory].map(
+                    (specialty, index) => (
+                      <option key={index} value={specialty}>
+                        {specialty}
+                      </option>
+                    )
+                  )}
               </select>
             </div>
           </div>

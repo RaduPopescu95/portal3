@@ -75,7 +75,7 @@ const SidebarMenu = () => {
             >
               <Link href="/panou-utilizator">
                 <i className="flaticon-layers"></i>
-                <span> Dashboard</span>
+                <span>Activitatea mea</span>
               </Link>
             </li>
             <li
@@ -88,6 +88,30 @@ const SidebarMenu = () => {
               <Link href="/lista-tranzactii-oferte">
                 <i className="flaticon-layers"></i>
                 <span>Lista Aplicațiilor</span>
+              </Link>
+            </li>
+            <li
+              className={`treeview ${
+                isSinglePageActive("/lista-anunturi-cadre-medicale", pathname)
+                  ? "active"
+                  : ""
+              }`}
+            >
+              <Link href="/lista-anunturi-cadre-medicale">
+                <i className="flaticon-layers"></i>
+                <span>Lista Anunturi Create</span>
+              </Link>
+            </li>
+            <li
+              className={`treeview ${
+                isSinglePageActive("/creaza-anunt-cadru-medical", pathname)
+                  ? "active"
+                  : ""
+              }`}
+            >
+              <Link href="/creaza-anunt-cadru-medical">
+                <i className="flaticon-plus"></i>
+                <span>Adauga anunt</span>
               </Link>
             </li>
             {manageAccount.map((item) => (
