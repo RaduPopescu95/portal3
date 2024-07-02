@@ -27,7 +27,7 @@ const FindProperties = async () => {
             </div>
             <div className="details">
               <h4>{item.localitate}</h4>
-              <p>{item.count} Parteneri</p>
+              <p>{item.count} Clinici</p>
             </div>
           </Link>
         </div>

@@ -11,6 +11,8 @@ import {
   calculateDistance,
   filtrareParteneri,
   generateRandomGradient,
+  getAllAnunturiCadre,
+  getAllAnunturiClinici,
   getAllOffers,
   toUrlSlug,
 } from "@/utils/commonUtils";
@@ -48,6 +50,7 @@ const FeaturedItemHome = ({ params }) => {
     useAuth();
 
   const [parteneri, setParteneri] = useState([]);
+  const [cadreMedicale, setCadreMedical] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [isNoLocation, setIsNoLocation] = useState(false);
@@ -93,7 +96,25 @@ const FeaturedItemHome = ({ params }) => {
       "statusCont",
       "Activ"
     );
-    const allOffers = await getAllOffers(latitude, longitude, parteneri);
+    const allAnunturiClinici = await getAllAnunturiClinici(
+      latitude,
+      longitude,
+      parteneri
+    );
+    let cadre = await handleQueryTripleParam(
+      "Users",
+      "localitate",
+      localitate,
+      "userType",
+      "Doctor",
+      "statusCont",
+      "Activ"
+    );
+    const allAnunturiCadre = await getAllAnunturiCadre(
+      latitude,
+      longitude,
+      cadre
+    );
     // let parteneriCuDistanta = parteneri.map((partener) => {
     //   const distanta = calculateDistance(
     //     latitude,
@@ -108,7 +129,8 @@ const FeaturedItemHome = ({ params }) => {
     //   (a, b) => a.distanta - b.distanta
     // );
 
-    setParteneri(allOffers);
+    setParteneri(allAnunturiClinici);
+    setCadreMedical(allAnunturiCadre);
     setIsLoading(false);
   }
 

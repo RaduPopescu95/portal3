@@ -146,16 +146,58 @@ export const verifyCurrentUser = async (partenerId, userData, loading) => {
 };
 
 // Function to get all offers from partners with distance
-export async function getAllOffers(latitude, longitude, parteneri) {
+export async function getAllAnunturiClinici(latitude, longitude, parteneri) {
   let allOffers = [];
 
   // Iterate through each partner
   for (let partener of parteneri) {
     // Fetch offers for the current partner
     let oferte = await handleQueryFirestoreSubcollection(
-      "Oferte",
+      "Anunturi",
       "collectionId",
-      partener.user_uid
+      partener.user_uid,
+      "tipAnunt",
+      "Clinica"
+    );
+
+    // Calculate distance from the user to the partner
+    const distanta = calculateDistance(
+      latitude,
+      longitude,
+      partener.coordonate.lat,
+      partener.coordonate.lng
+    );
+
+    // Add distance to each offer
+    oferte = oferte.map((oferta) => ({
+      ...oferta,
+      distanta: Math.floor(distanta),
+      partener,
+    }));
+
+    // Add the fetched offers to the allOffers array
+    allOffers = allOffers.concat(oferte);
+  }
+
+  // Sort all offers by distance
+  allOffers.sort((a, b) => a.distanta - b.distanta);
+
+  return allOffers;
+}
+
+// Function to get all offers from partners with distance
+export async function getAllAnunturiCadre(latitude, longitude, parteneri) {
+  let allOffers = [];
+
+  // Iterate through each partner
+  for (let partener of parteneri) {
+    // Fetch offers for the current partner
+    let oferte = await handleQueryFirestoreSubcollection(
+      "Anunturi",
+      "collectionId",
+      partener.user_uid,
+      "tipAnunt",
+      "CadruMedical"
     );
 
     // Calculate distance from the user to the partner

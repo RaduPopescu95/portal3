@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import MyProperties from "@/components/dashboard/my-properties";
+import MyProperties from "@/components/dashboard-utilizator/lista-anunturi-cadre-medicale";
 import { unstable_noStore as noStore } from "next/cache";
 import { authentication, db } from "@/firebase";
 import { collection, getDocs, orderBy } from "firebase/firestore";

@@ -13,7 +13,7 @@ const OurMission = () => {
       id: 2,
       icon: "flaticon-home",
       number: "1,000",
-      meta: "Parteneri înregistrați",
+      meta: "Clinici înregistrate",
     },
     {
       id: 3,

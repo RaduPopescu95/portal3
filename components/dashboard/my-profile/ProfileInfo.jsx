@@ -63,6 +63,7 @@ const ProfileInfo = () => {
   const [propertySelectedImgs, setPropertySelectedImgs] = useState(
     userData?.images?.imgs || []
   );
+
   const [deletedImages, setDeletedImages] = useState([]);
   const [localitati, setLocalitati] = useState([]);
   const [isNewImage, setIsNewImage] = useState(false);
@@ -204,7 +205,6 @@ const ProfileInfo = () => {
         !telefonContact ||
         !judet ||
         !localitate ||
-        !categorie ||
         !cui ||
         !adresaSediu
       ) {
@@ -263,7 +263,6 @@ const ProfileInfo = () => {
 
       let data = {
         cui,
-        categorie,
         localitate: judet === "Bucuresti" ? "Bucuresti" : localitate,
         sector: judet === "Bucuresti" ? sector : "",
         judet,
@@ -605,7 +604,7 @@ const ProfileInfo = () => {
         </div>
       </div>
       {/* End .col */}
-
+      {/* 
       <div className="col-lg-6 col-xl-6">
         <div className="my_profile_setting_input ui_kit_select_search form-group">
           <label>Specializare</label>
@@ -627,7 +626,7 @@ const ProfileInfo = () => {
             <option data-tokens="Altele">Altele</option>
           </select>
         </div>
-      </div>
+      </div> */}
       {/* End .col */}
 
       {/* <div className="col-lg-12 col-xl-12">

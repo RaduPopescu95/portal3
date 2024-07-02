@@ -14,6 +14,7 @@ import { deleteImage } from "@/utils/storageUtils";
 import { useCollectionPagination } from "@/hooks/useCollectionPagination";
 import { useRouter } from "next/navigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { formatTitulatura } from "@/utils/strintText";
 
 // CSS in JS pentru simbolurile tick și close
 const styles = {
@@ -52,9 +53,9 @@ const TableData = ({ oferte }) => {
       console.log("Deleting item with ID:", selectedItem);
 
       await handleDeleteFirestoreSubcollectionData(
-        `Users/${selectedItem.collectionId}/Oferte/${selectedItem.documentId}`,
+        `Users/${selectedItem.collectionId}/Anunturi/${selectedItem.documentId}`,
         true,
-        `Users/${selectedItem.collectionId}/Oferte`,
+        `Users/${selectedItem.collectionId}/Anunturi`,
         selectedItem
       );
 
@@ -98,8 +99,8 @@ const TableData = ({ oferte }) => {
   let tbodyContent = oferte?.map((item) => (
     <tr key={item.id}>
       <td scope="row">
-        <div className="feat_property list favorite_page style2">
-          {item?.tipOferta === "Oferta specifică" && !isMobile && (
+        {/* <div className="feat_property list favorite_page style2"> */}
+        {/* {item?.tipOferta === "Oferta specifică" && !isMobile && (
             <div className="thumb">
               <Image
                 width={150}
@@ -109,13 +110,15 @@ const TableData = ({ oferte }) => {
                 alt="fp1.jpg"
               />
             </div>
-          )}
-          <div className="details d-flex justify-content-center">
-            <div className="tc_content d-flex align-items-center justify-content-center">
-              <h4>{item.titluOferta}</h4>
-            </div>
+          )} */}
+        <div className="details d-flex justify-content-center">
+          <div className="tc_content d-flex align-items-center justify-content-center">
+            <h4>
+              {formatTitulatura(item.titulatura)} - {item.specialitate}
+            </h4>
           </div>
         </div>
+        {/* </div> */}
       </td>
       {/* End td */}
 
@@ -126,11 +129,10 @@ const TableData = ({ oferte }) => {
         <td>
           {(() => {
             const today = new Date();
-            const startDate = new Date(item.dataActivare);
             const endDate = new Date(item.dataDezactivare);
-
-            const isActive =
-              isSameOrAfter(today, startDate) && isSameOrBefore(today, endDate);
+            console.log("today...", today);
+            console.log("today...", endDate);
+            const isActive = isSameOrBefore(today, endDate);
 
             if (isActive) {
               return <span className="status_tag badge">Activa</span>;
@@ -163,7 +165,9 @@ const TableData = ({ oferte }) => {
             data-placement="top"
             title="Edit"
           >
-            <Link href={`creaza-oferta/${item.id}-${item.collectionId}`}>
+            <Link
+              href={`creaza-anunt-cadru-medical/${item.id}-${item.collectionId}`}
+            >
               <span className="flaticon-edit"></span>
             </Link>
           </li>

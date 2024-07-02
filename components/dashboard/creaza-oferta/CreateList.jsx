@@ -10,6 +10,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import LogoUpload from "../my-profile/LogoUpload";
 import CommonLoader from "@/components/common/CommonLoader";
+import {
+  TITLES_AND_SPECIALTIES,
+  WORK_SCHEDULES,
+} from "@/utils/constanteTitulatura";
+import { formatTitulatura } from "@/utils/strintText";
+import AutocompleteInput from "@/components/common/AutocompleteInput";
 
 const CreateList = ({ oferta }) => {
   const { currentUser, userData } = useAuth();
@@ -55,21 +61,52 @@ const CreateList = ({ oferta }) => {
 
   const [initialData, setInitialData] = useState({});
 
+  const [titulatura, setTitulatura] = useState(oferta?.titulatura || "");
+  const [specialitate, setSpecialitate] = useState(oferta?.specialitate || "");
+  const [specialitati, setSpecialitati] = useState(
+    oferta?.titulatura ? TITLES_AND_SPECIALTIES[oferta?.titulatura] : []
+  );
+  const [tipProgram, setTipProgram] = useState(oferta?.tipProgram || "");
+
   let isEdit = oferta?.imagineOferta?.finalUri ? true : false;
+
+  const [adresaSediu, setAdresaSediu] = useState(oferta?.adresaSediu || "");
+
+  const [googleMapsLink, setGoogleMapsLink] = useState(
+    oferta?.googleMapsLink || ""
+  );
+  const [coordonate, setCoordonate] = useState(oferta?.coordonate || {});
+
+  const handleLocationSelect = (lat, lng, adresa, urlMaps) => {
+    console.log(`Selected location - Lat: ${lat}, Lng: ${lng}`);
+    setAdresaSediu(adresa);
+    setGoogleMapsLink(urlMaps);
+    setCoordonate({ lat, lng });
+    // Aici poți actualiza starea sau trimite aceste date către backend
+  };
+
+  const handleTitleChange = (event) => {
+    const title = event.target.value;
+    setTitulatura(title);
+    setSpecialitati(TITLES_AND_SPECIALTIES[title] || []);
+    setSpecialitate(""); // Reset specialty when title changes
+  };
+
+  const handleSpecialtyChange = (event) => {
+    setSpecialitate(event.target.value);
+  };
 
   useEffect(() => {
     if (oferta) {
       setInitialData({
-        pretIntreg: oferta.pretIntreg || "",
-        pretRedus: oferta.pretRedus || "",
-        procentReducere: oferta.procentReducere || "",
         titluOferta: oferta.titluOferta || "",
         descriereOferta: oferta.descriereOferta || "",
-        gradeFidelitate: oferta.gradeFidelitate || [],
-        tipOferta: oferta.tipOferta || "",
-        dataActivare: oferta.dataActivare || "",
         dataDezactivare: oferta.dataDezactivare || "",
         logo: oferta.imagineOferta ? [oferta.imagineOferta] : [],
+        titulatura: oferta.titulatura || "",
+        specialitate: oferta.specialitate || "",
+        tipProgram: oferta.tipProgram || "",
+        cerintePost: oferta.cerintePost || "",
       });
     }
   }, [oferta]);
@@ -87,7 +124,7 @@ const CreateList = ({ oferta }) => {
       }
     });
     if (changes.length > 0) {
-      return `${userData?.denumireBrand} a actualizat oferta ${
+      return `${userData?.denumireBrand} a actualizat anuntul ${
         oferta?.titluOferta
       }: ${changes.join(", ")}`;
     }
@@ -134,18 +171,13 @@ const CreateList = ({ oferta }) => {
 
   const resetState = () => {
     setImage(null);
-    setPretIntreg("");
-    setPretRedus("");
-    setProcentReducere("");
     setTitluOferta("");
     setDescriereOferta("");
-    setGradeFidelitate([]);
-    setTipOferta("");
-    setDataActivare("");
     setDataDezactivare("");
-    setFidelitySilver(false);
-    setFidelityGold(false);
-    setFidelityPlatinum(false);
+    setTitulatura("");
+    setSpecialitate("");
+    setTipProgram("");
+    setCerintePost("");
   };
 
   const handleUpdateOffer = async () => {
@@ -153,35 +185,34 @@ const CreateList = ({ oferta }) => {
     console.log("currentUser...", currentUser.uid);
     console.log("userData...", userData);
     let lg = {};
-    if (tipOferta === "Oferta specifică") {
-      if (isNewLogo) {
-        lg = await uploadImage(logo, true, "PozeOferte", deletedLogo);
-      } else {
-        lg = oferta.imagineOferta;
-      }
+
+    if (isNewLogo) {
+      lg = await uploadImage(logo, true, "PozeOferte", deletedLogo);
+    } else {
+      lg = oferta.imagineOferta;
     }
+
     let data = {
-      dataDezactivare,
-      dataActivare,
-      tipOferta,
-      gradeFidelitate,
       descriereOferta,
       titluOferta,
-      procentReducere,
-      pretRedus,
-      pretIntreg,
+      cerintePost,
       status: "Activa",
       imagineOferta: lg,
+      tipProgram,
+      coordonate,
+      googleMapsLink,
+      adresaSediu,
     };
+
     try {
       const actionText = describeChanges();
       await handleUpdateFirestoreSubcollection(
         data,
-        `Users/${currentUser.uid}/Oferte/${oferta.documentId}`,
+        `Users/${currentUser.uid}/Anunturi/${oferta.documentId}`,
         actionText
       );
       setIsLoading(false);
-      showAlert("Oferta actualizata cu succes!", "success");
+      showAlert("Anunt actualizata cu succes!", "success");
     } catch (error) {
       setIsLoading(false);
       console.error("Eroare la actualizarea ofertei: ", error);
@@ -201,26 +232,35 @@ const CreateList = ({ oferta }) => {
         lg = logo[0];
       }
 
+      const currentDate = new Date();
+      const deactivationDate = new Date(
+        currentDate.setDate(currentDate.getDate() + 30)
+      );
+      const formattedDeactivationDate = deactivationDate
+        .toISOString()
+        .split("T")[0]; // Formatează data în formatul "YYYY-MM-DD"
+
       let data = {
-        dataDezactivare,
-        dataActivare,
-        // tipOferta,
-        // gradeFidelitate,
+        dataDezactivare: formattedDeactivationDate,
         descriereOferta,
         titluOferta,
-        cerintePost,
-        // procentReducere,
-        // pretRedus,
-        // pretIntreg,
         status: "Activa",
         imagineOferta: lg,
+        titulatura,
+        specialitate,
+        tipProgram,
+        tipAnunt: "CadruMedical",
+        cerintePost,
+        coordonate,
+        googleMapsLink,
+        adresaSediu,
       };
 
       const actionText = `${userData.denumireBrand} a creat anuntul de angajare ${titluOferta}`;
 
       await handleUploadFirestoreSubcollection(
         data,
-        `Users/${currentUser.uid}/Oferte`,
+        `Users/${currentUser.uid}/Anunturi`,
         currentUser.uid,
         actionText
       );
@@ -310,6 +350,52 @@ const CreateList = ({ oferta }) => {
       </div>
       {/* End .col */}
 
+      <div className="col-lg-6 col-xl-6">
+        <div className="my_profile_setting_input ui_kit_select_search form-group">
+          <label>Titulatura</label>
+          <select
+            className={`selectpicker form-select ${
+              !titulatura && "border-danger"
+            }`}
+            data-live-search="true"
+            data-width="100%"
+            value={titulatura}
+            onChange={handleTitleChange}
+          >
+            <option value="">Selectează o titulatură</option>
+            {Object.keys(TITLES_AND_SPECIALTIES).map((title) => (
+              <option key={title} value={title}>
+                {formatTitulatura(title)}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      {/* End .col */}
+      <div className="col-lg-6 col-xl-6">
+        <div className="my_profile_setting_input ui_kit_select_search form-group">
+          <label>Specialitate</label>
+          <select
+            className={`selectpicker form-select ${
+              !specialitate && "border-danger"
+            }`}
+            data-live-search="true"
+            data-width="100%"
+            value={specialitate}
+            onChange={handleSpecialtyChange}
+            // disabled={!titulatura} // Disable if no title is selected
+          >
+            <option value="">Selectează o specialitate</option>
+            {specialitati.map((specialty) => (
+              <option key={specialty} value={specialty}>
+                {specialty}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      {/* End .col */}
+
       <div className="col-lg-12">
         <div className="my_profile_setting_textarea">
           <label htmlFor="propertyDescription">Descriere post</label>
@@ -336,6 +422,36 @@ const CreateList = ({ oferta }) => {
           ></textarea>
         </div>
       </div>
+      {/* End .col */}
+
+      <div className="col-lg-12 col-xl-12">
+        <div className="my_profile_setting_input ui_kit_select_search form-group">
+          <label>Tip Program</label>
+          <select
+            className={`selectpicker form-select ${
+              !tipProgram && "border-danger"
+            }`}
+            data-live-search="true"
+            data-width="100%"
+            value={tipProgram}
+            onChange={(e) => setTipProgram(e.target.value)}
+          >
+            <option value="">Selectează tip program</option>
+            {WORK_SCHEDULES.map((title) => (
+              <option key={title} value={title}>
+                {title}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      {/* End .col */}
+
+      <AutocompleteInput
+        onPlaceChanged={handleLocationSelect}
+        adresa={adresaSediu}
+        buttonPressed={buttonPressed}
+      />
       {/* End .col */}
 
       {/* <div className="col-lg-6 col-xl-6">
@@ -369,7 +485,7 @@ const CreateList = ({ oferta }) => {
 
       {/* {tipOferta === "Oferta specifică" && ( */}
       <>
-        <div className="col-lg-6 col-xl-6">
+        {/* <div className="col-lg-6 col-xl-6">
           <div className="my_profile_setting_input form-group">
             <label htmlFor="activationDate">Data de activare</label>
             <input
@@ -380,10 +496,10 @@ const CreateList = ({ oferta }) => {
               onChange={(e) => setDataActivare(e.target.value)}
             />
           </div>
-        </div>
+        </div> */}
         {/* End .col */}
 
-        <div className="col-lg-6 col-xl-6">
+        {/* <div className="col-lg-6 col-xl-6">
           <div className="my_profile_setting_input form-group">
             <label htmlFor="deactivationDate">Data de dezactivare</label>
             <input
@@ -394,7 +510,7 @@ const CreateList = ({ oferta }) => {
               onChange={(e) => setDataDezactivare(e.target.value)}
             />
           </div>
-        </div>
+        </div> */}
         {/* End .col */}
       </>
       {/* )} */}

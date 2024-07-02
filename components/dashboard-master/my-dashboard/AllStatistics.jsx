@@ -12,7 +12,7 @@ const AllStatistics = ({ numarParteneri, numarDoctori }) => {
       blockStyle: "style2",
       icon: "flaticon-high-five",
       timer: numarParteneri,
-      name: numarParteneri === 1 ? "Partener" : "Parteneri",
+      name: numarParteneri === 1 ? "Clinica" : "Clinici",
     },
     // {
     //   id: 3,

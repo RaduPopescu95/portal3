@@ -93,7 +93,13 @@ const TableData = ({ oferte }) => {
   if (isMobile) {
     theadConent = ["Anunt", "Actiune"];
   } else {
-    theadConent = ["Anunt", "Data", "Status", "Data dezactivare", "Actiune"];
+    theadConent = [
+      "Anunt",
+      "Creat la data",
+      "Status",
+      "Data dezactivare",
+      "Actiune",
+    ];
   }
 
   let tbodyContent = oferte?.map((item) => (
@@ -165,9 +171,7 @@ const TableData = ({ oferte }) => {
             data-placement="top"
             title="Edit"
           >
-            <Link
-              href={`creaza-anunt-cadru-medical/${item.id}-${item.collectionId}`}
-            >
+            <Link href={`creaza-oferta/${item.id}-${item.collectionId}`}>
               <span className="flaticon-edit"></span>
             </Link>
           </li>

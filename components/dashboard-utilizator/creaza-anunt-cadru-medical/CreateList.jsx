@@ -15,6 +15,7 @@ import {
   WORK_SCHEDULES,
 } from "@/utils/constanteTitulatura";
 import { formatTitulatura } from "@/utils/strintText";
+import AutocompleteInput from "@/components/common/AutocompleteInput";
 
 const CreateList = ({ oferta }) => {
   const { currentUser, userData } = useAuth();
@@ -75,6 +76,22 @@ const CreateList = ({ oferta }) => {
   let isEdit = oferta?.imagineOferta?.finalUri ? true : false;
   let isEditFiles = oferta?.docsUrls?.finalUri ? true : false;
 
+  const [adresaSediu, setAdresaSediu] = useState(oferta?.adresaSediu || "");
+  const [buttonPressed, setButtonPressed] = useState(false);
+
+  const [googleMapsLink, setGoogleMapsLink] = useState(
+    oferta?.googleMapsLink || ""
+  );
+  const [coordonate, setCoordonate] = useState(oferta?.coordonate || {});
+
+  const handleLocationSelect = (lat, lng, adresa, urlMaps) => {
+    console.log(`Selected location - Lat: ${lat}, Lng: ${lng}`);
+    setAdresaSediu(adresa);
+    setGoogleMapsLink(urlMaps);
+    setCoordonate({ lat, lng });
+    // Aici poți actualiza starea sau trimite aceste date către backend
+  };
+
   const handleTitleChange = (event) => {
     const title = event.target.value;
     setTitulatura(title);
@@ -96,6 +113,7 @@ const CreateList = ({ oferta }) => {
         titulatura: oferta.titulatura || "",
         specialitate: oferta.specialitate || "",
         tipProgram: oferta.tipProgram || "",
+        files: oferta?.docsUrls ? [...oferta?.docsUrls] : [],
       });
     }
   }, [oferta]);
@@ -180,10 +198,12 @@ const CreateList = ({ oferta }) => {
     setTitulatura("");
     setSpecialitate("");
     setTipProgram("");
+    setFiles([]);
   };
 
   const handleUpdateOffer = async () => {
     setIsLoading(true);
+    setButtonPressed(true);
     console.log("currentUser...", currentUser.uid);
     console.log("userData...", userData);
     let lg = {};
@@ -197,7 +217,7 @@ const CreateList = ({ oferta }) => {
     }
 
     const docsUrls = await handleUploadDocs(files, deleteFiles);
-    console.log("doc data...", docsUrls);
+
     let data = {
       descriereOferta,
       status: "Activa",
@@ -207,7 +227,7 @@ const CreateList = ({ oferta }) => {
       tipProgram,
       docsUrls,
     };
-    console.log("doc data...", data);
+
     try {
       const actionText = describeChanges();
       await handleUpdateFirestoreSubcollection(
@@ -216,8 +236,10 @@ const CreateList = ({ oferta }) => {
         actionText
       );
       setIsLoading(false);
-      showAlert("Oferta actualizata cu succes!", "success");
+      setButtonPressed(false);
+      showAlert("Anunt actualizata cu succes!", "success");
     } catch (error) {
+      setButtonPressed(false);
       setIsLoading(false);
       console.error("Eroare la actualizarea ofertei: ", error);
       showAlert("Eroare la actualizarea ofertei.", "danger");
@@ -226,6 +248,7 @@ const CreateList = ({ oferta }) => {
 
   const handleAddOffer = async () => {
     setIsLoading(true);
+    setButtonPressed(true);
     console.log("currentUser...", currentUser.uid);
     console.log("userData...", userData);
     console.log("files...", files);
@@ -257,6 +280,7 @@ const CreateList = ({ oferta }) => {
         specialitate,
         tipProgram,
         docsUrls,
+        tipAnunt: "CadruMedical",
       };
 
       const actionText = `${userData.numeUtilizator} a creat anuntul de angajare ${titluOferta}`;
@@ -270,7 +294,9 @@ const CreateList = ({ oferta }) => {
       resetState();
       setIsLoading(false);
       showAlert("Anunt creat cu succes!", "success");
+      setButtonPressed(false);
     } catch (error) {
+      setButtonPressed(false);
       setIsLoading(false);
       console.error("Eroare la adaugarea anuntului: ", error);
       showAlert(`Eroare la crearea anuntului: ${error.message}`, "danger");
@@ -483,6 +509,11 @@ const CreateList = ({ oferta }) => {
       </div>
       {/* End .col */}
 
+      <AutocompleteInput
+        onPlaceChanged={handleLocationSelect}
+        adresa={adresaSediu}
+        buttonPressed={buttonPressed}
+      />
       {/* End .col */}
 
       {/* <div className="col-lg-6 col-xl-6">

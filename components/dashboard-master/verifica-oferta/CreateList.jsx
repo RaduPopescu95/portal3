@@ -182,7 +182,7 @@ const CreateList = ({ oferta }) => {
         actionText
       );
       setIsLoading(false);
-      showAlert("Oferta actualizata cu succes!", "success");
+      showAlert("Anunt actualizata cu succes!", "success");
     } catch (error) {
       setIsLoading(false);
       console.error("Eroare la actualizarea ofertei: ", error);

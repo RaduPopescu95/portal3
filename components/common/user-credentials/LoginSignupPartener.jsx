@@ -603,26 +603,26 @@ const LoginSignupPartener = () => {
               {/* End . left side image for register */}
 
               <div className="col-lg-6 col-xl-6">
-                <div className="form-group input-group mb-3">
-                  <input
-                    type="text"
-                    className={`form-control ${
-                      !numeContact && buttonPressed && "border-danger"
-                    }`}
-                    id="exampleInputName"
-                    placeholder="Nume si prenume persoana de contact"
-                    value={numeContact}
-                    onChange={(e) => setNumeContact(e.target.value)}
-                  />
-                  <div className="input-group-prepend">
-                    <div className="input-group-text">
-                      <i className="flaticon-user"></i>
-                    </div>
-                  </div>
-                </div>
                 {/* End .row */}
 
                 <div className="sign_up_form">
+                  <div className="form-group input-group mb-3">
+                    <input
+                      type="text"
+                      className={`form-control ${
+                        !numeContact && buttonPressed && "border-danger"
+                      }`}
+                      id="exampleInputName"
+                      placeholder="Nume si prenume persoana de contact"
+                      value={numeContact}
+                      onChange={(e) => setNumeContact(e.target.value)}
+                    />
+                    <div className="input-group-prepend">
+                      <div className="input-group-text">
+                        <i className="flaticon-user"></i>
+                      </div>
+                    </div>
+                  </div>
                   <div className="form-group input-group mb-3">
                     <input
                       type="text"

@@ -76,7 +76,7 @@ const HeaderMenuContent = ({ float = "" }) => {
           href="/parteneri"
           className={pathname === "/parteneri" ? "ui-active" : undefined}
         >
-          Parteneri
+          Clinici
         </Link>
       </li>
       {/* End .simpleitem */}

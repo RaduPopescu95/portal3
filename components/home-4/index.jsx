@@ -88,7 +88,7 @@ const index = ({ params }) => {
           </div>
           <div className="row">
             {/* <div className="col-lg-6">
-              <BreadCrumb2 titlu={"Parteneri apropiați de tine"} />
+              <BreadCrumb2 titlu={"Clinici apropiați de tine"} />
             </div> */}
             {/* End .col */}
 
