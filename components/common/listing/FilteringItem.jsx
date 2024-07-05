@@ -27,12 +27,32 @@ import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/navigation";
 import { handleQueryFirestoreSubcollection } from "@/utils/firestoreUtils";
 import { useAuth } from "@/context/AuthContext";
+import {
+  TITLES_AND_SPECIALTIES,
+  WORK_SCHEDULES,
+} from "@/utils/constanteTitulatura";
+import { formatTitulatura } from "@/utils/strintText";
 
 const FilteringItem = ({ params }) => {
-  const { judete, searchQueryParteneri, setSearchQueryPateneri } = useAuth();
+  const {
+    judete,
+    setSearchQueryPateneri,
+    searchQueryParteneri,
+    judet,
+    setSelectedJudet,
+    localitate,
+    setSelectedLocalitate,
+    specialitate,
+    setSelectedSpecialty,
+    titulatura,
+    setSelectedCategory,
+    setTipProgram,
+    tipProgram,
+    tipAnunt,
+    setTipAnunt,
+  } = useAuth();
   const router = useRouter();
-  const [selectedJudet, setSelectedJudet] = useState("");
-  const [selectedLocalitate, setSelectedLocalitate] = useState("");
+
   const [selectedCategorie, setSelectedCategorie] = useState("");
   const [localitati, setLocalitati] = useState([]);
   const [isJudetSelected, setIsJudetSelected] = useState(true);
@@ -40,8 +60,20 @@ const FilteringItem = ({ params }) => {
   const [isCateogireSelected, setIsCategorieSelected] = useState(true);
 
   // Handler pentru schimbarea selectiei de judete
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+    setSelectedSpecialty(""); // Resetăm specialitatea atunci când schimbăm categoria
+  };
+
+  // Funcție pentru gestionarea schimbărilor pe selectul de specialități
+  const handleSpecialtyChange = (event) => {
+    setSelectedSpecialty(event.target.value);
+  };
+
+  // Handler pentru schimbarea selectiei de judete
   const handleJudetChange = async (e) => {
     const judetSelectedName = e.target.value; // Numele județului selectat, un string
+
     setSelectedJudet(judetSelectedName);
     setIsJudetSelected(!!judetSelectedName);
 
@@ -71,55 +103,90 @@ const FilteringItem = ({ params }) => {
   };
 
   const handleLocalitateChange = (e) => {
+    // Acesta ar trebui să arate numele localității ca string
     setSelectedLocalitate(e.target.value);
     setIsLocalitateSelected(!!e.target.value);
   };
   const handleCategorieChange = (e) => {
-    console.log("Categorie selected: ", e.target.value); // Acesta ar trebui să arate numele localității ca string
     setSelectedCategorie(e.target.value);
     setIsCategorieSelected(!!e.target.value);
   };
 
   // submit handler
   const submitHandler = () => {
-    if (!selectedCategorie && !selectedLocalitate && !selectedJudet) {
-      router.push(`/parteneri`);
+    console.log("test...", titulatura);
+    console.log("test...", specialitate);
+    console.log("test...", localitate);
+    console.log("test...", judet);
+
+    if (!titulatura && !specialitate && !localitate && !judet) {
+      router.push(`/anunturi`);
       return;
     }
 
-    if (selectedJudet && selectedCategorie) {
+    if (titulatura && specialitate && !judet && !localitate) {
+      setSelectedCategory(titulatura);
+      setSelectedSpecialty(specialitate);
       router.push(
-        `/${selectedCategorie.toLocaleLowerCase()}/${selectedCategorie.toLocaleLowerCase()}-${selectedJudet.toLocaleLowerCase()}`
+        `/${titulatura.toLocaleLowerCase()}-${specialitate.toLocaleLowerCase()}`
       );
       return;
     }
+    if (titulatura && !specialitate && !judet && !localitate) {
+      setSelectedCategory(titulatura);
 
-    if (selectedJudet && !selectedLocalitate) {
-      // setIsLocalitateSelected(!!selectedLocalitate);
-      // return;
-      router.push(`/parteneri/parteneri-${selectedJudet.toLocaleLowerCase()}`);
+      router.push(`/${titulatura.toLocaleLowerCase()}`);
       return;
     }
-
-    if (selectedLocalitate && selectedCategorie) {
+    if (titulatura && specialitate && judet && localitate) {
+      setSelectedCategory(titulatura);
+      setSelectedSpecialty(specialitate);
+      setSelectedLocalitate(localitate);
+      setSelectedJudet(judet);
       router.push(
-        `/${selectedCategorie.toLocaleLowerCase()}/${selectedCategorie.toLocaleLowerCase()}-${selectedLocalitate.toLocaleLowerCase()}`
+        `/${titulatura.toLocaleLowerCase()}-${specialitate.toLocaleLowerCase()}/${judet.toLocaleLowerCase()}-${localitate.toLocaleLowerCase()}`
       );
       return;
     }
+    if (titulatura && specialitate && judet && !localitate) {
+      setSelectedCategory(titulatura);
+      setSelectedSpecialty(specialitate);
 
-    if (selectedLocalitate) {
+      setSelectedJudet(judet);
+      console.log("Asdadadasdasd");
       router.push(
-        `/parteneri/parteneri-${selectedLocalitate.toLocaleLowerCase()}`
+        `/${titulatura.toLocaleLowerCase()}-${specialitate.toLocaleLowerCase()}/${judet.toLocaleLowerCase()}`
       );
       return;
     }
-
-    if (selectedCategorie) {
-      router.push(`/${selectedCategorie.toLocaleLowerCase()}`);
+    if (!titulatura && !specialitate && judet && localitate) {
+      setSelectedLocalitate(localitate);
+      setSelectedJudet(judet);
+      router.push(
+        `/anunturi/${judet.toLocaleLowerCase()}-${localitate.toLocaleLowerCase()}`
+      );
+      return;
+    }
+    if (!titulatura && !specialitate && judet && !localitate) {
+      setSelectedJudet(judet.toLocaleLowerCase());
+      router.push(`/anunturi/${judet}`);
+      return;
+    }
+    if (titulatura && !specialitate && judet && !localitate) {
+      setSelectedJudet(judet);
+      router.push(
+        `/${titulatura.toLocaleLowerCase()}/${judet.toLocaleLowerCase()}`
+      );
       return;
     }
   };
+
+  // useEffect(() => {
+  //   setSelectedCategory(undefined);
+  //   setSelectedSpecialty(undefined);
+  //   setSelectedLocalitate(undefined);
+  //   setSelectedJudet(undefined);
+  // }, []);
 
   const {
     keyword,
@@ -308,17 +375,81 @@ const FilteringItem = ({ params }) => {
               className={`selectpicker w100 form-select show-tick ${
                 !isCateogireSelected ? "border-danger" : ""
               }`}
-              onChange={handleCategorieChange}
-              value={selectedCategorie}
+              onChange={(e) => setTipAnunt(e.target.value)}
+              value={tipAnunt}
             >
-              <option value="">Categorie</option>
-              <option data-tokens="Autovehicule">Autovehicule</option>
-              <option data-tokens="Servicii">Servicii</option>
-              <option data-tokens="Cafenele">Cafenele</option>
-              <option data-tokens="Restaurante">Restaurante</option>
-              <option data-tokens="Hoteluri">Hoteluri</option>
-              <option data-tokens="Imobiliare">Imobiliare</option>
-              <option data-tokens="Altele">Altele</option>
+              <option value="">Tip Anunt</option>
+              <option data-tokens="Anunturi Cadre Medicale">
+                Anunturi Cadre Medicale
+              </option>
+              <option data-tokens="Anunturi Clinici">Anunturi Clinici</option>
+            </select>
+          </div>
+        </div>
+      </li>
+      {/* End li */}
+      <li>
+        <div className="search_option_two">
+          <div className="candidate_revew_select">
+            <select
+              className={`selectpicker w100 form-select show-tick ${
+                !isCateogireSelected ? "border-danger" : ""
+              }`}
+              onChange={(e) => setTipProgram(e.target.value)}
+              value={tipProgram}
+            >
+              <option value="">Tip Program</option>
+              {WORK_SCHEDULES.map((title) => (
+                <option key={title} value={title}>
+                  {title}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </li>
+      {/* End li */}
+
+      <li>
+        <div className="search_option_two">
+          <div className="candidate_revew_select">
+            <select
+              className={`selectpicker w100 form-select show-tick ${
+                !isCateogireSelected ? "border-danger" : ""
+              }`}
+              onChange={handleCategoryChange}
+              value={titulatura}
+            >
+              {" "}
+              <option value="">Selectați Titulatura</option>
+              {Object.keys(TITLES_AND_SPECIALTIES).map((key) => (
+                <option key={key} value={key}>
+                  {formatTitulatura(key)}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </li>
+      {/* End li */}
+      <li>
+        <div className="search_option_two">
+          <div className="candidate_revew_select">
+            <select
+              className={`selectpicker w100 form-select show-tick ${
+                !isCateogireSelected ? "border-danger" : ""
+              }`}
+              onChange={handleSpecialtyChange}
+              value={specialitate}
+            >
+              <option value="">Selectați specialitatea</option>
+              {titulatura &&
+                TITLES_AND_SPECIALTIES[titulatura] &&
+                TITLES_AND_SPECIALTIES[titulatura].map((specialty, index) => (
+                  <option key={index} value={specialty}>
+                    {specialty}
+                  </option>
+                ))}
             </select>
           </div>
         </div>
@@ -333,7 +464,7 @@ const FilteringItem = ({ params }) => {
                 !isJudetSelected ? "border-danger" : ""
               }`}
               onChange={handleJudetChange}
-              value={selectedJudet}
+              value={judet}
             >
               <option value="">Judete</option>
               {judete &&
@@ -348,7 +479,7 @@ const FilteringItem = ({ params }) => {
       </li>
       {/* End li */}
 
-      {selectedJudet === "Bucuresti" && (
+      {judet === "Bucuresti" && (
         <li>
           <div className="search_option_two">
             <div className="candidate_revew_select">
@@ -357,7 +488,7 @@ const FilteringItem = ({ params }) => {
                   !isLocalitateSelected ? "border-danger" : ""
                 }`}
                 onChange={handleLocalitateChange}
-                value={selectedLocalitate}
+                value={localitate}
               >
                 <option value="">Sector</option>
                 {localitati.map((location, index) => (

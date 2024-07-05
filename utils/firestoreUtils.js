@@ -45,6 +45,41 @@ export const getFirestoreQueryLength = async (
   return snapshot.data().count;
 };
 
+//FUNCTIE DE QUERY DIN SUBCOLLECTI CU NR NELIMITAT DE PARAMETRI
+export const handleQueryFirestoreSubcollectionVariableParams = async (
+  location,
+  ...queryPairs
+) => {
+  let results = [];
+  let constraints = [];
+
+  // Construiește constrângerile interogării din perechile de parametri
+  for (let i = 0; i < queryPairs.length; i += 2) {
+    const queryParam = queryPairs[i];
+    const element = queryPairs[i + 1];
+    if (queryParam && element !== undefined) {
+      constraints.push(where(queryParam, "==", element));
+    }
+  }
+
+  // Dacă nu există constrângeri valide, returnează un array gol
+  if (constraints.length === 0) {
+    console.warn("No valid query constraints provided.");
+    return results;
+  }
+  console.log("constraints...", constraints);
+  // Interoghează subcolecția Localitati folosind constrângerile create
+  let localitatiRef = query(collectionGroup(db, location), ...constraints);
+  const querySnapshot = await getDocs(localitatiRef);
+
+  // Adaugă fiecare document găsit în rezultate
+  querySnapshot.forEach((doc) => {
+    results.push(doc.data());
+  });
+
+  return results;
+};
+
 export const handleUpdateFirestore = async (
   location,
   updatedData,
@@ -618,6 +653,130 @@ export const uploadJudete = async (jd) => {
       await setDoc(localitateDoc, localitateData);
     }
   }
+};
+
+export const handleQueryFirestoreSubcollectionTripleParam = async (
+  location,
+  queryParamOne,
+  elementOne = null,
+  queryParamTwo = null,
+  elementTwo = null,
+  queryParamThree = null,
+  elementThree = null
+) => {
+  let arr = [];
+  let localitatiRef;
+  // Pasul 1: Interoghează subcolecția Localitati
+
+  localitatiRef = query(
+    collectionGroup(db, location),
+    where(queryParamOne, "==", elementOne),
+    where(queryParamTwo, "==", elementTwo),
+    where(queryParamThree, "==", elementThree)
+  );
+
+  const querySnapshot = await getDocs(localitatiRef);
+  querySnapshot.forEach((doc) => {
+    arr.push(doc.data());
+  });
+  return arr;
+};
+export const handleQueryFirestoreSubcollectionPatruParam = async (
+  location,
+  queryParamOne,
+  elementOne = null,
+  queryParamTwo = null,
+  elementTwo = null,
+  queryParamThree = null,
+  elementThree = null,
+  queryParamPatru = null,
+  elementPatru = null
+) => {
+  let arr = [];
+  let localitatiRef;
+  // Pasul 1: Interoghează subcolecția Localitati
+
+  localitatiRef = query(
+    collectionGroup(db, location),
+    where(queryParamOne, "==", elementOne),
+    where(queryParamTwo, "==", elementTwo),
+    where(queryParamThree, "==", elementThree),
+    where(queryParamPatru, "==", elementPatru)
+  );
+
+  const querySnapshot = await getDocs(localitatiRef);
+  querySnapshot.forEach((doc) => {
+    arr.push(doc.data());
+  });
+  return arr;
+};
+export const handleQueryFirestoreSubcollectionCinciParam = async (
+  location,
+  queryParamOne,
+  elementOne = null,
+  queryParamTwo = null,
+  elementTwo = null,
+  queryParamThree = null,
+  elementThree = null,
+  queryParamPatru = null,
+  elementPatru = null,
+  queryParamCinici = null,
+  elementCinci = null
+) => {
+  let arr = [];
+  let localitatiRef;
+  // Pasul 1: Interoghează subcolecția Localitati
+
+  localitatiRef = query(
+    collectionGroup(db, location),
+    where(queryParamOne, "==", elementOne),
+    where(queryParamTwo, "==", elementTwo),
+    where(queryParamThree, "==", elementThree),
+    where(queryParamPatru, "==", elementPatru),
+    where(queryParamCinici, "==", elementCinci)
+  );
+
+  const querySnapshot = await getDocs(localitatiRef);
+  querySnapshot.forEach((doc) => {
+    arr.push(doc.data());
+  });
+  return arr;
+};
+export const handleQueryFirestoreSubcollectionSaseParam = async (
+  location,
+  queryParamOne,
+  elementOne = null,
+  queryParamTwo = null,
+  elementTwo = null,
+  queryParamThree = null,
+  elementThree = null,
+  queryParamPatru = null,
+  elementPatru = null,
+  queryParamCinici = null,
+  elementCinci = null,
+  queryParamSase = null,
+  elementSase = null
+) => {
+  let arr = [];
+  let localitatiRef;
+  // Pasul 1: Interoghează subcolecția Localitati
+  console.log("....start....");
+  localitatiRef = query(
+    collectionGroup(db, location),
+    where(queryParamOne, "==", elementOne),
+    where(queryParamTwo, "==", elementTwo),
+    where(queryParamThree, "==", elementThree),
+    where(queryParamPatru, "==", elementPatru),
+    where(queryParamCinici, "==", elementCinci),
+    where(queryParamSase, "==", elementSase)
+  );
+  console.log("....start....2");
+
+  const querySnapshot = await getDocs(localitatiRef);
+  querySnapshot.forEach((doc) => {
+    arr.push(doc.data());
+  });
+  return arr;
 };
 
 export async function getLocalitatiWithUserCounts() {

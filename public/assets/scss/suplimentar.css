@@ -109,3 +109,13 @@
 .file-color:hover {
   color: var(--color-primary); /* Schimbă în culoarea dorită la hover */
 }
+
+.zona-interes {
+  color: var(--color-primary);
+}
+
+/* Adaugă acest CSS în fișierul tău global de stiluri sau un modul CSS asociat componentei */
+.feat_property a.details:hover .tc_content *:not(button),
+.feat_property a.details:hover .tc_content {
+  color: var(--color-primary);
+}

@@ -18,6 +18,12 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isGuestUser, setIsGuestUser] = useState(false); // Inițializat ca false
   const [searchQueryParteneri, setSearchQueryPateneri] = useState("");
+  const [tipAnunt, setTipAnunt] = useState("Clinica");
+  const [tipProgram, setTipProgram] = useState(undefined);
+  const [titulatura, setSelectedCategory] = useState(undefined);
+  const [specialitate, setSelectedSpecialty] = useState(undefined);
+  const [localitate, setSelectedLocalitate] = useState(undefined);
+  const [judet, setSelectedJudet] = useState(undefined);
 
   // Funcția pentru a seta utilizatorul ca guest user
   const setAsGuestUser = (isGuest) => {
@@ -81,6 +87,18 @@ export const AuthProvider = ({ children }) => {
     judete,
     searchQueryParteneri,
     setSearchQueryPateneri,
+    tipAnunt,
+    setTipAnunt,
+    tipProgram,
+    setTipProgram,
+    judet,
+    setSelectedJudet,
+    localitate,
+    setSelectedLocalitate,
+    specialitate,
+    setSelectedSpecialty,
+    titulatura,
+    setSelectedCategory,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

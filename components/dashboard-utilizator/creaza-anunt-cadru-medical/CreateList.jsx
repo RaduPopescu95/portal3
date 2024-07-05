@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/context/AuthContext";
 import {
+  handleQueryFirestoreSubcollection,
   handleUpdateFirestoreSubcollection,
   handleUploadFirestoreSubcollection,
 } from "@/utils/firestoreUtils";
@@ -18,7 +19,7 @@ import { formatTitulatura } from "@/utils/strintText";
 import AutocompleteInput from "@/components/common/AutocompleteInput";
 
 const CreateList = ({ oferta }) => {
-  const { currentUser, userData } = useAuth();
+  const { currentUser, userData, judete } = useAuth();
   const router = useRouter();
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -84,6 +85,14 @@ const CreateList = ({ oferta }) => {
   );
   const [coordonate, setCoordonate] = useState(oferta?.coordonate || {});
 
+  const [judet, setJudet] = useState(oferta?.judet || "");
+  const [localitate, setLocalitate] = useState(oferta?.localitate || "");
+  const [sector, setSector] = useState(oferta?.sector || "");
+  const [localitati, setLocalitati] = useState([]);
+  const [isJudetSelected, setIsJudetSelected] = useState(true);
+  const [isLocalitateSelected, setIsLocalitateSelected] = useState(true);
+  const [isCateogireSelected, setIsCategorieSelected] = useState(true);
+
   const handleLocationSelect = (lat, lng, adresa, urlMaps) => {
     console.log(`Selected location - Lat: ${lat}, Lng: ${lng}`);
     setAdresaSediu(adresa);
@@ -114,6 +123,12 @@ const CreateList = ({ oferta }) => {
         specialitate: oferta.specialitate || "",
         tipProgram: oferta.tipProgram || "",
         files: oferta?.docsUrls ? [...oferta?.docsUrls] : [],
+        adresaSediu: oferta?.adresaSediu || "",
+        googleMapsLink: oferta?.googleMapsLink || "",
+        coordonate: oferta?.coordonate || {},
+        judet: oferta?.judet || "",
+        localitate: oferta?.localitate || "",
+        sector: oferta?.sector || "",
       });
     }
   }, [oferta]);
@@ -199,6 +214,12 @@ const CreateList = ({ oferta }) => {
     setSpecialitate("");
     setTipProgram("");
     setFiles([]);
+    setCoordonate({});
+    setAdresaSediu("");
+    setGoogleMapsLink("");
+    setLocalitate("");
+    setJudet("");
+    setSector("");
   };
 
   const handleUpdateOffer = async () => {
@@ -222,10 +243,24 @@ const CreateList = ({ oferta }) => {
       descriereOferta,
       status: "Activa",
       imagineOferta: lg,
+      docsUrls,
+      adresaSediu,
+      googleMapsLink,
+      coordonate,
       titulatura,
       specialitate,
+      judet,
+      localitate: judet === "Bucuresti" ? "Bucuresti" : localitate,
+      sector: judet === "Bucuresti" ? sector : "",
       tipProgram,
-      docsUrls,
+      //QUERY STRINGS
+      tipProgramQ: tipProgram.toLowerCase(),
+      titulaturaQ: titulatura.toLowerCase(),
+      specialitateQ: specialitate.toLowerCase(),
+      judetQ: judet.toLowerCase(),
+      localitateQ:
+        judet === "Bucuresti" ? "bucuresti" : localitate.toLowerCase(),
+      sectorQ: judet === "Bucuresti" ? sector.toLowerCase() : "",
     };
 
     try {
@@ -276,11 +311,25 @@ const CreateList = ({ oferta }) => {
         titluOferta,
         status: "Activa",
         imagineOferta: lg,
-        titulatura,
-        specialitate,
-        tipProgram,
         docsUrls,
         tipAnunt: "CadruMedical",
+        adresaSediu,
+        googleMapsLink,
+        coordonate,
+        titulatura,
+        specialitate,
+        judet,
+        localitate: judet === "Bucuresti" ? "Bucuresti" : localitate,
+        sector: judet === "Bucuresti" ? sector : "",
+        tipProgram,
+        //QUERY STRINGS
+        tipProgramQ: tipProgram.toLowerCase(),
+        titulaturaQ: titulatura.toLowerCase(),
+        specialitateQ: specialitate.toLowerCase(),
+        judetQ: judet.toLowerCase(),
+        localitateQ:
+          judet === "Bucuresti" ? "bucuresti" : localitate.toLowerCase(),
+        sectorQ: judet === "Bucuresti" ? sector.toLowerCase() : "",
       };
 
       const actionText = `${userData.numeUtilizator} a creat anuntul de angajare ${titluOferta}`;
@@ -332,6 +381,75 @@ const CreateList = ({ oferta }) => {
       }
     }
   };
+
+  const handleJudetChange = async (e) => {
+    const judetSelectedName = e.target.value; // Numele județului selectat, un string
+    console.log("judetSelectedName...", judetSelectedName);
+    setJudet(judetSelectedName);
+    setIsJudetSelected(!!judetSelectedName);
+
+    // Găsește obiectul județului selectat bazat pe `judet`
+    const judetSelected = judete.find(
+      (judet) => judet.judet === judetSelectedName
+    );
+
+    if (judetSelected) {
+      try {
+        // Utilizăm judet pentru a interoga Firestore
+        const localitatiFromFirestore = await handleQueryFirestoreSubcollection(
+          "Localitati",
+          "judet",
+          judetSelected.judet
+        );
+        // Presupunem că localitatiFromFirestore este array-ul corect al localităților
+        console.log("localitatiFromFirestore...", localitatiFromFirestore);
+
+        setLocalitati(localitatiFromFirestore);
+      } catch (error) {
+        console.error("Failed to fetch locations:", error);
+        setLocalitati([]); // Resetează localitățile în caz de eroare
+      }
+    } else {
+      // Dacă nu găsim județul selectat, resetăm localitățile
+      setLocalitati([]);
+    }
+  };
+  const handleGetLocalitatiJudet = async () => {
+    const judetSelectedName = judet; // Numele județului selectat, un string
+    console.log("judetSelectedName...", judetSelectedName);
+    setJudet(judetSelectedName);
+    setIsJudetSelected(!!judetSelectedName);
+
+    // Găsește obiectul județului selectat bazat pe `judet`
+    const judetSelected = judete.find(
+      (judet) => judet.judet === judetSelectedName
+    );
+
+    if (judetSelected) {
+      try {
+        // Utilizăm judet pentru a interoga Firestore
+        const localitatiFromFirestore = await handleQueryFirestoreSubcollection(
+          "Localitati",
+          "judet",
+          judetSelected.judet
+        );
+        // Presupunem că localitatiFromFirestore este array-ul corect al localităților
+        setLocalitati(localitatiFromFirestore);
+      } catch (error) {
+        console.error("Failed to fetch locations:", error);
+        setLocalitati([]); // Resetează localitățile în caz de eroare
+      }
+    } else {
+      // Dacă nu găsim județul selectat, resetăm localitățile
+      setLocalitati([]);
+    }
+  };
+
+  useEffect(() => {
+    if (judet.length > 0) {
+      handleGetLocalitatiJudet();
+    }
+  }, []);
 
   return (
     <>
@@ -502,6 +620,63 @@ const CreateList = ({ oferta }) => {
             {WORK_SCHEDULES.map((title) => (
               <option key={title} value={title}>
                 {title}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      {/* End .col */}
+
+      <div className="col-lg-12">
+        <h3 className="mb30">Camp zona de interes</h3>
+      </div>
+
+      <div className="col-lg-6 col-xl-6">
+        <div className="my_profile_setting_input ui_kit_select_search form-group">
+          <label>Judet</label>
+          <select
+            className={`selectpicker form-select ${
+              !judet && buttonPressed && "border-danger"
+            }`}
+            data-live-search="true"
+            data-width="100%"
+            value={judet}
+            onChange={handleJudetChange}
+          >
+            {judete &&
+              judete.map((judet, index) => (
+                <option key={index} value={judet.judet}>
+                  {judet.judet}
+                </option>
+              ))}
+          </select>
+        </div>
+      </div>
+      {/* End .col */}
+
+      <div className="col-lg-6 col-xl-6">
+        <div className="my_profile_setting_input ui_kit_select_search form-group">
+          <label>Localitate</label>
+          <select
+            className={`selectpicker form-select ${
+              !localitate && buttonPressed && "border-danger"
+            }`}
+            data-live-search="true"
+            data-width="100%"
+            value={localitate}
+            onChange={(e) => {
+              console.log("Test...");
+              if (e.target.value.includes("Sector")) {
+                setLocalitate(e.target.value);
+                setSector(e.target.value);
+              } else {
+                setLocalitate(e.target.value);
+              }
+            }}
+          >
+            {localitati.map((location, index) => (
+              <option key={index} value={location.localitate}>
+                {location.localitate}
               </option>
             ))}
           </select>

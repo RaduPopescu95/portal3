@@ -12,10 +12,14 @@ import properties from "../../../data/properties";
 import Image from "next/image";
 import {
   calculateDistance,
+  filtrareCadreMedicale,
+  filtrareClinici,
   filtrareOferte,
   filtrareParteneri,
   generateRandomGradient,
   getAllOffersWithoutDistance,
+  handleGetAnunturiArray,
+  processParams,
   toUrlSlug,
 } from "@/utils/commonUtils";
 import { fetchLocation } from "@/app/services/geocoding";
@@ -23,6 +27,12 @@ import { handleDiacrtice } from "@/utils/strintText";
 import {
   handleQueryDoubleParam,
   handleQueryFirestore,
+  handleQueryFirestoreSubcollection,
+  handleQueryFirestoreSubcollectionCinciParam,
+  handleQueryFirestoreSubcollectionPatruParam,
+  handleQueryFirestoreSubcollectionSaseParam,
+  handleQueryFirestoreSubcollectionTripleParam,
+  handleQueryFirestoreSubcollectionVariableParams,
   handleQueryPatruParam,
   handleQueryTripleParam,
 } from "@/utils/firestoreUtils";
@@ -30,612 +40,158 @@ import FeaturedProperty from "./Item";
 import { useAuth } from "@/context/AuthContext";
 import SkeletonLoader from "@/components/common/SkeletonLoader";
 
-const FeaturedItem = ({ params }) => {
+const FeaturedItem = ({ params, searchQuery }) => {
   const { statusType, featured, isGridOrList } = useSelector(
     (state) => state.filter
   );
-  const { currentUser, setSearchQueryPateneri, searchQueryParteneri } =
-    useAuth();
+  const {
+    currentUser,
+    setSearchQueryPateneri,
+    searchQueryParteneri,
+    tipAnunt,
+    tipProgram,
+    setTipAnunt,
+    setTipProgram,
+    judete,
+    judet,
+    setSelectedJudet,
+    localitate,
+    setSelectedLocalitate,
+    specialitate,
+    setSelectedSpecialty,
+    titulatura,
+    setSelectedCategory,
+  } = useAuth();
 
   const [parteneri, setParteneri] = useState([]);
+  const [anunturiCadre, setAnunturiCadre] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const itemsPerPage = 6;
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    setIsLoading(true);
-    console.log("test....de query...", searchQueryParteneri);
-    navigator.geolocation.getCurrentPosition(
-      async function (position) {
-        const { latitude, longitude } = position.coords;
+  const handleGetAnunturi = async () => {
+    try {
+      console.log("params...", params);
+      const processedParams = processParams(params);
+      console.log("Processed Params...", titulatura);
+      console.log("Processed Params:", specialitate);
+      console.log("Processed Params:", judet);
+      console.log("Processed Params:", localitate);
+      console.log("Processed Params:", tipAnunt);
+      let anunturi = [];
+      console.log("is.....clinica");
+      let tAnunt;
 
-        try {
-          let localitate;
-          let res = await fetchLocation(latitude, longitude);
-          if (res && res.results && res.results.length > 0) {
-            // Caută primul element cu proprietatea 'locality' definită
-            const firstLocality = res.results.find(
-              (result) => result.locality !== undefined
-            );
-
-            if (firstLocality && firstLocality.locality) {
-              localitate = handleDiacrtice(firstLocality.locality);
-            } else {
-              console.error("Localitate missing in all results:", res);
-            }
-          } else {
-            console.error("Invalid response or results missing:", res);
-          }
-
-          let parteneri;
-          let parteneriCuDistanta;
-          let parteneriOrdonati;
-
-          if (!params && searchQueryParteneri) {
-            parteneri = await handleQueryDoubleParam(
-              "Users",
-              "userType",
-              "Partener",
-              "statusCont",
-              "Activ"
-            );
-            parteneriOrdonati = parteneri;
-          } else {
-            parteneri = await handleQueryTripleParam(
-              "Users",
-              "localitate",
-              localitate,
-              "userType",
-              "Partener",
-              "statusCont",
-              "Activ"
-            );
-
-            // Adaugă distanța ca o proprietate pentru fiecare partener
-            parteneriCuDistanta = parteneri.map((partener) => {
-              const distanta = calculateDistance(
-                latitude,
-                longitude,
-                partener.coordonate.lat,
-                partener.coordonate.lng
-              );
-
-              return { ...partener, distanta: Math.floor(distanta) };
-            });
-
-            // Sortează partenerii după distanță
-            parteneriOrdonati = parteneriCuDistanta.sort(
-              (a, b) => a.distanta - b.distanta
-            );
-          }
-
-          let parteneriFiltrati = [];
-          if (params) {
-            if (params[0].split("-")[0] === "parteneri") {
-              console.log("params contains parteneri....");
-              let localitate = params[0]; // presupunem că params[0] este un string
-              const parts = localitate.split("-");
-
-              // Decodifică partea pentru a elimina codificările URL (de exemplu, transformă "%20" înapoi în spații)
-              let decodedPart = decodeURIComponent(parts[1]);
-              // Verifică dacă stringul decodificat conține cuvântul "sector"
-              if (decodedPart.includes("sector")) {
-                console.log("Partea conține 'sector'", decodedPart);
-
-                let sectorDorit =
-                  decodedPart.charAt(0).toUpperCase() + decodedPart.slice(1);
-                console.log("Test here sector dorit....", sectorDorit);
-
-                let parteneriFiltrati = await handleQueryTripleParam(
-                  "Users",
-                  "sector",
-                  sectorDorit,
-                  "userType",
-                  "Partener",
-                  "statusCont",
-                  "Activ"
-                );
-
-                console.log(
-                  "Test here parteneriFiltrati....",
-                  parteneriFiltrati
-                );
-                if (!searchQueryParteneri) {
-                  const allOffers = await getAllOffersWithoutDistance(
-                    parteneriFiltrati
-                  );
-                  setParteneri([...allOffers]);
-                  setIsLoading(false);
-                } else {
-                  const allOffers = await getAllOffersWithoutDistance(
-                    parteneriFiltrati
-                  );
-                  const rezultatFiltrare = filtrareOferte(
-                    allOffers,
-                    searchQueryParteneri
-                  );
-                  setParteneri([...rezultatFiltrare]);
-                  setIsLoading(false);
-                }
-
-                // Execută codul dorit aici
-              } else {
-                console.log("Partea nu conține 'sector'");
-                let judetDorit =
-                  parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
-                console.log("Test here judet....", judetDorit);
-
-                let parteneriFiltrati = await handleQueryTripleParam(
-                  "Users",
-                  "judet",
-                  judetDorit,
-                  "userType",
-                  "Partener",
-                  "statusCont",
-                  "Activ"
-                );
-
-                console.log("Test here judet....", parteneriFiltrati);
-                if (!searchQueryParteneri) {
-                  const allOffers = await getAllOffersWithoutDistance(
-                    parteneriFiltrati
-                  );
-                  setParteneri([...allOffers]);
-                  setIsLoading(false);
-                } else {
-                  const allOffers = await getAllOffersWithoutDistance(
-                    parteneriFiltrati
-                  );
-                  const rezultatFiltrare = filtrareOferte(
-                    allOffers,
-                    searchQueryParteneri
-                  );
-                  setParteneri([...rezultatFiltrare]);
-                  setIsLoading(false);
-                }
-              }
-            } else {
-              console.log("params does not contains parteneri....");
-              if (params.length === 1) {
-                console.log("params does not contains parteneri length 1....");
-                let string = params[0]; // presupunem că params[0] este un string
-
-                let categorieDorita =
-                  string.charAt(0).toUpperCase() + string.slice(1);
-
-                let parteneriFiltrati = await handleQueryTripleParam(
-                  "Users",
-                  "categorie",
-                  categorieDorita,
-                  "userType",
-                  "Partener",
-                  "statusCont",
-                  "Activ"
-                );
-
-                if (!searchQueryParteneri) {
-                  const allOffers = await getAllOffersWithoutDistance(
-                    parteneriFiltrati
-                  );
-                  setParteneri([...allOffers]);
-                  setIsLoading(false);
-                } else {
-                  const allOffers = await getAllOffersWithoutDistance(
-                    parteneriFiltrati
-                  );
-                  const rezultatFiltrare = filtrareOferte(
-                    allOffers,
-                    searchQueryParteneri
-                  );
-                  setParteneri([...rezultatFiltrare]);
-                  setIsLoading(false);
-                }
-              } else if (params.length === 2) {
-                console.log("params does not contains parteneri length 2....");
-                let string = params[0]; // presupunem că params[0] este un string
-
-                let categorieDorita =
-                  string.charAt(0).toUpperCase() + string.slice(1);
-                let localitate = params[1]; // presupunem că params[0] este un string
-                const parts = localitate.split("-");
-                let decodedPart = decodeURIComponent(parts[1]);
-                console.log("it tests....", decodedPart);
-                if (decodedPart.includes("sector")) {
-                  let sectorDorit =
-                    decodedPart.charAt(0).toUpperCase() + decodedPart.slice(1);
-                  console.log("Test here localitate....", categorieDorita);
-                  console.log("Test here sector....", sectorDorit);
-
-                  let parteneriFiltrati = await handleQueryPatruParam(
-                    "Users",
-                    "categorie",
-                    categorieDorita,
-                    "sector",
-                    sectorDorit,
-                    "userType",
-                    "Partener",
-                    "statusCont",
-                    "Activ"
-                  );
-
-                  console.log("Test here localitate....", parteneriFiltrati);
-                  if (!searchQueryParteneri) {
-                    const allOffers = await getAllOffersWithoutDistance(
-                      parteneriFiltrati
-                    );
-                    setParteneri([...allOffers]);
-                    setIsLoading(false);
-                  } else {
-                    const allOffers = await getAllOffersWithoutDistance(
-                      parteneriFiltrati
-                    );
-                    const rezultatFiltrare = filtrareOferte(
-                      allOffers,
-                      searchQueryParteneri
-                    );
-                    setParteneri([...rezultatFiltrare]);
-                    setIsLoading(false);
-                  }
-                } else {
-                  let judetDorit =
-                    parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
-                  console.log("Test here categorie....", categorieDorita);
-                  console.log("Test here judet....", judetDorit);
-
-                  let parteneriFiltrati = await handleQueryPatruParam(
-                    "Users",
-                    "categorie",
-                    categorieDorita,
-                    "judet",
-                    judetDorit,
-                    "userType",
-                    "Partener",
-                    "statusCont",
-                    "Activ"
-                  );
-
-                  console.log(
-                    "Test here parteneriFiltrati....",
-                    parteneriFiltrati
-                  );
-
-                  if (!searchQueryParteneri) {
-                    const allOffers = await getAllOffersWithoutDistance(
-                      parteneriFiltrati
-                    );
-                    setParteneri([...allOffers]);
-                    setIsLoading(false);
-                  } else {
-                    const allOffers = await getAllOffersWithoutDistance(
-                      parteneriFiltrati
-                    );
-                    const rezultatFiltrare = filtrareOferte(
-                      allOffers,
-                      searchQueryParteneri
-                    );
-                    setParteneri([...rezultatFiltrare]);
-                    setIsLoading(false);
-                  }
-                }
-              } else {
-                if (!searchQueryParteneri) {
-                  const allOffers = await getAllOffersWithoutDistance(
-                    parteneriOrdonati
-                  );
-                  setParteneri([...allOffers]);
-                  setIsLoading(false);
-                } else {
-                  const allOffers = await getAllOffersWithoutDistance(
-                    parteneriOrdonati
-                  );
-                  const rezultatFiltrare = filtrareOferte(
-                    allOffers,
-                    searchQueryParteneri
-                  );
-                  setParteneri([...rezultatFiltrare]);
-                  setIsLoading(false);
-                }
-              }
-            }
-          } else {
-            if (!searchQueryParteneri) {
-              const allOffers = await getAllOffersWithoutDistance(
-                parteneriOrdonati
-              );
-              setParteneri([...allOffers]);
-              setIsLoading(false);
-            } else {
-              const allOffers = await getAllOffersWithoutDistance(
-                parteneriOrdonati
-              );
-              const rezultatFiltrare = filtrareOferte(
-                allOffers,
-                searchQueryParteneri
-              );
-              setParteneri([...rezultatFiltrare]);
-              setIsLoading(false);
-            }
-          }
-          console.log("parteneri cu distanta...", parteneriOrdonati);
-        } catch (error) {
-          console.error("Error fetching location data: ", error);
+      if (tipAnunt === "Clinica" || tipAnunt === "Anunturi Clinici") {
+        console.log("is.....clinica");
+        if (tipAnunt === "Clinica" || tipAnunt === "Anunturi Clinici") {
+          tAnunt = "Clinica";
         }
-      },
-      async function (error) {
-        console.error("Geolocation error: ", error);
-        // ....
-        try {
-          let parteneri;
-          let parteneriCuDistanta;
-          let parteneriOrdonati;
-
-          if (!params && searchQueryParteneri) {
-            parteneri = await handleQueryDoubleParam(
-              "Users",
-              "userType",
-              "Partener",
-              "statusCont",
-              "Activ"
-            );
-            parteneriOrdonati = parteneri;
-          }
-
-          let parteneriFiltrati = [];
-          if (params) {
-            if (params[0].split("-")[0] === "parteneri") {
-              console.log("params contains parteneri....");
-              let localitate = params[0]; // presupunem că params[0] este un string
-              const parts = localitate.split("-");
-
-              // Decodifică partea pentru a elimina codificările URL (de exemplu, transformă "%20" înapoi în spații)
-              let decodedPart = decodeURIComponent(parts[1]);
-              // Verifică dacă stringul decodificat conține cuvântul "sector"
-              if (decodedPart.includes("sector")) {
-                console.log("Partea conține 'sector'", decodedPart);
-
-                let sectorDorit =
-                  decodedPart.charAt(0).toUpperCase() + decodedPart.slice(1);
-                console.log("Test here sector dorit....", sectorDorit);
-
-                let parteneriFiltrati = await handleQueryTripleParam(
-                  "Users",
-                  "sector",
-                  sectorDorit,
-                  "userType",
-                  "Partener",
-                  "statusCont",
-                  "Activ"
-                );
-
-                console.log(
-                  "Test here parteneriFiltrati....",
-                  parteneriFiltrati
-                );
-                if (!searchQueryParteneri) {
-                  const allOffers = await getAllOffersWithoutDistance(
-                    parteneriFiltrati
-                  );
-                  setParteneri([...allOffers]);
-                  setIsLoading(false);
-                } else {
-                  const allOffers = await getAllOffersWithoutDistance(
-                    parteneriFiltrati
-                  );
-                  const rezultatFiltrare = filtrareOferte(
-                    allOffers,
-                    searchQueryParteneri
-                  );
-                  setParteneri([...rezultatFiltrare]);
-                  setIsLoading(false);
-                }
-
-                // Execută codul dorit aici
-              } else {
-                console.log("Partea nu conține 'sector'");
-                let judetDorit =
-                  parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
-                console.log("Test here judet....", judetDorit);
-
-                let parteneriFiltrati = await handleQueryTripleParam(
-                  "Users",
-                  "judet",
-                  judetDorit,
-                  "userType",
-                  "Partener",
-                  "statusCont",
-                  "Activ"
-                );
-
-                console.log("Test here judet....", parteneriFiltrati);
-                if (!searchQueryParteneri) {
-                  const allOffers = await getAllOffersWithoutDistance(
-                    parteneriFiltrati
-                  );
-                  setParteneri([...allOffers]);
-                  setIsLoading(false);
-                } else {
-                  const allOffers = await getAllOffersWithoutDistance(
-                    parteneriFiltrati
-                  );
-                  const rezultatFiltrare = filtrareOferte(
-                    allOffers,
-                    searchQueryParteneri
-                  );
-                  setParteneri([...rezultatFiltrare]);
-                  setIsLoading(false);
-                }
-              }
-            } else {
-              console.log("params does not contains parteneri....");
-              if (params.length === 1) {
-                console.log("params does not contains parteneri length 1....");
-                let string = params[0]; // presupunem că params[0] este un string
-
-                let categorieDorita =
-                  string.charAt(0).toUpperCase() + string.slice(1);
-
-                let parteneriFiltrati = await handleQueryTripleParam(
-                  "Users",
-                  "categorie",
-                  categorieDorita,
-                  "userType",
-                  "Partener",
-                  "statusCont",
-                  "Activ"
-                );
-
-                if (!searchQueryParteneri) {
-                  const allOffers = await getAllOffersWithoutDistance(
-                    parteneriFiltrati
-                  );
-                  setParteneri([...allOffers]);
-                  setIsLoading(false);
-                } else {
-                  const allOffers = await getAllOffersWithoutDistance(
-                    parteneriFiltrati
-                  );
-                  const rezultatFiltrare = filtrareOferte(
-                    allOffers,
-                    searchQueryParteneri
-                  );
-                  setParteneri([...rezultatFiltrare]);
-                  setIsLoading(false);
-                }
-              } else if (params.length === 2) {
-                console.log("params does not contains parteneri length 2....");
-                let string = params[0]; // presupunem că params[0] este un string
-
-                let categorieDorita =
-                  string.charAt(0).toUpperCase() + string.slice(1);
-                let localitate = params[1]; // presupunem că params[0] este un string
-                const parts = localitate.split("-");
-                let decodedPart = decodeURIComponent(parts[1]);
-                console.log("it tests....", decodedPart);
-                if (decodedPart.includes("sector")) {
-                  let sectorDorit =
-                    decodedPart.charAt(0).toUpperCase() + decodedPart.slice(1);
-                  console.log("Test here localitate....", categorieDorita);
-                  console.log("Test here sector....", sectorDorit);
-
-                  let parteneriFiltrati = await handleQueryPatruParam(
-                    "Users",
-                    "categorie",
-                    categorieDorita,
-                    "sector",
-                    sectorDorit,
-                    "userType",
-                    "Partener",
-                    "statusCont",
-                    "Activ"
-                  );
-
-                  console.log("Test here localitate....", parteneriFiltrati);
-                  if (!searchQueryParteneri) {
-                    const allOffers = await getAllOffersWithoutDistance(
-                      parteneriFiltrati
-                    );
-                    setParteneri([...allOffers]);
-                    setIsLoading(false);
-                  } else {
-                    const allOffers = await getAllOffersWithoutDistance(
-                      parteneriFiltrati
-                    );
-                    const rezultatFiltrare = filtrareOferte(
-                      allOffers,
-                      searchQueryParteneri
-                    );
-                    setParteneri([...rezultatFiltrare]);
-                    setIsLoading(false);
-                  }
-                } else {
-                  let judetDorit =
-                    parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
-                  console.log("Test here categorie....", categorieDorita);
-                  console.log("Test here judet....", judetDorit);
-
-                  let parteneriFiltrati = await handleQueryPatruParam(
-                    "Users",
-                    "categorie",
-                    categorieDorita,
-                    "judet",
-                    judetDorit,
-                    "userType",
-                    "Partener",
-                    "statusCont",
-                    "Activ"
-                  );
-
-                  console.log(
-                    "Test here parteneriFiltrati....",
-                    parteneriFiltrati
-                  );
-
-                  if (!searchQueryParteneri) {
-                    const allOffers = await getAllOffersWithoutDistance(
-                      parteneriFiltrati
-                    );
-                    setParteneri([...allOffers]);
-                    setIsLoading(false);
-                  } else {
-                    const allOffers = await getAllOffersWithoutDistance(
-                      parteneriFiltrati
-                    );
-                    const rezultatFiltrare = filtrareOferte(
-                      allOffers,
-                      searchQueryParteneri
-                    );
-                    setParteneri([...rezultatFiltrare]);
-                    setIsLoading(false);
-                  }
-                }
-              } else {
-                if (!searchQueryParteneri) {
-                  const allOffers = await getAllOffersWithoutDistance(
-                    parteneriOrdonati
-                  );
-                  setParteneri([...allOffers]);
-                  setIsLoading(false);
-                } else {
-                  const allOffers = await getAllOffersWithoutDistance(
-                    parteneriOrdonati
-                  );
-                  const rezultatFiltrare = filtrareOferte(
-                    allOffers,
-                    searchQueryParteneri
-                  );
-                  setParteneri([...rezultatFiltrare]);
-                  setIsLoading(false);
-                }
-              }
-            }
-          } else {
-            if (!searchQueryParteneri) {
-              const allOffers = await getAllOffersWithoutDistance(
-                parteneriOrdonati
-              );
-              setParteneri([...allOffers]);
-              setIsLoading(false);
-            } else {
-              const allOffers = await getAllOffersWithoutDistance(
-                parteneriOrdonati
-              );
-              const rezultatFiltrare = filtrareOferte(
-                allOffers,
-                searchQueryParteneri
-              );
-              setParteneri([...rezultatFiltrare]);
-              setIsLoading(false);
-            }
-          }
-          console.log("parteneri cu distanta...", parteneriOrdonati);
-        } catch (error) {
-          console.error("Error fetching location data: ", error);
+        // FUNCTIE CLINICI
+        anunturi = await handleGetAnunturiArray(
+          titulatura,
+          specialitate,
+          judet,
+          localitate,
+          tAnunt
+        );
+        console.log("is.....clinica", anunturi);
+      } else {
+        console.log("is.....cadru");
+        // FUNCTIE CADRE MEDICALE
+        let tAnunt;
+        if (tipAnunt === "Anunturi Cadre Medicale") {
+          tAnunt = "CadruMedical";
         }
-        // ....
+        anunturi = await handleGetAnunturiArray(
+          titulatura,
+          specialitate,
+          judet,
+          localitate,
+          tAnunt
+        );
+        console.log("is.....cadru", anunturi);
       }
-    );
+
+      if (anunturi.length === 0) {
+        anunturi = await handleQueryFirestoreSubcollection(
+          "Anunturi",
+          "status",
+          "Activa",
+          "tipAnunt",
+          tAnunt
+        );
+      }
+
+      let anunturiCuDistanta = await Promise.all(
+        anunturi.map(async (anunt) => {
+          const clinicaCadru = await handleQueryFirestore(
+            "Users",
+            "user_uid",
+            anunt.collectionId
+          );
+          // const distanta = calculateDistance(
+          //   latitude,
+          //   longitude,
+          //   anunt.coordonate.lat,
+          //   anunt.coordonate.lng
+          // );
+          if (tipAnunt === "Clinica" || tipAnunt === "Anunturi Clinici") {
+            return {
+              ...anunt,
+              // distanta: Math.floor(distanta),
+              clinica: clinicaCadru[0],
+            };
+          } else {
+            return {
+              ...anunt,
+              // distanta: Math.floor(distanta),
+              cadruMedical: clinicaCadru[0],
+            };
+          }
+        })
+      );
+      console.log("is.....", anunturiCuDistanta);
+      // let anunturiOrdonati = anunturiCuDistanta.sort(
+      //   (a, b) => a.distanta - b.distanta
+
+      if (searchQueryParteneri) {
+        if (tAnunt === "Clinica") {
+          console.log("with search query...");
+          const rezultatFiltrare = filtrareClinici(
+            anunturiCuDistanta,
+            searchQueryParteneri
+          );
+          console.log("with search query...", rezultatFiltrare);
+          setParteneri(rezultatFiltrare);
+        } else {
+          console.log("with search query...cadre");
+          const rezultatFiltrare = filtrareCadreMedicale(
+            anunturiCuDistanta,
+            searchQueryParteneri
+          );
+          setParteneri(rezultatFiltrare);
+        }
+      } else {
+        console.log("is.....test....", anunturiCuDistanta);
+        setParteneri(anunturiCuDistanta);
+      }
+
+      console.log("anunturi....", anunturi);
+
+      setIsLoading(false);
+      // Logarea rezultatelor pentru a vedea structura
+      console.log("Processed Params:", processedParams);
+    } catch (error) {
+      console.error("Error handleGetAnunturi data: ", error);
+    }
+  };
+
+  useEffect(() => {
+    console.log("test....de query...", searchQueryParteneri);
+    handleGetAnunturi();
   }, []);
 
   // Funcție pentru schimbarea paginilor
@@ -648,35 +204,38 @@ const FeaturedItem = ({ params }) => {
   };
 
   // status handler
-  let content = paginatedParteneri().map((item) => (
-    <div
-      className={`${
-        isGridOrList ? "col-12 feature-list" : "col-md-6 col-lg-6"
-      } `}
-      key={item?.id}
-    >
-      {currentUser ? (
-        <Link
-          href={{
-            pathname: `/partener/${toUrlSlug(item?.titluOferta)}`,
-            query: { slug: item?.titluOferta, id: item?.partener?.id },
-          }}
-          key={item?.id}
-          passHref
-        >
-          <FeaturedProperty item={item} isGridOrList={isGridOrList} />
-        </Link>
-      ) : (
-        <a
-          key={item?.id}
-          data-bs-toggle="modal"
-          data-bs-target=".bd-utilizator-modal-lg"
-        >
-          <FeaturedProperty item={item} isGridOrList={isGridOrList} />
-        </a>
-      )}
-    </div>
-  ));
+
+  let content = paginatedParteneri().map((item) => {
+    const pathname =
+      item.tipAnunt === "Clinica"
+        ? `/anunt/${toUrlSlug(item?.titluOferta)}`
+        : `/cadru-medical/${toUrlSlug(item?.titulatura)}`;
+
+    return (
+      <div
+        className={`${
+          isGridOrList ? "col-12 feature-list" : "col-md-6 col-lg-6"
+        } `}
+        key={item?.id}
+      >
+        {currentUser ? (
+          <Link
+            href={{
+              pathname: pathname,
+              query: { slug: item?.titluOferta, id: item?.clinica?.id },
+            }}
+            passHref
+          >
+            <FeaturedProperty item={item} isGridOrList={isGridOrList} />
+          </Link>
+        ) : (
+          <a data-bs-toggle="modal" data-bs-target=".bd-utilizator-modal-lg">
+            <FeaturedProperty item={item} isGridOrList={isGridOrList} />
+          </a>
+        )}
+      </div>
+    );
+  });
 
   // add length of filter items
   useEffect(() => {

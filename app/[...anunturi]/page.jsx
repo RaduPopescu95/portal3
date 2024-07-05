@@ -23,13 +23,14 @@ export async function getServerData() {
   return data; // Data will be available as props in your component
 }
 
-const index = async ({ params }) => {
+const index = async ({ params, searchParams }) => {
   console.log("params.id...", params);
+  console.log("params.id...searchParams.", searchParams);
   const judete = await getServerData();
 
   return (
     <>
-      <GridV1 params={params.parteneri} />
+      <GridV1 params={params.anunturi} searchQuery={searchParams.searchQuery} />
     </>
   );
 };

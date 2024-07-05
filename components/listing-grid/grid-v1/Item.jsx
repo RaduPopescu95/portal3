@@ -14,52 +14,92 @@ const FeaturedProperty = ({ item, isGridOrList }) => {
         className="thumb"
         // style={{ backgroundImage: item?.gradient?.gradientSelected }}
       >
-        <Image
-          width={342}
-          height={220}
-          className="img-whp w-100 h-100 cover"
-          src={item?.imagineOferta?.finalUri}
-          alt="fp1.jpg"
-        />
-        <div className="thmb_cntnt">
-          <div
-            style={{
-              position: "absolute",
-              top: "1px",
-              left: "10px",
-              zIndex: 10,
-            }}
-          >
-            <Image
-              src={item?.partener?.logo?.finalUri}
-              alt="Logo"
-              width={50}
-              height={50}
-              className="logo"
-            />
-          </div>
+        {item.tipAnunt === "Clinica" ? (
+          <Image
+            width={342}
+            height={220}
+            className="img-whp w-100 h-100 cover"
+            src={item?.imagineOferta?.finalUri}
+            alt="fp1.jpg"
+          />
+        ) : (
+          <Image
+            width={342}
+            height={220}
+            className="img-whp w-100 h-100 cover"
+            src={item?.cadruMedical?.logo?.finalUri}
+            alt="fp1.jpg"
+          />
+        )}
 
-          <Link
-            href={{
-              pathname: `/partener/${toUrlSlug(item?.titluOferta)}`,
-              query: { slug: item?.titluOferta, id: item?.partener?.id },
-            }}
-            className="fp_price"
-          >
-            {item?.partener?.denumireBrand}
-          </Link>
+        <div className="thmb_cntnt">
+          {item.tipAnunt === "Clinica" && (
+            <div
+              style={{
+                position: "absolute",
+                top: "1px",
+                left: "10px",
+                zIndex: 10,
+              }}
+            >
+              <Image
+                src={item?.clinica?.logo?.finalUri}
+                alt="Logo"
+                width={50}
+                height={50}
+                className="logo"
+              />
+            </div>
+          )}
+
+          {item.tipAnunt === "Clinica" ? (
+            <Link
+              href={{
+                pathname: `/partener/${toUrlSlug(item?.titluOferta)}`,
+                query: { slug: item?.titluOferta, id: item?.clinica?.id },
+              }}
+              className="fp_price"
+            >
+              {item?.clinica?.denumireBrand}
+            </Link>
+          ) : (
+            <Link
+              href={{
+                pathname: `/partener/anunt-${toUrlSlug(item?.titulatura)}`,
+                query: { slug: item?.titulatura, id: item?.cadruMedical?.id },
+              }}
+              className="fp_price"
+            >
+              {item?.cadruMedical.numeUtilizator}
+            </Link>
+          )}
         </div>
       </div>
-      <div className="details">
-        <div className="tc_content">
-          <p className="text-thm">{item?.titluOferta}</p>
-          <p>
-            <span className="flaticon-placeholder"></span>
-            {item?.partener?.adresaSediu}
-          </p>
-          {item?.distanta && <p>{item?.distanta} metri</p>}
+      {item.distanta ? (
+        <div className="details">
+          <div className="tc_content">
+            <p className="text-thm">{item?.titluOferta}</p>
+            <p>
+              <span className="flaticon-placeholder"></span>
+              {item?.partener?.adresaSediu}
+            </p>
+            {item?.distanta && <p>{item?.distanta} metri</p>}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="details">
+          <div className="tc_content">
+            <p className="text-thm">
+              {item?.titulatura} {item?.specialitate || ""} - {item?.localitate}
+            </p>
+            <p>
+              <span className="flaticon-placeholder zona-interes mr-5"></span>
+              {item?.adresaSediu && `Zona de interes: ${item?.adresaSediu}`}
+            </p>
+            {item?.distanta && <p>{item?.distanta} metri</p>}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -13,23 +13,34 @@ import {
   handleQueryFirestoreSubcollection,
   uploadJudete,
 } from "@/utils/firestoreUtils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { TITLES_AND_SPECIALTIES } from "@/utils/constanteTitulatura";
 import { formatTitulatura } from "@/utils/strintText";
 
 const GlobalFilter = ({ className = "" }) => {
   const router = useRouter();
-  const { judete, setSearchQueryPateneri, searchQueryParteneri } = useAuth();
-  const [selectedJudet, setSelectedJudet] = useState("");
-  const [selectedLocalitate, setSelectedLocalitate] = useState("");
+  const {
+    judete,
+    setSearchQueryPateneri,
+    searchQueryParteneri,
+    judet,
+    setSelectedJudet,
+    localitate,
+    setSelectedLocalitate,
+    specialitate,
+    setSelectedSpecialty,
+    titulatura,
+    setSelectedCategory,
+    setTipAnunt,
+    tipAnunt,
+  } = useAuth();
+
   const [selectedCategorie, setSelectedCategorie] = useState("");
   const [localitati, setLocalitati] = useState([]);
   const [isJudetSelected, setIsJudetSelected] = useState(true);
   const [isLocalitateSelected, setIsLocalitateSelected] = useState(true);
   const [isCateogireSelected, setIsCategorieSelected] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSpecialty, setSelectedSpecialty] = useState("");
 
   // Funcție pentru gestionarea schimbărilor pe selectul de categorii
   const handleCategoryChange = (event) => {
@@ -86,44 +97,79 @@ const GlobalFilter = ({ className = "" }) => {
 
   // submit handler
   const submitHandler = () => {
-    if (!selectedCategorie && !selectedLocalitate && !selectedJudet) {
-      router.push(`/parteneri`);
+    console.log("test...", titulatura);
+    console.log("test...", specialitate);
+    console.log("test...", localitate);
+    console.log("test...", judet);
+
+    if (!titulatura && !specialitate && !localitate && !judet) {
+      router.push(`/anunturi`);
       return;
     }
 
-    if (selectedJudet && selectedCategorie) {
+    if (titulatura && specialitate && !judet && !localitate) {
+      setSelectedCategory(titulatura);
+      setSelectedSpecialty(specialitate);
       router.push(
-        `/${selectedCategorie.toLocaleLowerCase()}/${selectedCategorie.toLocaleLowerCase()}-${selectedJudet.toLocaleLowerCase()}`
+        `/${titulatura.toLocaleLowerCase()}-${specialitate.toLocaleLowerCase()}`
       );
       return;
     }
+    if (titulatura && !specialitate && !judet && !localitate) {
+      setSelectedCategory(titulatura);
 
-    if (selectedJudet && !selectedLocalitate) {
-      // setIsLocalitateSelected(!!selectedLocalitate);
-      // return;
-      router.push(`/parteneri/parteneri-${selectedJudet.toLocaleLowerCase()}`);
+      router.push(`/${titulatura.toLocaleLowerCase()}`);
       return;
     }
-
-    if (selectedLocalitate && selectedCategorie) {
+    if (titulatura && specialitate && judet && localitate) {
+      setSelectedCategory(titulatura);
+      setSelectedSpecialty(specialitate);
+      setSelectedLocalitate(localitate);
+      setSelectedJudet(judet);
       router.push(
-        `/${selectedCategorie.toLocaleLowerCase()}/${selectedCategorie.toLocaleLowerCase()}-${selectedLocalitate.toLocaleLowerCase()}`
+        `/${titulatura.toLocaleLowerCase()}-${specialitate.toLocaleLowerCase()}/${judet.toLocaleLowerCase()}-${localitate.toLocaleLowerCase()}`
       );
       return;
     }
+    if (titulatura && specialitate && judet && !localitate) {
+      setSelectedCategory(titulatura);
+      setSelectedSpecialty(specialitate);
 
-    if (selectedLocalitate) {
+      setSelectedJudet(judet.toLocaleLowerCase());
       router.push(
-        `/parteneri/parteneri-${selectedLocalitate.toLocaleLowerCase()}`
+        `/${titulatura.toLocaleLowerCase()}-${specialitate.toLocaleLowerCase()}/${judet.toLocaleLowerCase()}`
       );
       return;
     }
-
-    if (selectedCategorie) {
-      router.push(`/${selectedCategorie.toLocaleLowerCase()}`);
+    if (!titulatura && !specialitate && judet && localitate) {
+      setSelectedLocalitate(localitate);
+      setSelectedJudet(judet);
+      router.push(
+        `/anunturi/${judet.toLocaleLowerCase()}-${localitate.toLocaleLowerCase()}`
+      );
+      return;
+    }
+    if (!titulatura && !specialitate && judet && !localitate) {
+      setSelectedJudet(judet);
+      router.push(`/anunturi/${judet.toLocaleLowerCase()}`);
+      return;
+    }
+    if (titulatura && !specialitate && judet && !localitate) {
+      setSelectedJudet(judet);
+      router.push(
+        `/${titulatura.toLocaleLowerCase()}/${judet.toLocaleLowerCase()}`
+      );
       return;
     }
   };
+
+  useEffect(() => {
+    setSelectedCategory(undefined);
+    setSelectedSpecialty(undefined);
+    setSelectedLocalitate(undefined);
+    setSelectedJudet(undefined);
+    setTipAnunt("Clinica");
+  }, []);
 
   return (
     <div className={`home1-advnc-search ${className}`}>
@@ -149,7 +195,7 @@ const GlobalFilter = ({ className = "" }) => {
                   !isCateogireSelected ? "border-danger" : ""
                 }`}
                 onChange={handleCategoryChange}
-                value={selectedCategory}
+                value={titulatura}
               >
                 <option value="">Selectați Titulatura</option>
                 {Object.keys(TITLES_AND_SPECIALTIES).map((key) => (
@@ -170,18 +216,16 @@ const GlobalFilter = ({ className = "" }) => {
                   !isCateogireSelected ? "border-danger" : ""
                 }`}
                 onChange={handleSpecialtyChange}
-                value={selectedSpecialty}
+                value={specialitate}
               >
                 <option value="">Selectați specialitatea</option>
-                {selectedCategory &&
-                  TITLES_AND_SPECIALTIES[selectedCategory] &&
-                  TITLES_AND_SPECIALTIES[selectedCategory].map(
-                    (specialty, index) => (
-                      <option key={index} value={specialty}>
-                        {specialty}
-                      </option>
-                    )
-                  )}
+                {titulatura &&
+                  TITLES_AND_SPECIALTIES[titulatura] &&
+                  TITLES_AND_SPECIALTIES[titulatura].map((specialty, index) => (
+                    <option key={index} value={specialty}>
+                      {specialty}
+                    </option>
+                  ))}
               </select>
             </div>
           </div>
@@ -196,7 +240,7 @@ const GlobalFilter = ({ className = "" }) => {
                   !isJudetSelected ? "border-danger" : ""
                 }`}
                 onChange={handleJudetChange}
-                value={selectedJudet}
+                value={judet}
               >
                 <option value="">Judete</option>
                 {judete &&
@@ -210,7 +254,7 @@ const GlobalFilter = ({ className = "" }) => {
           </div>
         </li>
         {/* End li */}
-        {selectedJudet === "Bucuresti" && (
+        {judet === "Bucuresti" && (
           <li className="list-inline-item">
             <div className="search_option_two">
               <div className="candidate_revew_select">
@@ -219,7 +263,7 @@ const GlobalFilter = ({ className = "" }) => {
                     !isLocalitateSelected ? "border-danger" : ""
                   }`}
                   onChange={handleLocalitateChange}
-                  value={selectedLocalitate}
+                  value={localitate}
                 >
                   <option value="">Sector</option>
                   {localitati.map((location, index) => (

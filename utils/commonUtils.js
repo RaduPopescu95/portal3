@@ -1,4 +1,10 @@
-import { handleQueryFirestoreSubcollection } from "./firestoreUtils";
+import {
+  handleQueryFirestoreSubcollection,
+  handleQueryFirestoreSubcollectionCinciParam,
+  handleQueryFirestoreSubcollectionPatruParam,
+  handleQueryFirestoreSubcollectionSaseParam,
+  handleQueryFirestoreSubcollectionTripleParam,
+} from "./firestoreUtils";
 
 export const toUrlSlug = (string) => {
   console.log("test tourlstring....", string);
@@ -69,7 +75,39 @@ export const closeSignupModal = (modalId) => {
   modalInstance.hide();
 };
 
-export const filtrareParteneri = (parteneriFiltrati, searchQueryParteneri) => {
+export const filtrareClinici = (parteneriFiltrati, searchQueryParteneri) => {
+  // Împărțim query-ul de căutare în cuvinte individuale
+  const searchTerms = searchQueryParteneri
+    .split(/\s+/)
+    .map((term) => term.toLowerCase());
+
+  // Funcție care verifică dacă toate cuvintele de căutare apar în text
+  const matchesSearch = (text) => {
+    const lowercasedText = text.toLowerCase();
+    return searchTerms.every((term) => lowercasedText.includes(term));
+  };
+  // Filtrăm partenerii pe baza denumirii brandului, categoriilor, adresei, descrierii, telefonului și emailului
+  const parteneriFiltratiGasiti = parteneriFiltrati.filter(
+    (partener) =>
+      matchesSearch(partener.clinica.denumireBrand) ||
+      matchesSearch(partener.titulatura) ||
+      matchesSearch(partener.adresaSediu) ||
+      matchesSearch(partener.clinica.adresaSediu) ||
+      matchesSearch(partener.descriereOferta) ||
+      matchesSearch(partener.cerintePost) ||
+      matchesSearch(partener.titluOferta) ||
+      matchesSearch(partener.clinica.telefonContact) ||
+      matchesSearch(partener.clinica.email) ||
+      matchesSearch(partener.specialitate || "")
+  );
+  console.log("with search query.......", parteneriFiltratiGasiti);
+
+  return parteneriFiltratiGasiti;
+};
+export const filtrareCadreMedicale = (
+  parteneriFiltrati,
+  searchQueryParteneri
+) => {
   // Împărțim query-ul de căutare în cuvinte individuale
   const searchTerms = searchQueryParteneri
     .split(/\s+/)
@@ -84,12 +122,15 @@ export const filtrareParteneri = (parteneriFiltrati, searchQueryParteneri) => {
   // Filtrăm partenerii pe baza denumirii brandului, categoriilor, adresei, descrierii, telefonului și emailului
   const parteneriFiltratiGasiti = parteneriFiltrati.filter(
     (partener) =>
-      matchesSearch(partener.denumireBrand) ||
-      matchesSearch(partener.categorie) ||
+      matchesSearch(partener.cadruMedical.numeUtilizator) ||
+      matchesSearch(partener.titulatura) ||
       matchesSearch(partener.adresaSediu) ||
+      matchesSearch(partener.cadruMedical.adresaSediu) ||
       matchesSearch(partener.descriere) ||
-      matchesSearch(partener.telefonContact) ||
-      matchesSearch(partener.email)
+      matchesSearch(partener.cadruMedical.telefonContact) ||
+      matchesSearch(partener.cadruMedical.email) ||
+      matchesSearch(partener.descriereOferta) ||
+      matchesSearch(partener.specialitate || "")
   );
 
   return parteneriFiltratiGasiti;
@@ -146,38 +187,37 @@ export const verifyCurrentUser = async (partenerId, userData, loading) => {
 };
 
 // Function to get all offers from partners with distance
-export async function getAllAnunturiClinici(latitude, longitude, parteneri) {
+export async function getAllAnunturiClinici(latitude, longitude, localitate) {
   let allOffers = [];
 
   // Iterate through each partner
-  for (let partener of parteneri) {
-    // Fetch offers for the current partner
-    let oferte = await handleQueryFirestoreSubcollection(
-      "Anunturi",
-      "collectionId",
-      partener.user_uid,
-      "tipAnunt",
-      "Clinica"
-    );
 
-    // Calculate distance from the user to the partner
-    const distanta = calculateDistance(
-      latitude,
-      longitude,
-      partener.coordonate.lat,
-      partener.coordonate.lng
-    );
+  // Fetch offers for the current partner
+  let oferte = await handleQueryFirestoreSubcollection(
+    "Anunturi",
+    "localitate",
+    localitate,
+    "tipAnunt",
+    "Clinica"
+  );
 
-    // Add distance to each offer
-    oferte = oferte.map((oferta) => ({
-      ...oferta,
-      distanta: Math.floor(distanta),
-      partener,
-    }));
+  // Calculate distance from the user to the partner
+  const distanta = calculateDistance(
+    latitude,
+    longitude,
+    partener.coordonate.lat,
+    partener.coordonate.lng
+  );
 
-    // Add the fetched offers to the allOffers array
-    allOffers = allOffers.concat(oferte);
-  }
+  // Add distance to each offer
+  oferte = oferte.map((oferta) => ({
+    ...oferta,
+    distanta: Math.floor(distanta),
+    partener,
+  }));
+
+  // Add the fetched offers to the allOffers array
+  allOffers = allOffers.concat(oferte);
 
   // Sort all offers by distance
   allOffers.sort((a, b) => a.distanta - b.distanta);
@@ -253,3 +293,135 @@ export async function getAllOffersWithoutDistance(parteneri) {
 
   return allOffers;
 }
+
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+export const processParams = (params) => {
+  return params.map((param) => {
+    // Decodificarea parametrului URI pentru a converti %20 în spații, etc.
+    const decodedParam = decodeURIComponent(param);
+
+    // Opțional: Split pe baza unui separator dacă ai nevoie să separi diferite părți
+    // Aici folosesc '-' ca exemplu de separator
+    return decodedParam.split("-").map((part) => part.trim());
+  });
+};
+
+// ANUNTURI PAGE QUERY
+
+export const handleGetAnunturiArray = async (t, s, j, l, tA) => {
+  let anunturi = [];
+  const titulatura = (t ?? "").toLowerCase();
+  const specialitate = (s ?? "").toLowerCase();
+  const judet = (j ?? "").toLowerCase();
+  const localitate = (l ?? "").toLowerCase();
+  const tipAnunt = tA;
+
+  console.log("in handleGetAnunturiArray...", titulatura);
+  console.log("in handleGetAnunturiArray...", specialitate);
+  console.log("in handleGetAnunturiArray...", judet);
+  console.log("in handleGetAnunturiArray...", localitate);
+  console.log("in handleGetAnunturiArray...", tipAnunt);
+  if (titulatura && specialitate && judet && localitate) {
+    console.log("here");
+    // Presupunem că "tipAnunt" și "status" sunt valori constante
+    anunturi = await handleQueryFirestoreSubcollectionSaseParam(
+      "Anunturi",
+      "tipAnunt",
+      tipAnunt, // presupunem că "tipAnunt" este o variabilă disponibilă
+      "status",
+      "Activa",
+      "titulaturaQ",
+      titulatura,
+      "specialitateQ",
+      specialitate,
+      "judetQ",
+      judet,
+      "localitateQ",
+      localitate
+    );
+  } else if (titulatura && specialitate && !judet && !localitate) {
+    console.log("here1");
+    anunturi = await handleQueryFirestoreSubcollectionPatruParam(
+      "Anunturi",
+      "tipAnunt",
+      tipAnunt, // presupunem că "tipAnunt" este o variabilă disponibilă
+      "status",
+      "Activa",
+      "titulaturaQ",
+      titulatura,
+      "specialitateQ",
+      specialitate
+    );
+  } else if (titulatura && !specialitate && !judet && !localitate) {
+    console.log("here2");
+    anunturi = await handleQueryFirestoreSubcollectionTripleParam(
+      "Anunturi",
+      "tipAnunt",
+      tipAnunt, // presupunem că "tipAnunt" este o variabilă disponibilă
+      "status",
+      "Activa",
+      "titulaturaQ",
+      titulatura
+    );
+  } else if (titulatura && specialitate && judet && !localitate) {
+    console.log("here3....", titulatura);
+    console.log("here3", specialitate);
+    console.log("here3", judet);
+
+    anunturi = await handleQueryFirestoreSubcollectionCinciParam(
+      "Anunturi",
+      "tipAnunt",
+      tipAnunt, // presupunem că "tipAnunt" este o variabilă disponibilă
+      "status",
+      "Activa",
+      "titulaturaQ",
+      titulatura,
+      "specialitateQ",
+      specialitate,
+      "judetQ",
+      judet
+    );
+    console.log("here3", anunturi);
+  } else if (!titulatura && !specialitate && judet && localitate) {
+    console.log("here4");
+    anunturi = await handleQueryFirestoreSubcollectionPatruParam(
+      "Anunturi",
+      "tipAnunt",
+      tipAnunt, // presupunem că "tipAnunt" este o variabilă disponibilă
+      "status",
+      "Activa",
+      "localitateQ",
+      localitate,
+      "judetQ",
+      judet
+    );
+  } else if (!titulatura && !specialitate && judet && !localitate) {
+    console.log("here5");
+    anunturi = await handleQueryFirestoreSubcollectionTripleParam(
+      "Anunturi",
+      "tipAnunt",
+      tipAnunt, // presupunem că "tipAnunt" este o variabilă disponibilă
+      "status",
+      "Activa",
+      "judetQ",
+      judet
+    );
+  } else if (titulatura && !specialitate && judet && !localitate) {
+    console.log("here6");
+    anunturi = await handleQueryFirestoreSubcollectionPatruParam(
+      "Anunturi",
+      "tipAnunt",
+      tipAnunt, // presupunem că "tipAnunt" este o variabilă disponibilă
+      "status",
+      "Activa",
+      "judetQ",
+      judet,
+      "titulaturaQ",
+      titulatura
+    );
+  }
+  return anunturi;
+};

@@ -30,7 +30,7 @@ import FeaturedProperty from "./Item";
 import { useAuth } from "@/context/AuthContext";
 import SkeletonLoader from "@/components/common/SkeletonLoader";
 
-const FeaturedItemHome = ({ params }) => {
+const ListaAnunturiClinici = ({ params }) => {
   const {
     keyword,
     location,
@@ -87,20 +87,19 @@ const FeaturedItemHome = ({ params }) => {
   }
 
   async function updatePartnersByLocation(localitate, latitude, longitude) {
-    console.log("here...is...stat....", localitate);
     let anunturi = await handleQueryFirestoreSubcollectionTripleParam(
       "Anunturi",
       "localitate",
       localitate,
       "tipAnunt",
-      "CadruMedical",
+      "Clinica",
       "status",
       "Activa"
     );
 
     let parteneriCuDistanta = await Promise.all(
       anunturi.map(async (partener) => {
-        const cadruMedical = await handleQueryFirestore(
+        const clinica = await handleQueryFirestore(
           "Users",
           "user_uid",
           partener.collectionId
@@ -111,10 +110,11 @@ const FeaturedItemHome = ({ params }) => {
           partener.coordonate.lat,
           partener.coordonate.lng
         );
+        console.log("anunturi....", clinica[0]);
         return {
           ...partener,
           distanta: Math.floor(distanta),
-          cadruMedical: cadruMedical[0],
+          clinica: clinica[0],
         };
       })
     );
@@ -123,7 +123,8 @@ const FeaturedItemHome = ({ params }) => {
       (a, b) => a.distanta - b.distanta
     );
 
-    setCadreMedical(parteneriOrdonati);
+    console.log("anunturi....", parteneriCuDistanta);
+    setParteneri(parteneriOrdonati);
     setIsLoading(false);
   }
 
@@ -167,16 +168,15 @@ const FeaturedItemHome = ({ params }) => {
     }
   }, []);
 
-  const paginatedCadreMedicale = () => {
+  const paginatedParteneri = () => {
     console.log("paginating...", parteneri);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return cadreMedicale.slice(startIndex, endIndex);
+    return parteneri.slice(startIndex, endIndex);
   };
 
   // status handler
-
-  let contentCadreMedicale = paginatedCadreMedicale()
+  let content = paginatedParteneri()
     .slice(0, 10)
     .map((item) => (
       <div
@@ -188,8 +188,8 @@ const FeaturedItemHome = ({ params }) => {
         {currentUser ? (
           <Link
             href={{
-              pathname: `/cadru-medical/${toUrlSlug(item?.titulatura)}`,
-              query: { slug: item?.titulatura, id: item?.cadruMedical?.id },
+              pathname: `/partener/${toUrlSlug(item?.titluOferta)}`,
+              query: { slug: item?.titluOferta, id: item?.clinica?.id },
             }}
             key={item?.id}
             passHref
@@ -210,12 +210,13 @@ const FeaturedItemHome = ({ params }) => {
 
   // add length of filter items
   // useEffect(() => {
-  //   dispatch(addLength(contentCadreMedicale.length));
-  // }, [dispatch, contentCadreMedicale]);
+  //   dispatch(addLength(content.length));
+  // }, [dispatch, content]);
 
   return (
     <>
-      {isLoading ? <SkeletonLoader /> : contentCadreMedicale}
+      {isLoading ? <SkeletonLoader /> : content}
+
       {isNoLocation && (
         <div className="d-flex justify-content-center align-items-center">
           <p>
@@ -224,8 +225,7 @@ const FeaturedItemHome = ({ params }) => {
           </p>
         </div>
       )}
-
-      {paginatedCadreMedicale().length === 0 && !isLoading && (
+      {paginatedParteneri().length === 0 && !isLoading && (
         <div className="d-flex justify-content-center align-items-center">
           <p>
             În acest moment nu există anunțuri de angajare de la clinici în
@@ -238,4 +238,4 @@ const FeaturedItemHome = ({ params }) => {
   );
 };
 
-export default FeaturedItemHome;
+export default ListaAnunturiClinici;

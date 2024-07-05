@@ -9,7 +9,7 @@ import AdditionalDetails from "../common/listing-details/AdditionalDetails";
 import Attachments from "../common/listing-details/Attachments";
 import CerintePost from "../common/listing-details/CerintePost";
 import FloorPlans from "../common/listing-details/FloorPlans";
-import PropertyDescriptions from "../common/listing-details/PropertyDescriptions";
+import PropertyDescriptions from "../common/listing-details/PropertyDescriptionsCadruMedical";
 import PropertyDetails from "../common/listing-details/PropertyDetails";
 import PropertyFeatures from "../common/listing-details/PropertyFeatures";
 import PropertyItem from "../common/listing-details/PropertyItem";
@@ -23,7 +23,7 @@ const isMobile =
     navigator.userAgent
   );
 
-const DetailsContent = ({ partener, oferta, titluOferta }) => {
+const DetailsContentCadruMedical = ({ partener, oferta, titulatura }) => {
   console.log("oferta...primita...", oferta);
   const handleNavigare = () => {
     if (partener && partener.coordonate) {
@@ -58,15 +58,15 @@ const DetailsContent = ({ partener, oferta, titluOferta }) => {
         <h4 className="mb30">Desriere Post</h4>
         <PropertyDescriptions oferta={oferta} />
       </div>
-      <div className="listing_single_description mt30">
-        {/* <div className="lsd_list">
+      {/* <div className="listing_single_description mt30">
+        <div className="lsd_list">
           <PropertyItem />
-        </div> */}
-        {/* End .lsd_list */}
+        </div>
+     
 
         <h4 className="mb30">Cerinte Post</h4>
         <CerintePost oferta={oferta} />
-      </div>
+      </div> */}
       {/* End .listing_single_description */}
 
       {/* <div className="additional_details">
@@ -111,23 +111,27 @@ const DetailsContent = ({ partener, oferta, titluOferta }) => {
 
       <div className="application_statics mt30">
         <h4 className="mb30">
-          Locatie{" "}
+          Zona de interes
           <small className={`${!isMobile ? "float-end" : null}`}>
-            {partener?.adresaSediu}
+            {partener.userType === "Doctor"
+              ? `${oferta?.localitate} - ${oferta?.judet}`
+              : oferta?.adresaSediu}
           </small>
         </h4>
         <div className="property_video p0">
           <PropertyLocation coordonate={partener?.coordonate} />
         </div>
-        <div className="search_option_button mt20">
-          <button
-            onClick={handleNavigare}
-            type="submit"
-            className="btn btn-thm"
-          >
-            Navighează la partener
-          </button>
-        </div>
+        {partener.userType === "Doctor" ? null : (
+          <div className="search_option_button mt20">
+            <button
+              onClick={handleNavigare}
+              type="submit"
+              className="btn btn-thm"
+            >
+              Navighează la partener
+            </button>
+          </div>
+        )}
       </div>
       {/* End .location_area */}
 
@@ -173,9 +177,10 @@ const DetailsContent = ({ partener, oferta, titluOferta }) => {
           <Comments />
           <div className="custom_hr"></div> */}
 
-          <div className="mbp_comment_form style2">
-            <h4>Aplica pentru post</h4>
-            {/* <ul className="review_star">
+          {partener.userType === "Doctor" ? null : (
+            <div className="mbp_comment_form style2">
+              <h4>Aplica pentru post</h4>
+              {/* <ul className="review_star">
               <li className="list-inline-item">
                 <span className="sspd_review">
                   <ul>
@@ -187,12 +192,13 @@ const DetailsContent = ({ partener, oferta, titluOferta }) => {
                 <p>Your Rating & Review</p>
               </li>
             </ul> */}
-            <ReviewBox
+              {/* <ReviewBox
               partener={partener}
               oferta={oferta}
-              titluOferta={titluOferta}
-            />
-          </div>
+              titulatura={titulatura}
+            /> */}
+            </div>
+          )}
         </div>
       </div>
       {/* End review and comment area area */}
@@ -200,4 +206,4 @@ const DetailsContent = ({ partener, oferta, titluOferta }) => {
   );
 };
 
-export default DetailsContent;
+export default DetailsContentCadruMedical;

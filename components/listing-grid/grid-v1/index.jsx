@@ -11,7 +11,7 @@ import PopupSignInUp from "../../common/PopupSignInUp";
 import BreadCrumb2 from "./BreadCrumb2";
 import FeaturedItem from "./FeaturedItem";
 
-const index = ({ params }) => {
+const index = ({ params, searchQuery }) => {
   return (
     <>
       {/* <!-- Main Header Nav --> */}
@@ -57,7 +57,7 @@ const index = ({ params }) => {
               {/* End .row */}
 
               <div className="row">
-                <FeaturedItem params={params} />
+                <FeaturedItem params={params} searchQuery={searchQuery} />
               </div>
               {/* End .row */}
             </div>

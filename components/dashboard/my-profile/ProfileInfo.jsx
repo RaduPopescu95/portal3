@@ -40,11 +40,11 @@ const ProfileInfo = () => {
   const [categorie, setCategorie] = useState(userData?.categorie || "");
   const [cui, setCui] = useState(userData?.cui || "");
   const [oldCui, setOldCui] = useState(userData?.cui || "");
-  const [adresaSediu, setAdresaSediu] = useState(userData?.adresaSediu || "");
   const [deletedLogo, setDeletedLogo] = useState(null);
   const [isNewLogo, setIsNewLogo] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
+  const [adresaSediu, setAdresaSediu] = useState(userData?.adresaSediu || "");
   const [googleMapsLink, setGoogleMapsLink] = useState(
     userData?.googleMapsLink || ""
   );

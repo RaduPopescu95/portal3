@@ -5,15 +5,16 @@ import Header from "@/components/common/header/DefaultHeader";
 import MobileMenu from "@/components/common/header/MobileMenu";
 import PopupSignInUp from "@/components/common/PopupSignInUp";
 import properties from "@/data/properties";
-import DetailsContent from "@/components/listing-details-v1/DetailsContent";
+import DetailsContent from "@/components/listing-details-v1/DetailsContentCadruMedical";
 import Sidebar from "@/components/listing-details-v1/Sidebar";
-import ListingOne from "@/components/listing-single/ListingOne";
+import ListingOne from "@/components/listing-single/ListingOneCadruMedical";
 import TabDetailsContent from "@/components/agency-details/TabDetailsContent";
 import {
   handleGetFirestore,
   handleQueryFirestore,
   handleQueryFirestoreSubcollection,
 } from "@/utils/firestoreUtils";
+import PropertyHeaderCadruMedical from "@/components/listing-details-v1/PropertyHeaderCadruMedical";
 
 const ListingDynamicDetailsV1 = async ({ params, searchParams }) => {
   console.log("searchParamssssswwww", params);
@@ -23,7 +24,7 @@ const ListingDynamicDetailsV1 = async ({ params, searchParams }) => {
   const id = params.id;
 
   const number = parseFloat(searchParams.id);
-  const titluOferta = searchParams.slug;
+  const titulatura = searchParams.slug;
   let partenerId = number;
   console.log("searchParamssssswwwwssss", searchParams);
   console.log("id.parts..", partenerId);
@@ -34,8 +35,8 @@ const ListingDynamicDetailsV1 = async ({ params, searchParams }) => {
     `Anunturi`,
     "collectionId",
     partener[0].user_uid,
-    "titluOferta",
-    titluOferta
+    "titulatura",
+    titulatura
   );
 
   console.log("test oferte...ss", oferte);
@@ -52,16 +53,23 @@ const ListingDynamicDetailsV1 = async ({ params, searchParams }) => {
       <PopupSignInUp />
 
       {/* <!-- Listing Single Property --> */}
-      <ListingOne partener={partener[0]} />
+      <ListingOne partener={partener[0]} oferta={oferte[0]} />
       {/* <!-- Agent Single Grid View --> */}
       <section className="our-agent-single bgc-f7 pb30-991">
         <div className="container">
           <div className="row">
+            <div className="col-lg-12 p-0">
+              <PropertyHeaderCadruMedical
+                partener={partener[0]}
+                oferta={oferte[0]}
+                titulatura={titulatura}
+              />
+            </div>
             <div className="col-md-12 col-lg-12">
               <DetailsContent
                 partener={partener[0]}
                 oferta={oferte[0]}
-                titluOferta={titluOferta}
+                titulatura={titulatura}
               />
             </div>
 

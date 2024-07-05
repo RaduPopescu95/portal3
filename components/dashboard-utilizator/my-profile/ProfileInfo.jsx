@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertModal } from "@/components/common/AlertModal";
+import AutocompleteInput from "@/components/common/AutocompleteInput";
 import CommonLoader from "@/components/common/CommonLoader";
 import { useAuth } from "@/context/AuthContext";
 import useDataNasterii from "@/hooks/useDataNasterii";
@@ -11,6 +12,8 @@ import {
 import { emailWithoutSpace } from "@/utils/strintText";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
+import LogoUpload from "./LogoUpload";
+import { uploadImage } from "@/utils/storageUtils";
 
 const ProfileInfo = () => {
   const [initialData, setInitialData] = useState({});
@@ -48,6 +51,24 @@ const ProfileInfo = () => {
   const [isCateogireSelected, setIsCategorieSelected] = useState(true);
   const [buttonPressed, setButtonPressed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [adresaSediu, setAdresaSediu] = useState(userData?.adresaSediu || "");
+  const [googleMapsLink, setGoogleMapsLink] = useState(
+    userData?.googleMapsLink || ""
+  );
+  const [coordonate, setCoordonate] = useState(userData?.coordonate || {});
+  const [isNewLogo, setIsNewLogo] = useState(false);
+  const [logo, setLogo] = useState(userData?.logo ? [userData?.logo] : []);
+  const [deletedLogo, setDeletedLogo] = useState(null);
+
+  const handleLocationSelect = (lat, lng, adresa, urlMaps) => {
+    console.log(`Selected location - Lat: ${lat}, Lng: ${lng}`);
+    setAdresaSediu(adresa);
+    setGoogleMapsLink(urlMaps);
+    setCoordonate({ lat, lng });
+    // Aici poți actualiza starea sau trimite aceste date către backend
+  };
+
+  let isEdit = userData?.logo?.finalUri ? true : false;
 
   // Setează starea inițială
   useEffect(() => {
@@ -61,6 +82,9 @@ const ProfileInfo = () => {
       titulatura: userData?.titulatura || "",
       specializare: userData?.specializare || "",
       cuim: userData?.cuim || "",
+      adresaSediu: userData?.adresaSediu || "",
+      googleMapsLink: userData?.googleMapsLink || "",
+      coordonate: userData?.coordonate || {},
     });
   }, [userData]);
 
@@ -94,11 +118,28 @@ const ProfileInfo = () => {
     event.preventDefault();
     const emailNew = emailWithoutSpace(email);
     // Verifică dacă parola este confirmată corect și apoi creează utilizatorul
-    if (titulatura === "Asistent Medical") {
-      setSpecializare("");
-    }
+    // if (titulatura === "Asistent Medical") {
+    //   setSpecializare("");
+    // }
     try {
+      let lg = {};
       let user_uid = currentUser.uid;
+      if (logo.length === 0) {
+        setIsLoading(false);
+        setButtonPressed(false);
+        showAlert("Selelctati imagine profil", "danger");
+        return;
+      }
+      if (isNewLogo) {
+        lg = await uploadImage(logo, true, "ProfileImage", deletedLogo);
+      } else {
+        if (!logo[0].fileName) {
+          lg = await uploadImage(logo, false, "ProfileImage");
+        } else {
+          lg = logo[0];
+        }
+      }
+
       let data = {
         ...userData,
         cuim,
@@ -115,6 +156,10 @@ const ProfileInfo = () => {
         userType: "Doctor",
         numeUtilizator,
         tipEnitate,
+        adresaSediu,
+        googleMapsLink,
+        coordonate,
+        logo: lg,
       };
       if (
         !email ||
@@ -124,7 +169,8 @@ const ProfileInfo = () => {
         !telefon ||
         !judet ||
         !localitate ||
-        !dataNasterii
+        !dataNasterii ||
+        !adresaSediu
         // !tipEnitate ||
         // tipEnitate === "Tip de entitate"
       ) {
@@ -227,6 +273,33 @@ const ProfileInfo = () => {
     }
   }, []);
 
+  const deleteLogo = (name) => {
+    if (logo[0].fileName) {
+      setLogo([]); // Clear the selection when deleting
+      setDeletedLogo(logo[0].fileName);
+    } else {
+      setLogo([]); // Clear the selection when deleting
+    }
+  };
+
+  const singleImage = (e) => {
+    const file = e.target.files[0]; // Get the selected file
+    console.log("test..here...", file.name);
+    if (file) {
+      // Check if the file is already selected
+      const isExist = logo.some(
+        (existingFile) => existingFile.name === file.name
+      );
+
+      if (!isExist) {
+        setLogo([file]); // Replace the current file
+        setIsNewLogo(true);
+      } else {
+        alert("This image is already selected!");
+      }
+    }
+  };
+
   return (
     <div className="row">
       {/* <div className="col-lg-12">
@@ -256,6 +329,21 @@ const ProfileInfo = () => {
                 </div>
                 <p>*minimum 260px x 260px</p>
             </div> */}
+      {/* End .col */}
+
+      <div className="col-lg-12">
+        <h3 className="mb30">Imagine Profil</h3>
+      </div>
+      {/* End .col */}
+
+      <LogoUpload
+        singleImage={singleImage}
+        deleteLogo={deleteLogo}
+        logoImg={logo}
+        isEdit={isEdit}
+        isNewImage={isNewLogo}
+        text={"Adauga imagine profil"}
+      />
       {/* End .col */}
 
       <div className="col-lg-6 col-xl-6">
@@ -453,6 +541,15 @@ const ProfileInfo = () => {
                     ></textarea>
                 </div>
             </div> */}
+      {/* End .col */}
+      <div className="col-lg-12">
+        <h4 className="mb30">Introduceti zona de interes</h4>
+      </div>
+      <AutocompleteInput
+        onPlaceChanged={handleLocationSelect}
+        adresa={adresaSediu}
+        buttonPressed={buttonPressed}
+      />
       {/* End .col */}
 
       <div className="col-xl-12 text-right">
