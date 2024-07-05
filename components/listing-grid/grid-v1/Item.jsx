@@ -75,7 +75,7 @@ const FeaturedProperty = ({ item, isGridOrList }) => {
           )}
         </div>
       </div>
-      {item.distanta ? (
+      {/* {item.distanta ? (
         <div className="details">
           <div className="tc_content">
             <p className="text-thm">{item?.titluOferta}</p>
@@ -86,20 +86,20 @@ const FeaturedProperty = ({ item, isGridOrList }) => {
             {item?.distanta && <p>{item?.distanta} metri</p>}
           </div>
         </div>
-      ) : (
-        <div className="details">
-          <div className="tc_content">
-            <p className="text-thm">
-              {item?.titulatura} {item?.specialitate || ""} - {item?.localitate}
-            </p>
-            <p>
-              <span className="flaticon-placeholder zona-interes mr-5"></span>
-              {item?.adresaSediu && `Zona de interes: ${item?.adresaSediu}`}
-            </p>
-            {item?.distanta && <p>{item?.distanta} metri</p>}
-          </div>
+      ) : ( */}
+      <div className="details">
+        <div className="tc_content">
+          <p className="text-thm">
+            {item?.titulatura} {item?.specialitate || ""} - {item?.localitate}
+          </p>
+          <p>
+            <span className="flaticon-placeholder zona-interes mr-5"></span>
+            {item?.adresaSediu && `Zona de interes: ${item?.adresaSediu}`}
+          </p>
+          {item?.distanta && <p>{item?.distanta} metri</p>}
         </div>
-      )}
+      </div>
+      {/* )} */}
     </div>
   );
 };
