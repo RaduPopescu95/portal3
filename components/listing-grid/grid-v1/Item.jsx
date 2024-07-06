@@ -55,8 +55,10 @@ const FeaturedProperty = ({ item, isGridOrList }) => {
           {item.tipAnunt === "Clinica" ? (
             <Link
               href={{
-                pathname: `/partener/${toUrlSlug(item?.titluOferta)}`,
-                query: { id: item?.clinica?.id },
+                pathname: `/partener/${toUrlSlug(item?.titluOferta)}_${
+                  item?.clinica?.id
+                }`,
+                query: { slug: item?.clinica?.id },
               }}
               className="fp_price"
             >

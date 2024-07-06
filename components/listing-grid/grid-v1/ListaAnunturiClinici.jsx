@@ -190,8 +190,10 @@ const ListaAnunturiClinici = ({ params }) => {
         {currentUser ? (
           <Link
             href={{
-              pathname: `/partener/${toUrlSlug(item?.titluOferta)}`,
-              query: { id: item?.clinica?.id },
+              pathname: `/partener/${toUrlSlug(item?.titluOferta)}_${toUrlSlug(
+                item?.clinica?.id
+              )}`,
+              query: { slug: item?.clinica?.id },
             }}
             key={item?.id}
             passHref
