@@ -25,7 +25,7 @@ const ListingDynamicDetailsV1 = async ({ params, searchParams }) => {
   const id = params.id;
 
   const number = parseFloat(searchParams.id);
-  const titluOferta = searchParams.slug;
+
   let partenerId = number;
   console.log("searchParamssssswwwwssss", searchParams);
   console.log("id.parts..", partenerId);
@@ -35,9 +35,7 @@ const ListingDynamicDetailsV1 = async ({ params, searchParams }) => {
   let oferte = await handleQueryFirestoreSubcollection(
     `Anunturi`,
     "collectionId",
-    partener[0].user_uid,
-    "titluOferta",
-    titluOferta
+    partener[0].user_uid
   );
 
   console.log("test oferte...ss", oferte);
@@ -63,7 +61,7 @@ const ListingDynamicDetailsV1 = async ({ params, searchParams }) => {
               <DetailsContent
                 partener={partener[0]}
                 oferta={oferte[0]}
-                titluOferta={titluOferta}
+                titluOferta={oferte[0].titluOferta}
               />
             </div>
 

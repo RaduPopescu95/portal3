@@ -25,6 +25,7 @@ const isMobile =
 
 const DetailsContent = ({ partener, oferta, titluOferta }) => {
   console.log("oferta...primita...", oferta);
+  console.log("oferta...primita...partener", partener);
   const handleNavigare = () => {
     if (partener && partener.coordonate) {
       const { lat, lng } = partener.coordonate;

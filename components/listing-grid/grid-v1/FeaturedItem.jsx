@@ -163,8 +163,6 @@ const FeaturedItem = ({ params, searchQuery }) => {
             anunturiCuDistanta,
             searchQueryParteneri
           );
-
-          setParteneri(rezultatFiltrare);
         } else {
           const rezultatFiltrare = filtrareCadreMedicale(
             anunturiCuDistanta,
@@ -216,7 +214,6 @@ const FeaturedItem = ({ params, searchQuery }) => {
             href={{
               pathname: pathname,
               query: {
-                slug: item.cadruMedical ? item.titulatura : item?.titluOferta,
                 id: item.cadruMedical
                   ? item.cadruMedical?.id
                   : item?.clinica?.id,
