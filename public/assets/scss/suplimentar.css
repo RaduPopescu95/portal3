@@ -119,3 +119,13 @@
 .feat_property a.details:hover .tc_content {
   color: var(--color-primary);
 }
+
+.contrast-container {
+  background-color: rgba(0, 0, 0, 0.7); /* Culoare negru cu opacitate 70% */
+  border-radius: 10px; /* Border radius pentru colțuri rotunjite */
+  padding: 10px; /* Padding pentru spațiu interior */
+  position: absolute;
+  left: 20px;
+  bottom: 15px;
+  width: 200px;
+}

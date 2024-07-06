@@ -187,11 +187,11 @@ const CreateList = ({ cerere }) => {
         actionText
       );
       setIsLoading(false);
-      showAlert("Anunt actualizata cu succes!", "success");
+      showAlert("Anunt actualizat cu succes!", "success");
     } catch (error) {
       setIsLoading(false);
-      console.error("Eroare la actualizarea ofertei: ", error);
-      showAlert("Eroare la actualizarea ofertei.", "danger");
+      console.error("Eroare la actualizarea anuntului: ", error);
+      showAlert("Eroare la actualizarea anuntului.", "danger");
     }
   };
 

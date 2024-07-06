@@ -228,7 +228,7 @@ const CreateList = ({ oferta }) => {
       specialitate,
       judet,
       localitate: judet === "Bucuresti" ? "Bucuresti" : localitate,
-      sector: judet === "Bucuresti" ? sector : "",
+      sector: judet === "Bucuresti" ? localitate : "",
       tipProgram,
       //QUERY STRINGS
       tipProgramQ: tipProgram.toLowerCase(),
@@ -237,7 +237,7 @@ const CreateList = ({ oferta }) => {
       judetQ: judet.toLowerCase(),
       localitateQ:
         judet === "Bucuresti" ? "bucuresti" : localitate.toLowerCase(),
-      sectorQ: judet === "Bucuresti" ? sector.toLowerCase() : "",
+      sectorQ: judet === "Bucuresti" ? localitate.toLowerCase() : "",
     };
 
     try {
@@ -249,12 +249,12 @@ const CreateList = ({ oferta }) => {
       );
       setIsLoading(false);
       setButtonPressed(false);
-      showAlert("Anunt actualizata cu succes!", "success");
+      showAlert("Anunt actualizat cu succes!", "success");
     } catch (error) {
       setIsLoading(false);
       setButtonPressed(false);
-      console.error("Eroare la actualizarea ofertei: ", error);
-      showAlert("Eroare la actualizarea ofertei.", "danger");
+      console.error("Eroare la actualizarea anuntului: ", error);
+      showAlert("Eroare la actualizarea anuntului.", "danger");
     }
   };
 
@@ -294,7 +294,7 @@ const CreateList = ({ oferta }) => {
         specialitate,
         judet,
         localitate: judet === "Bucuresti" ? "Bucuresti" : localitate,
-        sector: judet === "Bucuresti" ? sector : "",
+        sector: judet === "Bucuresti" ? localitate : "",
         tipProgram,
         //QUERY STRINGS
         tipProgramQ: tipProgram.toLowerCase(),
@@ -303,7 +303,7 @@ const CreateList = ({ oferta }) => {
         judetQ: judet.toLowerCase(),
         localitateQ:
           judet === "Bucuresti" ? "bucuresti" : localitate.toLowerCase(),
-        sectorQ: judet === "Bucuresti" ? sector.toLowerCase() : "",
+        sectorQ: judet === "Bucuresti" ? localitate.toLowerCase() : "",
       };
 
       const actionText = `${userData.denumireBrand} a creat anuntul de angajare ${titluOferta}`;

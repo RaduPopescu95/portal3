@@ -73,13 +73,14 @@ const FeaturedItem = ({ params, searchQuery }) => {
 
   const handleGetAnunturi = async () => {
     try {
-      console.log("params...", params);
+      console.log("params...--------", params);
       const processedParams = processParams(params);
-      console.log("Processed Params...", titulatura);
-      console.log("Processed Params:", specialitate);
-      console.log("Processed Params:", judet);
-      console.log("Processed Params:", localitate);
-      console.log("Processed Params:", tipAnunt);
+      console.log("Processed Params:-----------------------------------------");
+      console.log("Processed Params:titulatura", titulatura);
+      console.log("Processed Params:specialitate", specialitate);
+      console.log("Processed Params:judet", judet);
+      console.log("Processed Params:localitate", localitate);
+      console.log("Processed Params:tipAnunt", tipAnunt);
       let anunturi = [];
       console.log("is.....clinica");
       let tAnunt;
@@ -222,7 +223,12 @@ const FeaturedItem = ({ params, searchQuery }) => {
           <Link
             href={{
               pathname: pathname,
-              query: { slug: item?.titluOferta, id: item?.clinica?.id },
+              query: {
+                slug: item.cadruMedical ? item.titulatura : item?.titluOferta,
+                id: item.cadruMedical
+                  ? item.cadruMedical?.id
+                  : item?.clinica?.id,
+              },
             }}
             passHref
           >

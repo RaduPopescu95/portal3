@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { use, useRef, useState } from "react";
 import { AlertModal } from "../AlertModal";
 import useDataNasterii from "@/hooks/useDataNasterii";
+import AutocompleteInput from "../AutocompleteInput";
 
 const LoginSignupUtilizator = () => {
   const { userData, currentUser, setCurrentUser, setUserData, judete } =
@@ -61,6 +62,9 @@ const LoginSignupUtilizator = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [inputType, setInputType] = useState("text");
+  const [adresaSediu, setAdresaSediu] = useState("");
+  const [googleMapsLink, setGoogleMapsLink] = useState("");
+  const [coordonate, setCoordonate] = useState({});
   const router = useRouter();
 
   const showAlert = (message, type) => {
@@ -117,6 +121,17 @@ const LoginSignupUtilizator = () => {
     setSpecializare("");
     setCuim("");
     setButtonPressed(false);
+    setAdresaSediu("");
+    setGoogleMapsLink("");
+    setCoordonate({});
+  };
+
+  const handleLocationSelect = (lat, lng, adresa, urlMaps) => {
+    console.log(`Selected location - Lat: ${lat}, Lng: ${lng}`);
+    setAdresaSediu(adresa);
+    setGoogleMapsLink(urlMaps);
+    setCoordonate({ lat, lng });
+    // Aici poți actualiza starea sau trimite aceste date către backend
   };
 
   const handleLogIn = async (event) => {
@@ -184,7 +199,8 @@ const LoginSignupUtilizator = () => {
       !dataNasterii ||
       !judet ||
       !localitate ||
-      !password
+      !password ||
+      !adresaSediu
     ) {
       console.log("noo...", email);
       console.log("noo...", numeUtilizator);
@@ -192,6 +208,7 @@ const LoginSignupUtilizator = () => {
       console.log("noo...", judet);
       console.log("noo...", localitate);
       console.log("noo...", dataNasterii);
+      console.log("noo...", adresaSediu);
 
       console.log("noo...", password);
       console.log("noo...", confirmPassword);
@@ -244,6 +261,9 @@ const LoginSignupUtilizator = () => {
         rulajCont: 0,
         firstUploadDate: dateTime.date,
         firstUploadTime: dateTime.time,
+        adresaSediu,
+        googleMapsLink,
+        coordonate,
       };
       // await handleUploadFirestore(data, "Users");
       const collectionId = "Users";
@@ -479,7 +499,7 @@ const LoginSignupUtilizator = () => {
               <div className="col-lg-6 col-xl-6">
                 <div className="sign_up_form">
                   <div className="heading">
-                    <h4>Înregistrare Utilizator</h4>
+                    <h4>Înregistrare Cadru Medical</h4>
                   </div>
                   {/* End .heading */}
 
@@ -518,6 +538,14 @@ const LoginSignupUtilizator = () => {
                       </div>
                     </div>
                   </div>
+                  {/* End .row */}
+
+                  <AutocompleteInput
+                    onPlaceChanged={handleLocationSelect}
+                    adresaSediu={adresaSediu}
+                    buttonPressed={buttonPressed}
+                  />
+
                   {/* End .row */}
 
                   <div className="form-group input-group  mb-3">
@@ -619,6 +647,15 @@ const LoginSignupUtilizator = () => {
                     </div>
                   )}
 
+                  {/* End from-group */}
+
+                  {/* End .form */}
+                </div>
+              </div>
+              {/* End . left side image for register */}
+
+              <div className="col-lg-6 col-xl-6">
+                <div className="sign_up_form">
                   <div className="form-group input-group mb-3">
                     <input
                       type="text"
@@ -637,16 +674,6 @@ const LoginSignupUtilizator = () => {
                     </div>
                   </div>
                   {/* End .row */}
-
-                  {/* End from-group */}
-
-                  {/* End .form */}
-                </div>
-              </div>
-              {/* End . left side image for register */}
-
-              <div className="col-lg-6 col-xl-6">
-                <div className="sign_up_form">
                   <div className="form-group input-group mb-3">
                     <div
                       className={`form-control d-flex align-items-center ${

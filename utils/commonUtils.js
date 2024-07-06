@@ -316,13 +316,20 @@ export const handleGetAnunturiArray = async (t, s, j, l, tA) => {
   const titulatura = (t ?? "").toLowerCase();
   const specialitate = (s ?? "").toLowerCase();
   const judet = (j ?? "").toLowerCase();
-  const localitate = (l ?? "").toLowerCase();
+  let localitate = (l ?? "").toLowerCase();
   const tipAnunt = tA;
+  let localitateQuery = "localitateQ";
+
+  if (judet === "bucuresti") {
+    console.log("judet...is...bucuresti and...localitate is....", localitate);
+    localitateQuery = "sectorQ";
+  }
 
   console.log("in handleGetAnunturiArray...", titulatura);
   console.log("in handleGetAnunturiArray...", specialitate);
   console.log("in handleGetAnunturiArray...", judet);
   console.log("in handleGetAnunturiArray...", localitate);
+  console.log("in handleGetAnunturiArray...", localitateQuery);
   console.log("in handleGetAnunturiArray...", tipAnunt);
   if (titulatura && specialitate && judet && localitate) {
     console.log("here");
@@ -339,7 +346,7 @@ export const handleGetAnunturiArray = async (t, s, j, l, tA) => {
       specialitate,
       "judetQ",
       judet,
-      "localitateQ",
+      localitateQuery,
       localitate
     );
   } else if (titulatura && specialitate && !judet && !localitate) {
@@ -393,7 +400,7 @@ export const handleGetAnunturiArray = async (t, s, j, l, tA) => {
       tipAnunt, // presupunem că "tipAnunt" este o variabilă disponibilă
       "status",
       "Activa",
-      "localitateQ",
+      localitateQuery,
       localitate,
       "judetQ",
       judet

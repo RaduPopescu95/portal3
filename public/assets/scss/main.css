@@ -3481,6 +3481,7 @@ header.header-nav.menu_style_home_seven .ace-responsive-menu > li.last {
   padding: 30px 20px;
   position: relative;
   z-index: 9;
+  min-width: 500px !important;
 }
 
 .home1_adsrchfrm:before {
@@ -3568,6 +3569,7 @@ header.header-nav.menu_style_home_seven .ace-responsive-menu > li.last {
 .home_adv_srch_opt.home4 .home1_adsrchfrm {
   border-radius: 45px;
   height: 90px;
+  /* min-width: 1700px !important; */
   padding: 20px;
 }
 
@@ -6376,13 +6378,16 @@ form.home5_advanced_search_form
 
 .feat_property .thumb .thmb_cntnt a.fp_price {
   bottom: 15px;
-  font-size: 22px;
+  font-size: 17px;
   font-family: "Nunito";
   color: #ffffff;
   font-weight: bold;
   left: 20px;
   line-height: 1.2;
   position: absolute;
+  background-color: rgba(0, 0, 0, 0.4); /* Culoare negru cu opacitate 70% */
+  border-radius: 10px; /* Border radius pentru colțuri rotunjite */
+  padding: 10px; /* Padding pentru spațiu interior */
 }
 
 .feat_property.home8 {

@@ -73,7 +73,9 @@ const ListaAnunturiClinici = ({ params }) => {
 
         if (firstLocality && firstLocality.locality) {
           const localitate = handleDiacrtice(firstLocality.locality);
-          updatePartnersByLocation(localitate, latitude, longitude);
+          setTimeout(() => {
+            updatePartnersByLocation(localitate, latitude, longitude);
+          }, 1500);
         } else {
           console.error("Localitate missing in all results:", res);
         }

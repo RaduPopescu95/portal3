@@ -272,12 +272,12 @@ const CreateList = ({ oferta }) => {
       );
       setIsLoading(false);
       setButtonPressed(false);
-      showAlert("Anunt actualizata cu succes!", "success");
+      showAlert("Anunt actualizat cu succes!", "success");
     } catch (error) {
       setButtonPressed(false);
       setIsLoading(false);
-      console.error("Eroare la actualizarea ofertei: ", error);
-      showAlert("Eroare la actualizarea ofertei.", "danger");
+      console.error("Eroare la actualizarea anuntului: ", error);
+      showAlert("Eroare la actualizarea anuntului.", "danger");
     }
   };
 
@@ -579,7 +579,7 @@ const CreateList = ({ oferta }) => {
 
       <div className="col-lg-12">
         <div className="my_profile_setting_textarea">
-          <label htmlFor="propertyDescription">Descriere post</label>
+          <label htmlFor="propertyDescription">Prezentare generală</label>
           <textarea
             className="form-control"
             id="propertyDescription"

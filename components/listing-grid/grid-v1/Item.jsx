@@ -90,7 +90,8 @@ const FeaturedProperty = ({ item, isGridOrList }) => {
       <div className="details">
         <div className="tc_content">
           <p className="text-thm">
-            {item?.titulatura} {item?.specialitate || ""} - {item?.localitate}
+            {item?.titulatura} {`(${item?.specialitate})` || ""} -{" "}
+            {item?.localitate}
           </p>
           <p>
             <span className="flaticon-placeholder zona-interes mr-5"></span>
