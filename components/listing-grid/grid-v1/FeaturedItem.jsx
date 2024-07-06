@@ -73,7 +73,6 @@ const FeaturedItem = ({ params, searchQuery }) => {
 
   const handleGetAnunturi = async () => {
     try {
-      console.log("params...--------", params);
       const processedParams = processParams(params);
       console.log("Processed Params:-----------------------------------------");
       console.log("Processed Params:titulatura", titulatura);
@@ -154,21 +153,19 @@ const FeaturedItem = ({ params, searchQuery }) => {
           }
         })
       );
-      console.log("is.....", anunturiCuDistanta);
+
       // let anunturiOrdonati = anunturiCuDistanta.sort(
       //   (a, b) => a.distanta - b.distanta
 
       if (searchQueryParteneri) {
         if (tAnunt === "Clinica") {
-          console.log("with search query...");
           const rezultatFiltrare = filtrareClinici(
             anunturiCuDistanta,
             searchQueryParteneri
           );
-          console.log("with search query...", rezultatFiltrare);
+
           setParteneri(rezultatFiltrare);
         } else {
-          console.log("with search query...cadre");
           const rezultatFiltrare = filtrareCadreMedicale(
             anunturiCuDistanta,
             searchQueryParteneri
@@ -176,22 +173,17 @@ const FeaturedItem = ({ params, searchQuery }) => {
           setParteneri(rezultatFiltrare);
         }
       } else {
-        console.log("is.....test....", anunturiCuDistanta);
         setParteneri(anunturiCuDistanta);
       }
 
-      console.log("anunturi....", anunturi);
-
       setIsLoading(false);
       // Logarea rezultatelor pentru a vedea structura
-      console.log("Processed Params:", processedParams);
     } catch (error) {
       console.error("Error handleGetAnunturi data: ", error);
     }
   };
 
   useEffect(() => {
-    console.log("test....de query...", searchQueryParteneri);
     handleGetAnunturi();
   }, []);
 
