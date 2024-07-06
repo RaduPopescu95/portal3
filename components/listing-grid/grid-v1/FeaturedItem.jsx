@@ -201,7 +201,7 @@ const FeaturedItem = ({ params, searchQuery }) => {
   let content = paginatedParteneri().map((item) => {
     const pathname =
       item.tipAnunt === "Clinica"
-        ? `/anunt/${toUrlSlug(item?.titluOferta)}`
+        ? `/partener/${toUrlSlug(item?.titluOferta)}`
         : `/cadru-medical/${toUrlSlug(item?.titulatura)}`;
 
     return (

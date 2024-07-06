@@ -15,8 +15,10 @@ import {
   handleQueryFirestoreSubcollection,
 } from "@/utils/firestoreUtils";
 import PropertyHeaderCadruMedical from "@/components/listing-details-v1/PropertyHeaderCadruMedical";
+import { unstable_noStore as noStore } from "next/cache";
 
 const ListingDynamicDetailsV1 = async ({ params, searchParams }) => {
+  noStore();
   console.log("searchParamssssswwww", params);
   if (params.id === "favicon.ico") {
     return null; // Returnează null sau orice alt component care indică că pagina nu trebuie să proceseze acest id.
