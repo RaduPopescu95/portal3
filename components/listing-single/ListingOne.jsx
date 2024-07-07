@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 export default function ListingOne({ partener }) {
+  console.log("partener...", partener);
   return (
     <section className="listing-title-area mt85 md-mt0">
       <div className="container">

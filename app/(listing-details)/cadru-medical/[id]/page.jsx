@@ -25,7 +25,7 @@ const ListingDynamicDetailsV1 = async ({ params, searchParams }) => {
   }
   const id = params.id;
 
-  const number = parseFloat(searchParams.id);
+  const number = parseFloat(searchParams.slug);
 
   let partenerId = number;
   console.log("searchParamssssswwwwssss", searchParams);
