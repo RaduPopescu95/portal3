@@ -189,7 +189,7 @@ const FeaturedItemHome = ({ params }) => {
           <Link
             href={{
               pathname: `/cadru-medical/${toUrlSlug(item?.titulatura)}`,
-              query: { slug: item?.titulatura, id: item?.cadruMedical?.id },
+              query: { slug: item?.cadruMedical?.id },
             }}
             key={item?.id}
             passHref

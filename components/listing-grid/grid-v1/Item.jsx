@@ -68,7 +68,7 @@ const FeaturedProperty = ({ item, isGridOrList }) => {
             <Link
               href={{
                 pathname: `/cadru-medical/anunt-${toUrlSlug(item?.titulatura)}`,
-                query: { slug: item?.titulatura, id: item?.cadruMedical?.id },
+                query: { slug: item?.cadruMedical?.id },
               }}
               className="fp_price"
             >
