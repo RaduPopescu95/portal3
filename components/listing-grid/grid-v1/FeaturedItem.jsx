@@ -216,7 +216,7 @@ const FeaturedItem = ({ params, searchQuery }) => {
             href={{
               pathname: pathname,
               query: {
-                id: item.cadruMedical
+                slug: item.cadruMedical
                   ? item.cadruMedical?.id
                   : item?.clinica?.id,
               },
