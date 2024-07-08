@@ -30,7 +30,7 @@ const index = ({ params }) => {
 
       {/* <!-- 4th Home Slider --> */}
       <div className="home-four ">
-        <div className="container-fluid p0">
+        <div className="container-fluid p0 ">
           <div className="main-banner-wrapper">
             <div className="arrow-style-2 banner-style-one ">
               <HeroSlider />
@@ -40,7 +40,7 @@ const index = ({ params }) => {
         </div>
         {/* End .container-fluid */}
 
-        <div className="container home_iconbox_container">
+        <div className="container home_iconbox_container suplimentar-container-filter">
           <div className="row posr">
             <div className="col-lg-12">
               <div className="home_content home4">

@@ -20,6 +20,7 @@ export const AuthProvider = ({ children }) => {
   const [searchQueryParteneri, setSearchQueryPateneri] = useState("");
   const [tipAnunt, setTipAnunt] = useState("Clinica");
   const [tipProgram, setTipProgram] = useState(undefined);
+  
   const [titulatura, setSelectedCategory] = useState(undefined);
   const [specialitate, setSelectedSpecialty] = useState(undefined);
   const [localitate, setSelectedLocalitate] = useState(undefined);

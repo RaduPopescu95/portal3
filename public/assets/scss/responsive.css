@@ -1126,6 +1126,7 @@
   }
   .home_adv_srch_opt.home4 .home1_adsrchfrm {
     border-radius: 8px;
+    width: auto;
   }
 
   .sasw_list .small_dropdown2 .dd_content2.style2 {
@@ -1296,6 +1297,7 @@
   }
   .home_adv_srch_opt.home4 .home1_adsrchfrm {
     display: table;
+    width: auto;
   }
   .home4_iconbox li {
     margin-bottom: 10px;
