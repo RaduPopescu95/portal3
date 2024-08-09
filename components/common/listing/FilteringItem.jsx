@@ -93,7 +93,8 @@ const FilteringItem = ({ params }) => {
   };
 
   // submit handler
-  const submitHandler = () => {
+  const submitHandler = (event) => {
+    event.preventDefault();
     let path = "/";
     let query = "";
     let defaultPathSegment;
@@ -151,7 +152,7 @@ const FilteringItem = ({ params }) => {
     }
 
     // Use Next.js Router to navigate with the path and query parameters
-    router.push(`${path}${query}`);
+    router.replace(`${path}${query}`, undefined, { shallow: true });
   };
 
   const handleGetAnunturi = async () => {

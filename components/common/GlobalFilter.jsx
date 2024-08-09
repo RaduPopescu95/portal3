@@ -88,7 +88,8 @@ const GlobalFilter = ({ className = "" }) => {
   };
 
   // Submit handler for form submission
-  const submitHandler = () => {
+  const submitHandler = (event) => {
+    event.preventDefault();
     let path = "/";
     let query = "";
     let defaultPathSegment;
@@ -153,7 +154,10 @@ const GlobalFilter = ({ className = "" }) => {
     }
 
     // Use Next.js Router to navigate with the path and query parameters
-    router.push(`${path}${query}`);
+    const fullUrl = `${path}${query}`;
+
+    // Utilizează `router.push` pentru a face redirect și a forța un reload complet al paginii
+    router.push(fullUrl);
   };
 
   useEffect(() => {

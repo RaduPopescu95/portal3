@@ -172,8 +172,9 @@ const FeaturedItem = ({ params, searchQuery }) => {
   //   handleGetAnunturi(params);
   // }, [searchParams]);
   useEffect(() => {
+    console.log("test............");
     handleGetAnunturi();
-  }, []);
+  }, [searchParams]);
 
   // Funcție pentru schimbarea paginilor
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
