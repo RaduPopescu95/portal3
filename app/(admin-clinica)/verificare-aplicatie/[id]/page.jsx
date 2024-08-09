@@ -6,8 +6,8 @@ import {
 import Tranzactie from "@/components/dashboard/verifica-tranzactie/Tranzactie";
 
 // export const metadata = {
-//   title: "Verifica tranzactie || ExclusivMD",
-//   description: "ExclusivMD",
+//   title: "Verifica tranzactie || JobsMD",
+//   description: "JobsMD",
 // };
 
 const index = async ({ params }) => {

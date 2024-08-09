@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import CreateListing from "@/components/dashboard/creaza-oferta";
 
 export const metadata = {
-  title: "Create Listing || ExclusivMD",
+  title: "Create Listing || JobsMD",
   description: "Portal",
 };
 

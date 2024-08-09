@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import ListingDetailsV1 from "@/components/listing-details-v1";
 
 export const metadata = {
-  title: "Partener || ExclusivMD",
+  title: "Partener || JobsMD",
   description: "Portal",
 };
 

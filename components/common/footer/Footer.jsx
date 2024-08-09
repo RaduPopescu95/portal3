@@ -7,14 +7,12 @@ const Footer = () => {
     <>
       <div className="col-sm-6 col-md-6 col-lg-4 col-xl-4 pr0 pl0">
         <div className="footer_about_widget">
-          <h4>ExclusivMD</h4>
+          <h4>Alăturați-vă Comunității JobsMD</h4>
           <p>
-            ExclusivMD este un portal dedicat medicilor, având scopul de a aduce
-            în atenția acestora cele mai bune oferte de la parteneri economici
-            din diverse domenii. Portalul este conceput pentru a economisi timp
-            și a oferi soluții eficiente, menite să sprijine activitatea zilnică
-            a medicilor și să contribuie la îmbunătățirea calității serviciilor
-            medicale oferite.
+            JobsMD nu este doar o platformă de recrutare, ci o comunitate
+            dedicată excelenței în domeniul medical. Alăturați-vă astăzi și
+            descoperiți cum vă putem ajuta să vă atingeți obiectivele
+            profesionale.
           </p>
         </div>
       </div>

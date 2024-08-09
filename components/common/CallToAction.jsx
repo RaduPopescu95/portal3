@@ -5,12 +5,13 @@ const CallToAction = () => {
     <div className="row">
       <div className="col-lg-8">
         <div className="start_partner tac-smd">
-          <h2>Devino partenerul nostru</h2>
+          <h2>
+            JobsMD - Locul unde carierele medicale și oportunitățile se
+            întâlnesc.
+          </h2>
           <p>
-            Alătură-te rețelei noastre de elită și accesează noi oportunități de
-            creștere. Împreună, putem oferi cadrelor medicale acces exclusiv la
-            produse și servicii de calitate și oferte competitive.
-            Contactează-ne pentru a începe!
+            Înregistrează-te acum și începe călătoria ta către succes în
+            domeniul medical cu JobsMD!
           </p>{" "}
         </div>
         {/* End .col */}

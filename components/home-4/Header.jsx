@@ -35,17 +35,17 @@ const Header = () => {
             width={220}
             height={225}
             className="logo1 img-fluid"
-            src="/assets/images/logo_exclusivmd_alb.svg"
-            alt="logo_exclusivmd.svg"
+            src="/assets/images/logo_jobsmd_alb.svg"
+            alt="logo_jobsmd.svg"
           />
           <Image
             width={220}
             height={225}
             className="logo2 img-fluid"
-            src="/assets/images/logo_exclusivmd.svg"
+            src="/assets/images/logo_jobsmd.svg"
             alt="header-logo2.png"
           />
-          {/* <span>ExclusivMD</span> */}
+          {/* <span>JobsMD</span> */}
         </Link>
         {/* site logo brand */}
 

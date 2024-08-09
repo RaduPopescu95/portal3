@@ -140,10 +140,12 @@ const FeaturedItem = ({ params, searchQuery }) => {
         const filteredResults =
           tAnunt === "Clinica"
             ? filtrareClinici(announcementsWithDetails, searchQueryParteneri)
-            : filtrareCadreMedicale(
+            : tAnunt === "CadruMedical"
+            ? filtrareCadreMedicale(
                 announcementsWithDetails,
                 searchQueryParteneri
-              );
+              )
+            : filtrareGenerala(announcementsWithDetails, searchQueryParteneri);
 
         console.log("anunturi....4", announcements);
         setParteneri(filteredResults);

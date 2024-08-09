@@ -147,6 +147,49 @@ export const filtrareCadreMedicale = (
 
   return parteneriFiltratiGasiti;
 };
+export const filtrareGenerala = (parteneriFiltrati, searchQueryParteneri) => {
+  // Împărțim query-ul de căutare în cuvinte individuale
+  const normalizeText = (text) =>
+    text
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+
+  // Împărțim query-ul de căutare în cuvinte individuale, eliminăm diacriticele și transformăm în litere mici
+  const searchTerms = searchQueryParteneri.split(/\s+/).map(normalizeText);
+
+  // Funcție care verifică dacă toate cuvintele de căutare apar în text
+  const matchesSearch = (text) => {
+    const normalizedText = normalizeText(text);
+    return searchTerms.every((term) => normalizedText.includes(term));
+  };
+
+  // Filtrăm partenerii pe baza denumirii brandului, categoriilor, adresei, descrierii, telefonului și emailului
+  const parteneriFiltratiGasiti = parteneriFiltrati.filter(
+    (partener) =>
+      matchesSearch(partener?.cadruMedical?.numeUtilizator) ||
+      matchesSearch(partener?.titulatura) ||
+      matchesSearch(partener?.adresaSediu) ||
+      matchesSearch(partener?.cadruMedical?.adresaSediu) ||
+      matchesSearch(partener?.descriere) ||
+      matchesSearch(partener?.cadruMedical?.telefonContact) ||
+      matchesSearch(partener?.cadruMedical?.email) ||
+      matchesSearch(partener?.descriereOferta) ||
+      matchesSearch(partener?.specialitate || "") ||
+      matchesSearch(partener?.clinica?.denumireBrand) ||
+      matchesSearch(partener?.titulatura) ||
+      matchesSearch(partener?.adresaSediu) ||
+      matchesSearch(partener?.clinica?.adresaSediu) ||
+      matchesSearch(partener?.descriereOferta) ||
+      matchesSearch(partener?.cerintePost) ||
+      matchesSearch(partener?.titluOferta) ||
+      matchesSearch(partener?.clinica?.telefonContact) ||
+      matchesSearch(partener?.clinica?.email) ||
+      matchesSearch(partener?.specialitate || "")
+  );
+
+  return parteneriFiltratiGasiti;
+};
 
 export const filtrareOferte = (oferte, searchQueryParteneri) => {
   // Împărțim query-ul de căutare în cuvinte individuale
@@ -333,7 +376,7 @@ export const handleGetAnunturiArray = async (t, s, j, l, tA, tP) => {
   const tipProgram = tP ?? "";
   let localitateQuery = "localitate";
 
-  if (judet === "bucuresti") {
+  if (judet === "Bucuresti") {
     console.log("judet...is...bucuresti and...localitate is....", localitate);
     localitateQuery = "sector";
   }

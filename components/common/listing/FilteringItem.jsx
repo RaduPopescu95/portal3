@@ -52,7 +52,7 @@ const FilteringItem = ({ params }) => {
 
   // Handler pentru schimbarea selectiei de judete
   const handleJudetChange = async (e) => {
-    const judetSelectedName = e.target.value; // Numele județului selectat, un string
+    const judetSelectedName = e; // Numele județului selectat, un string
 
     setJudet(judetSelectedName);
     setIsJudetSelected(!!judetSelectedName);
@@ -174,9 +174,11 @@ const FilteringItem = ({ params }) => {
     setTipProgram(tipProgram);
     setTipAnunt(tipAnunt);
     setSearchQueryParteneri(searchQueryParteneri);
-    setLocalitate(localitate);
-    setSpecialitate(specialitate);
     setJudet(judet);
+    await handleJudetChange(judet).then(() => {
+      setLocalitate(localitate);
+    });
+    setSpecialitate(specialitate);
     setTitulatura(titulatura);
     console.log("----------test...aici...filters...----------");
     console.log("test...aici...filters...", tipProgram);
@@ -322,7 +324,7 @@ const FilteringItem = ({ params }) => {
               className={`selectpicker w100 form-select show-tick ${
                 !isJudetSelected ? "border-danger" : ""
               }`}
-              onChange={handleJudetChange}
+              onChange={(e) => handleJudetChange(e.target.value)}
               value={judet}
             >
               <option value="">Judete</option>

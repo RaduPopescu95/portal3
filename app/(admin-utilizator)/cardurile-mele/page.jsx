@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import MyProperties from "@/components/dashboard-utilizator/my-properties";
 
 export const metadata = {
-  title: "My Properties || ExclusivMD",
+  title: "My Properties || JobsMD",
   description: "Portal",
 };
 

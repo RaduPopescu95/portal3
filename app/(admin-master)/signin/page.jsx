@@ -2,8 +2,8 @@ import dynamic from "next/dynamic";
 import Signin from "@/components/signin";
 
 export const metadata = {
-  title: "ExclusivMD",
-  description: "ExclusivMD",
+  title: "JobsMD",
+  description: "JobsMD",
 };
 
 const index = () => {

@@ -41,7 +41,7 @@ const MobileMenuContent = () => {
             width={220}
             height={225}
             className="nav_logo_img img-fluid mt20"
-            src="/assets/images/logo_exclusivmd.svg"
+            src="/assets/images/logo_jobsmd.svg"
             alt="header-logo2.png"
           />
           {/* <span className="brand-text">Portal</span> */}

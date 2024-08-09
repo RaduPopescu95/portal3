@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import MyProfile from "@/components/dashboard-utilizator/my-profile";
 
 export const metadata = {
-  title: "My Profile || ExclusivMD",
+  title: "My Profile || JobsMD",
   description: "Profil",
 };
 

@@ -3,8 +3,8 @@ import GridV1 from "@/components/listing-grid/grid-v1";
 import { handleGetFirestore } from "@/utils/firestoreUtils";
 
 export const metadata = {
-  title: "ExclusivMD",
-  description: "ExclusivMD",
+  title: "JobsMD",
+  description: "JobsMD",
 };
 
 export async function getServerData() {

@@ -27,36 +27,41 @@ const OurMission = () => {
     <>
       <div className="col-lg-12 col-xl-12">
         <div className="about_content">
-          <p className="large">
-            Suntem o echipă de IT ce s-a remarcat prin compania Credite
-            Medicale, respectiv site-ul www.creditemedicale.ro, ajungând astfel
-            să ne clasăm printre primii 3 din țară în categoria activităților
-            desfășurate pentru cadrele medicale de pretutindeni. Fiindcă ne
-            desfășurăm activitatea în acest domeniu, știm și înțelegem foarte
-            bine dificultatea pe care o reprezintă timpul pentru cadrele
-            medicale, iar astfel ne dorim să sărim în ajutorul lor. Punem la
-            dispoziție o platformă adresată exclusiv lor prin care pot găsi ușor
-            oferte, discount-uri, beneficii în diferite locații aflate în
-            împrejurimea lor.
+          {/* <p className="large"> */}
+          <p className="large mb0 mb-0">
+            Bine ați venit pe JobsMD, platforma dedicată exclusiv cadrelor
+            medicale și instituțiilor din domeniul sănătății. Indiferent dacă
+            sunteți un angajator în căutare de profesioniști de top sau un
+            angajat dornic să-și găsească locul potrivit în carieră, JobsMD este
+            aici să vă ajute.
           </p>
-          {/* <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
-            quis ligula eu lectus vulputate porttitor sed feugiat nunc. Mauris
-            ac consectetur ante, dapibus gravida tellus. Nullam aliquet eleifend
-            dapibus. Cras sagittis, ex euismod lacinia tempor, lectus orci
-            elementum augue, eget auctor metus ante sit amet velit.
-          </p>
+          {/* <h2>De ce JobsMD?</h2>
+          <h3>Anunțuri Verificate Manual</h3>
           <p>
-            Maecenas quis viverra metus, et efficitur ligula. Nam congue augue
-            et ex congue, sed luctus lectus congue. Integer convallis
-            condimentum sem. Duis elementum tortor eget condimentum tempor.
-            Praesent sollicitudin lectus ut pharetra pulvinar. Donec et libero
-            ligula. Vivamus semper at orci at placerat.Placeat Lorem ipsum dolor
-            sit amet, consectetur adipisicing elit. Quod libero amet, laborum
-            qui nulla quae alias tempora.
+            Pe JobsMD, siguranța și calitatea sunt pe primul loc. Toate
+            anunțurile și companiile sunt verificate manual pentru a asigura
+            autenticitatea și relevanța acestora. Astfel, puteți aplica sau
+            posta locuri de muncă cu încredere deplină.
+          </p>
+          <h3>Vizibilitate și Transparență</h3>
+          <p>
+            Candidații moderni vor să știe mai multe despre locurile unde ar
+            putea lucra. JobsMD vă permite să vă prezentați compania în detaliu
+            - de la echipă și spațiile de lucru până la avantajele pe care le
+            oferiți. În plus, puteți adăuga poze pentru a ilustra mai bine
+            mediul de lucru și a atrage astfel cei mai buni profesioniști.
+            Fiecare detaliu contează în atragerea celor mai buni candidați.
+          </p>
+          <h3>Servicii Exclusiv pentru Sectorul Medical</h3>
+          <p>
+            Pentru a adăuga anunțuri pe platforma noastră, este necesar să vă
+            creați un cont. Acest proces este simplu și rapid, dar important
+            pentru a menține calitatea serviciilor noastre. JobsMD este dedicat
+            doar persoanelor fizice și juridice care activează în sfera medicală
+            sau furnizează servicii relevante pentru acest sector.
           </p> */}
 
-          <ul className="ab_counting">
+          {/* <ul className="ab_counting">
             {missionContent.map((item) => (
               <li className="list-inline-item" key={item.id}>
                 <div className="about_counting">
@@ -64,13 +69,12 @@ const OurMission = () => {
                     <span className={`${item.icon}`}></span>
                   </div>
                   <div className="details">
-                    <h3>{item.number}</h3>
-                    <p>{item.meta}</p>
+                    <p className="mb-2">{item.meta}</p>
                   </div>
                 </div>
               </li>
             ))}
-          </ul>
+          </ul> */}
           {/* End .ab_counting */}
         </div>
       </div>

@@ -42,6 +42,6 @@ export default function robots() {
         "salvate",
       ],
     },
-    sitemap: "https://exclusivmd.ro/sitemap.xml",
+    sitemap: "https://Jobsmd.ro/sitemap.xml",
   };
 }

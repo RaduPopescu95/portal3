@@ -5,7 +5,7 @@ import {
 } from "@/utils/firestoreUtils";
 import { parseDateToISO } from "@/utils/timeUtils";
 
-const URL = "https://exclusivmd.ro";
+const URL = "https://jobsmd.ro";
 
 export default async function sitemap() {
   console.log("Fetching 'Judete' data from Firestore...");

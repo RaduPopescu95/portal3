@@ -232,9 +232,9 @@ const FeaturedItemHome = ({ params }) => {
       {paginatedCadreMedicale().length === 0 && !isLoading && (
         <div className="d-flex justify-content-center align-items-center">
           <p>
-            În acest moment nu există anunțuri de angajare de la clinici în
-            apropierea dumneavoastră. Vă recomandăm să cautați prin utilizarea
-            filtrului de mai sus.
+            În acest moment nu există anunțuri de angajare de la cadre medicale
+            în apropierea dumneavoastră. Vă recomandăm să cautați prin
+            utilizarea filtrului de mai sus.
           </p>
         </div>
       )}
