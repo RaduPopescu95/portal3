@@ -39,29 +39,14 @@ import {
 import FeaturedProperty from "./Item";
 import { useAuth } from "@/context/AuthContext";
 import SkeletonLoader from "@/components/common/SkeletonLoader";
+import { useSearchParams } from "next/navigation";
 
 const FeaturedItem = ({ params, searchQuery }) => {
   const { statusType, featured, isGridOrList } = useSelector(
     (state) => state.filter
   );
-  const {
-    currentUser,
-    setSearchQueryPateneri,
-    searchQueryParteneri,
-    tipAnunt,
-    tipProgram,
-    setTipAnunt,
-    setTipProgram,
-    judete,
-    judet,
-    setSelectedJudet,
-    localitate,
-    setSelectedLocalitate,
-    specialitate,
-    setSelectedSpecialty,
-    titulatura,
-    setSelectedCategory,
-  } = useAuth();
+  const searchParams = useSearchParams();
+  const { currentUser } = useAuth();
 
   const [parteneri, setParteneri] = useState([]);
   const [anunturiCadre, setAnunturiCadre] = useState([]);
@@ -72,115 +57,120 @@ const FeaturedItem = ({ params, searchQuery }) => {
   const dispatch = useDispatch();
 
   const handleGetAnunturi = async () => {
+    let tipProgram = searchParams.get("tipProgram");
+    let tipAnunt = searchParams.get("tipAnunt");
+    let searchQueryParteneri = searchParams.get("searchQueryParteneri");
+    let localitate = searchParams.get("localitate");
+    let specialitate = searchParams.get("specialitate");
+    let judet = searchParams.get("judet");
+    let titulatura = searchParams.get("titulatura");
+
+    console.log("test...aici...", tipProgram);
+    console.log("test...aici...", tipAnunt);
+    console.log("test...aici...", searchQueryParteneri);
+    console.log("test...aici...", localitate);
+    console.log("test...aici...", specialitate);
+    console.log("test...aici...", judet);
+    console.log("test...aici...", titulatura);
+    // console.log("test...aici...", params);
+    // const parts = params[0].split("__");
+    // let judet = parts[1] || "";
+    // let titulatura = parts[0] || "";
+    setIsLoading(true);
     try {
-      const processedParams = processParams(params);
-      console.log("Processed Params:-----------------------------------------");
-      console.log("Processed Params:titulatura", titulatura);
-      console.log("Processed Params:specialitate", specialitate);
-      console.log("Processed Params:judet", judet);
-      console.log("Processed Params:localitate", localitate);
-      console.log("Processed Params:tipAnunt", tipAnunt);
-      let anunturi = [];
-      console.log("is.....clinica");
-      let tAnunt;
+      const processedParams = {
+        titulatura: titulatura || "",
+        specialitate: specialitate || "",
+        judet: judet || "",
+        localitate: localitate || "",
+        tipAnunt: tipAnunt,
+        tipProgram: tipProgram || "",
+        searchQueryParteneri: searchQueryParteneri || "",
+      };
 
-      if (tipAnunt === "Clinica" || tipAnunt === "Anunturi Clinici") {
-        console.log("is.....clinica");
-        if (tipAnunt === "Clinica" || tipAnunt === "Anunturi Clinici") {
-          tAnunt = "Clinica";
-        }
-        // FUNCTIE CLINICI
-        anunturi = await handleGetAnunturiArray(
-          titulatura,
-          specialitate,
-          judet,
-          localitate,
-          tAnunt
-        );
-        console.log("is.....clinica", anunturi);
-      } else {
-        console.log("is.....cadru");
-        // FUNCTIE CADRE MEDICALE
-        let tAnunt;
-        if (tipAnunt === "Anunturi Cadre Medicale") {
-          tAnunt = "CadruMedical";
-        }
-        anunturi = await handleGetAnunturiArray(
-          titulatura,
-          specialitate,
-          judet,
-          localitate,
-          tAnunt
-        );
-        console.log("is.....cadru", anunturi);
-      }
+      console.log("Processed Params:", processedParams);
+      let announcements = [];
 
-      if (anunturi.length === 0) {
-        anunturi = await handleQueryFirestoreSubcollection(
-          "Anunturi",
-          "status",
-          "Activa",
-          "tipAnunt",
-          tAnunt
-        );
-      }
+      // Logic to decide what kind of announcements to fetch based on `tipAnunt`
+      const tAnunt =
+        tipAnunt === "Anunturi Cadre Medicale"
+          ? "CadruMedical"
+          : "Clinica"
+          ? "Clinica"
+          : "";
 
-      let anunturiCuDistanta = await Promise.all(
-        anunturi.map(async (anunt) => {
-          const clinicaCadru = await handleQueryFirestore(
+      announcements = await handleGetAnunturiArray(
+        processedParams.titulatura,
+        processedParams.specialitate,
+        processedParams.judet,
+        processedParams.localitate,
+        tAnunt,
+        processedParams.tipProgram
+      );
+
+      console.log("anunturi....1", announcements);
+
+      console.log("anunturi....2", announcements);
+      const announcementsWithDetails = await Promise.all(
+        announcements.map(async (announcement) => {
+          const userDetails = await handleQueryFirestore(
             "Users",
             "user_uid",
-            anunt.collectionId
+            announcement.collectionId
           );
-          // const distanta = calculateDistance(
-          //   latitude,
-          //   longitude,
-          //   anunt.coordonate.lat,
-          //   anunt.coordonate.lng
-          // );
+
           if (tipAnunt === "Clinica" || tipAnunt === "Anunturi Clinici") {
             return {
-              ...anunt,
+              ...announcement,
               // distanta: Math.floor(distanta),
-              clinica: clinicaCadru[0],
+              clinica: userDetails[0],
             };
           } else {
             return {
-              ...anunt,
+              ...announcement,
               // distanta: Math.floor(distanta),
-              cadruMedical: clinicaCadru[0],
+              cadruMedical: userDetails[0],
             };
           }
         })
       );
-
-      // let anunturiOrdonati = anunturiCuDistanta.sort(
-      //   (a, b) => a.distanta - b.distanta
+      console.log("anunturi....3", announcements);
 
       if (searchQueryParteneri) {
-        if (tAnunt === "Clinica") {
-          const rezultatFiltrare = filtrareClinici(
-            anunturiCuDistanta,
-            searchQueryParteneri
-          );
-        } else {
-          const rezultatFiltrare = filtrareCadreMedicale(
-            anunturiCuDistanta,
-            searchQueryParteneri
-          );
-          setParteneri(rezultatFiltrare);
-        }
+        const filteredResults =
+          tAnunt === "Clinica"
+            ? filtrareClinici(announcementsWithDetails, searchQueryParteneri)
+            : filtrareCadreMedicale(
+                announcementsWithDetails,
+                searchQueryParteneri
+              );
+
+        console.log("anunturi....4", announcements);
+        setParteneri(filteredResults);
       } else {
-        setParteneri(anunturiCuDistanta);
+        setParteneri(announcementsWithDetails);
+        console.log("anunturi....5", announcements);
       }
 
       setIsLoading(false);
-      // Logarea rezultatelor pentru a vedea structura
     } catch (error) {
-      console.error("Error handleGetAnunturi data: ", error);
+      console.error("Error fetching announcements: ", error);
+      setIsLoading(false);
     }
   };
+  // useEffect(() => {
+  //   const params = new URLSearchParams(searchParams);
 
+  //   setTitulatura(params.get('titulatura') || '');
+  //   setSpecialitate(params.get('specialitate') || '');
+  //   setJudet(params.get('judet') || '');
+  //   setLocalitate(params.get('localitate') || '');
+  //   setTipAnunt(params.get('tipAnunt') || '');
+  //   setTipProgram(params.get('tipProgram') || '');
+  //   setSearchQueryParteneri(params.get('searchQueryParteneri') || '');
+
+  //   handleGetAnunturi(params);
+  // }, [searchParams]);
   useEffect(() => {
     handleGetAnunturi();
   }, []);

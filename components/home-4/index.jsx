@@ -1,3 +1,5 @@
+"use client";
+
 import Blogs from "../common/Blogs";
 import GlobalHeroFilter from "../common/GlobalHeroFilter";
 import MobileMenu from "../common/header/MobileMenu";
@@ -13,10 +15,17 @@ import { Suspense, lazy } from "react";
 
 import FeaturedItemHome from "../listing-grid/grid-v1/FeaturedItemHome";
 import ListaAnunturiClinici from "../listing-grid/grid-v1/ListaAnunturiClinici";
+import { useAuth } from "@/context/AuthContext";
 
 const FindProperties = lazy(() => import("./FindProperties"));
 
 const index = ({ params }) => {
+  const {
+    currentUser,
+    setSearchQueryPateneri,
+    searchQueryParteneri,
+    userData,
+  } = useAuth();
   return (
     <>
       {/* <!-- Main Header Nav --> */}
@@ -69,24 +78,25 @@ const index = ({ params }) => {
         </div>
       </div>
 
-      <section className="our-listing bgc-f7 pb30-991 md-mt0 pt-0 ">
-        <div className="container">
-          <div className="row pt30">
-            <div className="col-lg-6 offset-lg-3">
-              <div className="main-title text-center mb40">
-                <h2>
-                  Anunțuri de la profesioniști în sănătate în apropierea ta
-                </h2>
+      {userData?.userType === "Doctor" ? null : (
+        <section className="our-listing bgc-f7 pb30-991 md-mt0 pt-0 ">
+          <div className="container">
+            <div className="row pt30">
+              <div className="col-lg-6 offset-lg-3">
+                <div className="main-title text-center mb40">
+                  <h2>
+                    Anunțuri de la profesioniști în sănătate în apropierea ta
+                  </h2>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="row">
-            {/* <div className="col-lg-6">
+            <div className="row">
+              {/* <div className="col-lg-6">
               <BreadCrumb2 titlu={"Clinici apropiați de tine"} />
             </div> */}
-            {/* End .col */}
+              {/* End .col */}
 
-            {/* <div className="col-lg-6 position-relative">
+              {/* <div className="col-lg-6 position-relative">
               <div className="listing_list_style mb20-xsd tal-991">
                 <GridListButton />
               </div>
@@ -95,26 +105,26 @@ const index = ({ params }) => {
                 <ShowFilter />
               </div>
             </div> */}
-            {/* End .col filter grid list */}
-          </div>
-          {/* End Page Breadcrumb and Grid,List and filter Button */}
+              {/* End .col filter grid list */}
+            </div>
+            {/* End Page Breadcrumb and Grid,List and filter Button */}
 
-          <div className="row">
-            <div className="col-md-12 col-lg-12">
-              {/* <div className="grid_list_search_result ">
+            <div className="row">
+              <div className="col-md-12 col-lg-12">
+                {/* <div className="grid_list_search_result ">
                 <div className="row align-items-center">
                   <FilterTopBar />
                 </div>
               </div> */}
-              {/* End .row */}
+                {/* End .row */}
 
-              <div className="row">
-                <FeaturedItemHome params={params} />
+                <div className="row">
+                  <FeaturedItemHome params={params} />
+                </div>
+                {/* End .row */}
               </div>
-              {/* End .row */}
-            </div>
-            {/* End  page conent */}
-            {/* <div className="col-lg-4 col-xl-4">
+              {/* End  page conent */}
+              {/* <div className="col-lg-4 col-xl-4">
               <div className="sidebar-listing-wrapper">
                 <SidebarListing params={params} />
               </div>
@@ -139,84 +149,88 @@ const index = ({ params }) => {
                 </div>
               </div>
             </div> */}
-            {/* End sidebar conent */}
+              {/* End sidebar conent */}
+            </div>
+            {/* End .row */}
           </div>
-          {/* End .row */}
-        </div>
-      </section>
-      <section className="our-listing bgc-f7 pb30-991 md-mt0 pt-0 ">
-        <div className="container">
-          <div className="row pt30">
-            <div className="col-lg-6 offset-lg-3">
-              <div className="main-title text-center mb40">
-                <h2>Anunturi de angajare în apropierea ta</h2>
+        </section>
+      )}
+
+      {userData?.userType === "Partener" ? null : (
+        <section className="our-listing bgc-f7 pb30-991 md-mt0 pt-0 ">
+          <div className="container">
+            <div className="row pt30">
+              <div className="col-lg-6 offset-lg-3">
+                <div className="main-title text-center mb40">
+                  <h2>Anunturi de angajare în apropierea ta</h2>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="row">
-            {/* <div className="col-lg-6">
-              <BreadCrumb2 titlu={"Clinici apropiați de tine"} />
-            </div> */}
-            {/* End .col */}
+            <div className="row">
+              {/* <div className="col-lg-6">
+      <BreadCrumb2 titlu={"Clinici apropiați de tine"} />
+    </div> */}
+              {/* End .col */}
 
-            {/* <div className="col-lg-6 position-relative">
-              <div className="listing_list_style mb20-xsd tal-991">
-                <GridListButton />
-              </div>
+              {/* <div className="col-lg-6 position-relative">
+      <div className="listing_list_style mb20-xsd tal-991">
+        <GridListButton />
+      </div>
 
-              <div className="dn db-991 mt30 mb0">
-                <ShowFilter />
-              </div>
-            </div> */}
-            {/* End .col filter grid list */}
-          </div>
-          {/* End Page Breadcrumb and Grid,List and filter Button */}
-
-          <div className="row">
-            <div className="col-md-12 col-lg-12">
-              {/* <div className="grid_list_search_result ">
-                <div className="row align-items-center">
-                  <FilterTopBar />
-                </div>
-              </div> */}
-              {/* End .row */}
-
-              <div className="row">
-                <ListaAnunturiClinici params={params} />
-              </div>
-              {/* End .row */}
+      <div className="dn db-991 mt30 mb0">
+        <ShowFilter />
+      </div>
+    </div> */}
+              {/* End .col filter grid list */}
             </div>
-            {/* End  page conent */}
-            {/* <div className="col-lg-4 col-xl-4">
-              <div className="sidebar-listing-wrapper">
-                <SidebarListing params={params} />
-              </div>
+            {/* End Page Breadcrumb and Grid,List and filter Button */}
 
-              <div
-                className="offcanvas offcanvas-start offcanvas-listing-sidebar"
-                tabIndex="-1"
-                id="sidebarListing"
-              >
-                <div className="offcanvas-header">
-                  <h5 className="offcanvas-title">Advanced Search</h5>
-                  <button
-                    type="button"
-                    className="btn-close text-reset"
-                    data-bs-dismiss="offcanvas"
-                    aria-label="Close"
-                  ></button>
-                </div>
-
-                <div className="offcanvas-body">
-                  <SidebarListing />
-                </div>
-              </div>
-            </div> */}
-            {/* End sidebar conent */}
-          </div>
-          {/* End .row */}
+            <div className="row">
+              <div className="col-md-12 col-lg-12">
+                {/* <div className="grid_list_search_result ">
+        <div className="row align-items-center">
+          <FilterTopBar />
         </div>
-      </section>
+      </div> */}
+                {/* End .row */}
+
+                <div className="row">
+                  <ListaAnunturiClinici params={params} />
+                </div>
+                {/* End .row */}
+              </div>
+              {/* End  page conent */}
+              {/* <div className="col-lg-4 col-xl-4">
+      <div className="sidebar-listing-wrapper">
+        <SidebarListing params={params} />
+      </div>
+
+      <div
+        className="offcanvas offcanvas-start offcanvas-listing-sidebar"
+        tabIndex="-1"
+        id="sidebarListing"
+      >
+        <div className="offcanvas-header">
+          <h5 className="offcanvas-title">Advanced Search</h5>
+          <button
+            type="button"
+            className="btn-close text-reset"
+            data-bs-dismiss="offcanvas"
+            aria-label="Close"
+          ></button>
+        </div>
+
+        <div className="offcanvas-body">
+          <SidebarListing />
+        </div>
+      </div>
+    </div> */}
+              {/* End sidebar conent */}
+            </div>
+            {/* End .row */}
+          </div>
+        </section>
+      )}
 
       {/* <!-- Property Cities --> */}
       {/* <section id="best-property" className="best-property bgc-f7">

@@ -9,10 +9,12 @@ import {
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { handleLogout } from "@/utils/authUtils";
+import { useAuth } from "@/context/AuthContext";
 
 const SidebarMenu = () => {
   const pathname = usePathname();
   const router = useRouter();
+  const { currentUser, userData, loading, setUserData } = useAuth();
 
   // const myProperties = [
   //   { id: 1, name: "General Elements", route: "/cardurile-mele" },
@@ -123,11 +125,13 @@ const SidebarMenu = () => {
               >
                 <Link
                   href={item.route}
-                  onClick={(e) => {
+                  onClick={async (e) => {
                     // Prevenim comportamentul default al link-ului dacă este necesar
                     if (item.name === "Deconectare") {
                       e.preventDefault();
-                      handleLogout();
+                      await thandleLogout().then(() => {
+                        setUserData({});
+                      });
                       router.push("/");
                     } else {
                       console.log("profile...");

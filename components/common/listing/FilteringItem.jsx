@@ -7,24 +7,10 @@ import {
   addFeatured,
   addStatusType,
 } from "../../../features/filter/filterSlice";
-import {
-  addAmenities,
-  addAreaMax,
-  addAreaMin,
-  addBathrooms,
-  addBedrooms,
-  addGarages,
-  addKeyword,
-  addLocation,
-  addPrice,
-  addPropertyType,
-  addStatus,
-  addYearBuilt,
-  resetAmenities,
-} from "../../../features/properties/propertiesSlice";
+
 import PricingRangeSlider from "../../common/PricingRangeSlider";
 import { v4 as uuidv4 } from "uuid";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { handleQueryFirestoreSubcollection } from "@/utils/firestoreUtils";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -34,24 +20,10 @@ import {
 import { formatTitulatura } from "@/utils/strintText";
 
 const FilteringItem = ({ params }) => {
-  const {
-    judete,
-    setSearchQueryPateneri,
-    searchQueryParteneri,
-    judet,
-    setSelectedJudet,
-    localitate,
-    setSelectedLocalitate,
-    specialitate,
-    setSelectedSpecialty,
-    titulatura,
-    setSelectedCategory,
-    setTipProgram,
-    tipProgram,
-    tipAnunt,
-    setTipAnunt,
-  } = useAuth();
+  const { judete, userData } = useAuth();
   const router = useRouter();
+
+  const searchParams = useSearchParams();
 
   const [selectedCategorie, setSelectedCategorie] = useState("");
   const [localitati, setLocalitati] = useState([]);
@@ -59,22 +31,30 @@ const FilteringItem = ({ params }) => {
   const [isLocalitateSelected, setIsLocalitateSelected] = useState(true);
   const [isCateogireSelected, setIsCategorieSelected] = useState(true);
 
+  const [searchQueryParteneri, setSearchQueryParteneri] = useState("");
+  const [judet, setJudet] = useState("");
+  const [localitate, setLocalitate] = useState("");
+  const [specialitate, setSpecialitate] = useState("");
+  const [titulatura, setTitulatura] = useState("");
+  const [tipAnunt, setTipAnunt] = useState("");
+  const [tipProgram, setTipProgram] = useState("");
+
   // Handler pentru schimbarea selectiei de judete
   const handleCategoryChange = (event) => {
-    setSelectedCategory(event.target.value);
-    setSelectedSpecialty(""); // Resetăm specialitatea atunci când schimbăm categoria
+    setTitulatura(event.target.value);
+    setSpecialitate(""); // Resetăm specialitatea atunci când schimbăm categoria
   };
 
   // Funcție pentru gestionarea schimbărilor pe selectul de specialități
   const handleSpecialtyChange = (event) => {
-    setSelectedSpecialty(event.target.value);
+    setSpecialitate(event.target.value);
   };
 
   // Handler pentru schimbarea selectiei de judete
   const handleJudetChange = async (e) => {
     const judetSelectedName = e.target.value; // Numele județului selectat, un string
 
-    setSelectedJudet(judetSelectedName);
+    setJudet(judetSelectedName);
     setIsJudetSelected(!!judetSelectedName);
 
     // Găsește obiectul județului selectat bazat pe `judet`
@@ -104,234 +84,112 @@ const FilteringItem = ({ params }) => {
 
   const handleLocalitateChange = (e) => {
     // Acesta ar trebui să arate numele localității ca string
-    setSelectedLocalitate(e.target.value);
+    setLocalitate(e.target.value);
     setIsLocalitateSelected(!!e.target.value);
   };
   const handleCategorieChange = (e) => {
-    setSelectedCategorie(e.target.value);
+    setTitulatura(e.target.value);
     setIsCategorieSelected(!!e.target.value);
   };
 
   // submit handler
   const submitHandler = () => {
-    console.log("test...", titulatura);
-    console.log("test...", specialitate);
-    console.log("test...", localitate);
-    console.log("test...", judet);
-
-    if (!titulatura && !specialitate && !localitate && !judet) {
-      router.push(`/anunturi`);
-      return;
+    let path = "/";
+    let query = "";
+    let defaultPathSegment;
+    if (userData) {
+      defaultPathSegment =
+        userData.userType === "Partener" ? "Doctor" : "Anunturi";
+    } else {
+      defaultPathSegment = "Anunturi";
     }
 
-    if (titulatura && specialitate && !judet && !localitate) {
-      setSelectedCategory(titulatura);
-      setSelectedSpecialty(specialitate);
-      router.push(
-        `/${titulatura.toLocaleLowerCase()}-${specialitate.toLocaleLowerCase()}`
-      );
-      return;
-    }
-    if (titulatura && !specialitate && !judet && !localitate) {
-      setSelectedCategory(titulatura);
-
-      router.push(`/${titulatura.toLocaleLowerCase()}`);
-      return;
-    }
-    if (titulatura && specialitate && judet && localitate) {
-      setSelectedCategory(titulatura);
-      setSelectedSpecialty(specialitate);
-      setSelectedLocalitate(localitate);
-      setSelectedJudet(judet);
-      router.push(
-        `/${titulatura.toLocaleLowerCase()}-${specialitate.toLocaleLowerCase()}/${judet.toLocaleLowerCase()}-${localitate.toLocaleLowerCase()}`
-      );
-      return;
-    }
-    if (titulatura && specialitate && judet && !localitate) {
-      setSelectedCategory(titulatura);
-      setSelectedSpecialty(specialitate);
-
-      setSelectedJudet(judet);
-      console.log("Asdadadasdasd");
-      router.push(
-        `/${titulatura.toLocaleLowerCase()}-${specialitate.toLocaleLowerCase()}/${judet.toLocaleLowerCase()}`
-      );
-      return;
-    }
-    if (!titulatura && !specialitate && judet && localitate) {
-      setSelectedLocalitate(localitate);
-      setSelectedJudet(judet);
-      router.push(
-        `/anunturi/${judet.toLocaleLowerCase()}-${localitate.toLocaleLowerCase()}`
-      );
-      return;
-    }
-    if (!titulatura && !specialitate && judet && !localitate) {
-      setSelectedJudet(judet.toLocaleLowerCase());
-      router.push(`/anunturi/${judet}`);
-      return;
-    }
-    if (titulatura && !specialitate && judet && !localitate) {
-      setSelectedJudet(judet);
-      router.push(
-        `/${titulatura.toLocaleLowerCase()}/${judet.toLocaleLowerCase()}`
-      );
-      return;
-    }
-  };
-
-  // useEffect(() => {
-  //   setSelectedCategory(undefined);
-  //   setSelectedSpecialty(undefined);
-  //   setSelectedLocalitate(undefined);
-  //   setSelectedJudet(undefined);
-  // }, []);
-
-  const {
-    keyword,
-    location,
-    status,
-    propertyType,
-    bathrooms,
-    bedrooms,
-    garages,
-    yearBuilt,
-    area,
-    amenities,
-  } = useSelector((state) => state.properties);
-
-  // input state
-  const [getKeyword, setKeyword] = useState(keyword);
-  const [getLocation, setLocation] = useState(location);
-  const [getStatus, setStatus] = useState(status);
-  const [getPropertiesType, setPropertiesType] = useState(propertyType);
-  const [getBathroom, setBathroom] = useState(bathrooms);
-  const [getBedroom, setBedroom] = useState(bedrooms);
-  const [getGarages, setGarages] = useState(garages);
-  const [getBuiltYear, setBuiltYear] = useState(yearBuilt);
-  const [getAreaMin, setAreaMin] = useState(area.min);
-  const [getAreaMax, setAreaMax] = useState(area.max);
-
-  // advanced state
-  const [getAdvanced, setAdvanced] = useState([
-    { id: uuidv4(), name: "Air Conditioning" },
-    { id: uuidv4(), name: "Barbeque" },
-    { id: uuidv4(), name: "Gym" },
-    { id: uuidv4(), name: "Microwave" },
-    { id: uuidv4(), name: "TV Cable" },
-    { id: uuidv4(), name: "Lawn" },
-    { id: uuidv4(), name: "Refrigerator" },
-    { id: uuidv4(), name: "Swimming Pool" },
-    { id: uuidv4(), name: "WiFi" },
-    { id: uuidv4(), name: "Sauna" },
-    { id: uuidv4(), name: "Dryer" },
-    { id: uuidv4(), name: "Washer" },
-    { id: uuidv4(), name: "Laundry" },
-    { id: uuidv4(), name: "Outdoor Shower" },
-    { id: uuidv4(), name: "Window Coverings" },
-  ]);
-
-  const dispath = useDispatch();
-
-  // keyword
-  useEffect(() => {
-    dispath(addKeyword(getKeyword));
-  }, [dispath, getKeyword]);
-
-  // location
-  useEffect(() => {
-    dispath(addLocation(getLocation));
-  }, [dispath, getLocation]);
-
-  // status
-  useEffect(() => {
-    dispath(addStatus(getStatus));
-  }, [dispath, getStatus]);
-
-  // properties type
-  useEffect(() => {
-    dispath(addPropertyType(getPropertiesType));
-  }, [dispath, getPropertiesType]);
-
-  // bathroom
-  useEffect(() => {
-    dispath(addBathrooms(getBathroom));
-  }, [dispath, getBathroom]);
-
-  // bedroom
-  useEffect(() => {
-    dispath(addBedrooms(getBedroom));
-  }, [dispath, getBedroom]);
-
-  // garages
-  useEffect(() => {
-    dispath(addGarages(getGarages));
-  }, [dispath, getGarages]);
-
-  // built years
-  useEffect(() => {
-    dispath(addYearBuilt(getBuiltYear));
-  }, [dispath, getBuiltYear]);
-
-  // area min
-  useEffect(() => {
-    dispath(dispath(addAreaMin(getAreaMin)));
-  }, [dispath, getAreaMin]);
-
-  // area max
-  useEffect(() => {
-    dispath(dispath(addAreaMax(getAreaMax)));
-  }, [dispath, getAreaMax]);
-
-  // clear filter
-  const clearHandler = () => {
-    clearAllFilters();
-  };
-
-  const clearAllFilters = () => {
-    setKeyword("");
-    setLocation("");
-    setStatus("");
-    setPropertiesType("");
-    dispath(addPrice({ min: 10000, max: 20000 }));
-    setBathroom("");
-    setBedroom("");
-    setBedroom("");
-    setGarages("");
-    setBuiltYear("");
-    setAreaMin("");
-    setAreaMax("");
-    dispath(resetAmenities());
-    dispath(addStatusType(""));
-    dispath(addFeatured(""));
-    clearAdvanced();
-  };
-
-  // clear advanced
-  const clearAdvanced = () => {
-    const changed = getAdvanced.map((item) => {
-      item.isChecked = false;
-      return item;
-    });
-    setAdvanced(changed);
-  };
-
-  // add advanced
-  const advancedHandler = (id) => {
-    const data = getAdvanced.map((feature) => {
-      if (feature.id === id) {
-        if (feature.isChecked) {
-          feature.isChecked = false;
-        } else {
-          feature.isChecked = true;
-        }
+    // Build the URL path based on the provided params
+    if (titulatura) {
+      path += `${titulatura.toLocaleLowerCase()}`;
+      if (judet) path += `__${judet.toLocaleLowerCase()}`;
+    } else {
+      if (judet) {
+        path += `${defaultPathSegment.toLocaleLowerCase()}__${judet.toLocaleLowerCase()}`;
+      } else {
+        path += `${defaultPathSegment.toLocaleLowerCase()}`;
       }
-      return feature;
-    });
+    }
 
-    setAdvanced(data);
+    // Remove trailing slash if there are no query parameters
+    path = path.replace(/\/$/, "");
+
+    // Build query parameters string
+    if (tipAnunt) query += `?tipAnunt=${tipAnunt}`;
+    if (tipProgram) {
+      query += query
+        ? `&tipProgram=${tipProgram}`
+        : `?tipProgram=${tipProgram}`;
+    }
+    if (searchQueryParteneri) {
+      query += query
+        ? `&searchQueryParteneri=${searchQueryParteneri}`
+        : `?searchQueryParteneri=${searchQueryParteneri}`;
+    }
+    if (specialitate) {
+      query += query
+        ? `&specialitate=${specialitate}`
+        : `?specialitate=${specialitate}`;
+    }
+    if (localitate) {
+      query += query
+        ? `&localitate=${localitate}`
+        : `?localitate=${localitate}`;
+    }
+    if (judet) {
+      query += query ? `&judet=${judet}` : `?judet=${judet}`;
+    }
+    if (titulatura) {
+      query += query
+        ? `&titulatura=${titulatura}`
+        : `?titulatura=${titulatura}`;
+    }
+
+    // Use Next.js Router to navigate with the path and query parameters
+    router.push(`${path}${query}`);
   };
+
+  const handleGetAnunturi = async () => {
+    let tipProgram = searchParams.get("tipProgram");
+    let tipAnunt = searchParams.get("tipAnunt");
+    let searchQueryParteneri = searchParams.get("searchQueryParteneri");
+    let localitate = searchParams.get("localitate");
+    let specialitate = searchParams.get("specialitate");
+    let titulatura = searchParams.get("titulatura");
+    let judet = searchParams.get("judet");
+
+    // const parts = params[0].split("__");
+    // let judet = (parts[1] || "")
+    //   .split("-") // Împarte șirul în părți folosind `-` ca separator
+    //   .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Transformă prima literă a fiecărui cuvânt în majusculă
+    //   .join("-"); // Reunește părțile într-un singur șir, cu `-` între ele
+    // let titulatura = parts[0] || "";
+
+    setTipProgram(tipProgram);
+    setTipAnunt(tipAnunt);
+    setSearchQueryParteneri(searchQueryParteneri);
+    setLocalitate(localitate);
+    setSpecialitate(specialitate);
+    setJudet(judet);
+    setTitulatura(titulatura);
+    console.log("----------test...aici...filters...----------");
+    console.log("test...aici...filters...", tipProgram);
+    console.log("test...aici...filters...", tipAnunt);
+    console.log("test...aici...filters...", searchQueryParteneri);
+    console.log("test...aici...filters...", localitate);
+    console.log("test...aici...filters...", specialitate);
+    console.log("test...aici...filters...", judet);
+    console.log("test...aici...filters...", titulatura);
+  };
+
+  useEffect(() => {
+    handleGetAnunturi();
+  }, []);
 
   return (
     <ul className="sasw_list mb0">
@@ -342,7 +200,7 @@ const FilteringItem = ({ params }) => {
             className="form-control"
             placeholder="Cauta dupa cuvant..."
             value={searchQueryParteneri}
-            onChange={(e) => setSearchQueryPateneri(e.target.value)}
+            onChange={(e) => setSearchQueryParteneri(e.target.value)}
           />
           <label>
             <span className="flaticon-magnifying-glass"></span>
@@ -501,192 +359,6 @@ const FilteringItem = ({ params }) => {
           </div>
         </li>
       )}
-      {/* End li */}
-
-      {/* <li>
-        <div className="small_dropdown2">
-          <div
-            id="prncgs2"
-            className="btn dd_btn"
-            data-bs-toggle="dropdown"
-            data-bs-auto-close="outside"
-            aria-expanded="false"
-          >
-            <span>Price Range</span>
-            <label htmlFor="prncgs2">
-              <span className="fa fa-angle-down"></span>
-            </label>
-          </div>
-          <div className="dd_content2 style2 dropdown-menu">
-            <div className="pricing_acontent ">
-              <PricingRangeSlider />
-            </div>
-          </div>
-        </div>
-      </li> */}
-      {/* End li */}
-
-      {/* <li>
-        <div className="search_option_two">
-          <div className="candidate_revew_select">
-            <select
-              onChange={(e) => setBathroom(e.target.value)}
-              className="selectpicker w100 show-tick form-select"
-              value={getBathroom}
-            >
-              <option value="">Bathrooms</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-            </select>
-          </div>
-        </div>
-      </li> */}
-      {/* End li */}
-
-      {/* <li>
-        <div className="search_option_two">
-          <div className="candidate_revew_select">
-            <select
-              onChange={(e) => setBedroom(e.target.value)}
-              className="selectpicker w100 show-tick form-select"
-              value={getBedroom}
-            >
-              <option value="">Bedrooms</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-            </select>
-          </div>
-        </div>
-      </li> */}
-      {/* End li */}
-
-      {/* <li>
-        <div className="search_option_two">
-          <div className="candidate_revew_select">
-            <select
-              onChange={(e) => setGarages(e.target.value)}
-              className="selectpicker w100 show-tick form-select"
-              value={getGarages}
-            >
-              <option value="">Garages</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
-              <option value="other">Others</option>
-            </select>
-          </div>
-        </div>
-      </li> */}
-      {/* End li */}
-
-      {/* <li>
-        <div className="search_option_two">
-          <div className="candidate_revew_select">
-            <select
-              onChange={(e) => setBuiltYear(e.target.value)}
-              className="selectpicker w100 show-tick form-select"
-              value={getBuiltYear}
-            >
-              <option value="">Year built</option>
-              <option value="2013">2013</option>
-              <option value="2014">2014</option>
-              <option value="2015">2015</option>
-              <option value="2016">2016</option>
-              <option value="2017">2017</option>
-              <option value="2018">2018</option>
-              <option value="2019">2019</option>
-              <option value="2020">2020</option>
-            </select>
-          </div>
-        </div>
-      </li> */}
-      {/* End li */}
-
-      {/* <li className="min_area list-inline-item">
-        <div className="form-group mb-4">
-          <input
-            type="number"
-            className="form-control"
-            id="exampleInputName2"
-            placeholder="Min Area"
-            value={getAreaMin}
-            onChange={(e) => setAreaMin(e.target.value)}
-          />
-        </div>
-      </li> */}
-      {/* End li */}
-
-      {/* <li className="max_area list-inline-item">
-        <div className="form-group mb-4">
-          <input
-            type="number"
-            className="form-control"
-            id="exampleInputName3"
-            placeholder="Max Area"
-            value={getAreaMax}
-            onChange={(e) => setAreaMax(e.target.value)}
-          />
-        </div>
-      </li> */}
-      {/* End li */}
-
-      {/* <li>
-        <div id="accordion" className="panel-group">
-          <div className="panel">
-            <div className="panel-heading">
-              <h4 className="panel-title">
-                <a
-                  href="#panelBodyRating"
-                  className="accordion-toggle link"
-                  data-bs-toggle="collapse"
-                  data-bs-parent="#accordion"
-                >
-                  <i className="flaticon-more"></i> Advanced features
-                </a>
-              </h4>
-            </div>
-
-            <div id="panelBodyRating" className="panel-collapse collapse">
-              <div className="panel-body row">
-                <div className="col-lg-12">
-                  <ul className="ui_kit_checkbox selectable-list fn-400">
-                    {getAdvanced?.map((feature) => (
-                      <li key={feature.id}>
-                        <div className="form-check custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            id={feature.id}
-                            value={feature.name}
-                            checked={feature.isChecked || false}
-                            onChange={(e) =>
-                              dispath(addAmenities(e.target.value))
-                            }
-                            onClick={() => advancedHandler(feature.id)}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={feature.id}
-                          >
-                            {feature.name}
-                          </label>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </li> */}
       {/* End li */}
 
       <li>

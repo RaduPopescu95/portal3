@@ -8,7 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { handleLogout } from "@/utils/authUtils";
 
 const MyAccount = () => {
-  const { userData, currentUser } = useAuth();
+  const { userData, currentUser, setUserData } = useAuth();
   const pathname = usePathname();
   const profileMenuItems = [
     { id: 1, name: "Profil", ruterPath: "/profil-partener" },
@@ -47,11 +47,13 @@ const MyAccount = () => {
                 ? { color: "#0000FF" }
                 : undefined
             }
-            onClick={(e) => {
+            onClick={async (e) => {
               // Prevenim comportamentul default al link-ului dacă este necesar
               if (item.name === "Deconectare") {
                 e.preventDefault();
-                handleLogout();
+                await handleLogout().then(() => {
+                  setUserData({});
+                });
                 router.push("/");
               } else {
                 console.log("other...");

@@ -17,12 +17,14 @@ import {
 } from "@/utils/constanteTitulatura";
 import { formatTitulatura } from "@/utils/strintText";
 import AutocompleteInput from "@/components/common/AutocompleteInput";
+import { isSameOrAfter, isSameOrBefore } from "@/utils/commonUtils";
 
 const CreateList = ({ oferta }) => {
   const { currentUser, userData, judete } = useAuth();
   const router = useRouter();
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingActivare, setIsLoadingActivare] = useState(false);
   const [pretIntreg, setPretIntreg] = useState(oferta?.pretIntreg || "");
   const [pretRedus, setPretRedus] = useState(oferta?.pretRedus || "");
   const [procentReducere, setProcentReducere] = useState(
@@ -349,6 +351,44 @@ const CreateList = ({ oferta }) => {
       setIsLoading(false);
       console.error("Eroare la adaugarea anuntului: ", error);
       showAlert(`Eroare la crearea anuntului: ${error.message}`, "danger");
+    }
+  };
+  const handleActivateOffer = async () => {
+    setIsLoadingActivare(true);
+    setButtonPressed(true);
+    console.log("currentUser...", currentUser.uid);
+    console.log("userData...", userData);
+    console.log("files...", files);
+    let lg = {};
+    try {
+      const currentDate = new Date();
+      const deactivationDate = new Date(
+        currentDate.setDate(currentDate.getDate() + 30)
+      );
+      const formattedDeactivationDate = deactivationDate
+        .toISOString()
+        .split("T")[0]; // Formatează data în formatul "YYYY-MM-DD"
+
+      let data = {
+        dataDezactivare: formattedDeactivationDate,
+      };
+      console.log("activare data....", data);
+      const actionText = `${userData.numeUtilizator} a reactivat anuntul de angajare ${titluOferta}, acum avand data de dezactivare ${formattedDeactivationDate}`;
+
+      await handleUpdateFirestoreSubcollection(
+        data,
+        `Users/${currentUser.uid}/Anunturi/${oferta.documentId}`,
+        actionText
+      );
+      resetState();
+      setIsLoadingActivare(false);
+      showAlert("Anunt a fost reactivat cu succes!", "success");
+      setButtonPressed(false);
+    } catch (error) {
+      setButtonPressed(false);
+      setIsLoadingActivare(false);
+      console.error("Eroare la reactivarea anuntului: ", error);
+      showAlert(`Eroare la reactivarea anuntului: ${error.message}`, "danger");
     }
   };
 
@@ -783,8 +823,32 @@ const CreateList = ({ oferta }) => {
         </div>
       </div> */}
       {/* End .col */}
+      {(() => {
+        const today = new Date();
+        const startDate = new Date(oferta.dataActivare);
+        const endDate = new Date(oferta.dataDezactivare);
 
-      <div className="col-xl-12">
+        const isActive =
+          isSameOrAfter(today, startDate) && isSameOrBefore(today, endDate);
+
+        if (isActive) {
+          return null;
+        } else {
+          return (
+            <div className="col-xl-6">
+              <div className="my_profile_setting_input">
+                <button
+                  onClick={handleActivateOffer}
+                  className="btn btn2 float-start"
+                >
+                  {isLoadingActivare ? <CommonLoader /> : "Activeză"}
+                </button>
+              </div>
+            </div>
+          );
+        }
+      })()}
+      <div className="col-xl-6">
         <div className="my_profile_setting_input">
           {alert.show && (
             <div className={`alert alert-${alert.type} mb-0`}>

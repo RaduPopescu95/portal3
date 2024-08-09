@@ -1,4 +1,5 @@
 import {
+  handleGetSubcollections,
   handleQueryFirestoreSubcollection,
   handleQueryFirestoreSubcollectionCinciParam,
   handleQueryFirestoreSubcollectionPatruParam,
@@ -77,15 +78,21 @@ export const closeSignupModal = (modalId) => {
 
 export const filtrareClinici = (parteneriFiltrati, searchQueryParteneri) => {
   // Împărțim query-ul de căutare în cuvinte individuale
-  const searchTerms = searchQueryParteneri
-    .split(/\s+/)
-    .map((term) => term.toLowerCase());
+  const normalizeText = (text) =>
+    text
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+
+  // Împărțim query-ul de căutare în cuvinte individuale, eliminăm diacriticele și transformăm în litere mici
+  const searchTerms = searchQueryParteneri.split(/\s+/).map(normalizeText);
 
   // Funcție care verifică dacă toate cuvintele de căutare apar în text
   const matchesSearch = (text) => {
-    const lowercasedText = text.toLowerCase();
-    return searchTerms.every((term) => lowercasedText.includes(term));
+    const normalizedText = normalizeText(text);
+    return searchTerms.every((term) => normalizedText.includes(term));
   };
+
   // Filtrăm partenerii pe baza denumirii brandului, categoriilor, adresei, descrierii, telefonului și emailului
   const parteneriFiltratiGasiti = parteneriFiltrati.filter(
     (partener) =>
@@ -109,14 +116,19 @@ export const filtrareCadreMedicale = (
   searchQueryParteneri
 ) => {
   // Împărțim query-ul de căutare în cuvinte individuale
-  const searchTerms = searchQueryParteneri
-    .split(/\s+/)
-    .map((term) => term.toLowerCase());
+  const normalizeText = (text) =>
+    text
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+
+  // Împărțim query-ul de căutare în cuvinte individuale, eliminăm diacriticele și transformăm în litere mici
+  const searchTerms = searchQueryParteneri.split(/\s+/).map(normalizeText);
 
   // Funcție care verifică dacă toate cuvintele de căutare apar în text
   const matchesSearch = (text) => {
-    const lowercasedText = text.toLowerCase();
-    return searchTerms.every((term) => lowercasedText.includes(term));
+    const normalizedText = normalizeText(text);
+    return searchTerms.every((term) => normalizedText.includes(term));
   };
 
   // Filtrăm partenerii pe baza denumirii brandului, categoriilor, adresei, descrierii, telefonului și emailului
@@ -311,124 +323,94 @@ export const processParams = (params) => {
 
 // ANUNTURI PAGE QUERY
 
-export const handleGetAnunturiArray = async (t, s, j, l, tA) => {
+export const handleGetAnunturiArray = async (t, s, j, l, tA, tP) => {
   let anunturi = [];
-  const titulatura = (t ?? "").toLowerCase();
-  const specialitate = (s ?? "").toLowerCase();
-  const judet = (j ?? "").toLowerCase();
-  let localitate = (l ?? "").toLowerCase();
-  const tipAnunt = tA;
-  let localitateQuery = "localitateQ";
+  const titulatura = t ?? "";
+  const specialitate = s ?? "";
+  const judet = j ?? "";
+  let localitate = l ?? "";
+  const tipAnunt = tA ?? "";
+  const tipProgram = tP ?? "";
+  let localitateQuery = "localitate";
 
   if (judet === "bucuresti") {
     console.log("judet...is...bucuresti and...localitate is....", localitate);
-    localitateQuery = "sectorQ";
+    localitateQuery = "sector";
   }
 
+  console.log("---------------in handleGetAnunturiArray...----------");
   console.log("in handleGetAnunturiArray...", titulatura);
   console.log("in handleGetAnunturiArray...", specialitate);
   console.log("in handleGetAnunturiArray...", judet);
   console.log("in handleGetAnunturiArray...", localitate);
   console.log("in handleGetAnunturiArray...", localitateQuery);
   console.log("in handleGetAnunturiArray...", tipAnunt);
-  if (titulatura && specialitate && judet && localitate) {
-    console.log("here");
-    // Presupunem că "tipAnunt" și "status" sunt valori constante
-    anunturi = await handleQueryFirestoreSubcollectionSaseParam(
+  if (titulatura && judet) {
+    if (titulatura === "anunturi") {
+      anunturi = await handleQueryFirestoreSubcollection(
+        "Anunturi",
+        "judet",
+        judet
+      );
+    } else {
+      anunturi = await handleQueryFirestoreSubcollection(
+        "Anunturi",
+        "judet",
+        judet,
+        "titulatura",
+        titulatura
+      );
+    }
+  } else if (titulatura && !judet) {
+    if (titulatura === "anunturi") {
+      anunturi = await handleGetSubcollections("Anunturi");
+    } else {
+      anunturi = await handleQueryFirestoreSubcollection(
+        "Anunturi",
+        "titulatura",
+        titulatura
+      );
+    }
+  } else if (!titulatura && judet) {
+    anunturi = await handleQueryFirestoreSubcollection(
       "Anunturi",
-      "tipAnunt",
-      tipAnunt, // presupunem că "tipAnunt" este o variabilă disponibilă
-      "status",
-      "Activa",
-      "titulaturaQ",
-      titulatura,
-      "specialitateQ",
-      specialitate,
-      "judetQ",
-      judet,
-      localitateQuery,
-      localitate
-    );
-  } else if (titulatura && specialitate && !judet && !localitate) {
-    console.log("here1");
-    anunturi = await handleQueryFirestoreSubcollectionPatruParam(
-      "Anunturi",
-      "tipAnunt",
-      tipAnunt, // presupunem că "tipAnunt" este o variabilă disponibilă
-      "status",
-      "Activa",
-      "titulaturaQ",
-      titulatura,
-      "specialitateQ",
-      specialitate
-    );
-  } else if (titulatura && !specialitate && !judet && !localitate) {
-    console.log("here2");
-    anunturi = await handleQueryFirestoreSubcollectionTripleParam(
-      "Anunturi",
-      "tipAnunt",
-      tipAnunt, // presupunem că "tipAnunt" este o variabilă disponibilă
-      "status",
-      "Activa",
-      "titulaturaQ",
-      titulatura
-    );
-  } else if (titulatura && specialitate && judet && !localitate) {
-    console.log("here3....", titulatura);
-    console.log("here3", specialitate);
-    console.log("here3", judet);
-
-    anunturi = await handleQueryFirestoreSubcollectionCinciParam(
-      "Anunturi",
-      "tipAnunt",
-      tipAnunt, // presupunem că "tipAnunt" este o variabilă disponibilă
-      "status",
-      "Activa",
-      "titulaturaQ",
-      titulatura,
-      "specialitateQ",
-      specialitate,
-      "judetQ",
+      "judet",
       judet
     );
-    console.log("here3", anunturi);
-  } else if (!titulatura && !specialitate && judet && localitate) {
-    console.log("here4");
-    anunturi = await handleQueryFirestoreSubcollectionPatruParam(
-      "Anunturi",
-      "tipAnunt",
-      tipAnunt, // presupunem că "tipAnunt" este o variabilă disponibilă
-      "status",
-      "Activa",
-      localitateQuery,
-      localitate,
-      "judetQ",
-      judet
-    );
-  } else if (!titulatura && !specialitate && judet && !localitate) {
-    console.log("here5");
-    anunturi = await handleQueryFirestoreSubcollectionTripleParam(
-      "Anunturi",
-      "tipAnunt",
-      tipAnunt, // presupunem că "tipAnunt" este o variabilă disponibilă
-      "status",
-      "Activa",
-      "judetQ",
-      judet
-    );
-  } else if (titulatura && !specialitate && judet && !localitate) {
-    console.log("here6");
-    anunturi = await handleQueryFirestoreSubcollectionPatruParam(
-      "Anunturi",
-      "tipAnunt",
-      tipAnunt, // presupunem că "tipAnunt" este o variabilă disponibilă
-      "status",
-      "Activa",
-      "judetQ",
-      judet,
-      "titulaturaQ",
-      titulatura
-    );
+  } else {
+    anunturi = await handleGetSubcollections("Anunturi");
   }
+  console.log("before filter....", anunturi);
+  // Filtrarea array-ului `anunturi` pe baza proprietăților doar dacă sunt definite și nu sunt șiruri goale
+  anunturi = anunturi.filter((anunt) => {
+    const matchesTipProgram =
+      tipProgram && tipProgram !== "" ? anunt.tipProgram === tipProgram : true;
+    const matchesTipAnunt =
+      tipAnunt && tipAnunt !== "" ? anunt.tipAnunt === tipAnunt : true;
+    const matchesLocalitate =
+      localitate && localitate !== ""
+        ? anunt[localitateQuery] && anunt[localitateQuery] === localitate
+        : true;
+    const matchesSpecialitate =
+      specialitate && specialitate !== ""
+        ? anunt.specialitate && anunt.specialitate === specialitate
+        : true;
+
+    return (
+      matchesTipProgram &&
+      matchesTipAnunt &&
+      matchesLocalitate &&
+      matchesSpecialitate
+    );
+  });
+  console.log("after filter....", anunturi);
   return anunturi;
+};
+
+export const isSameOrAfter = (date1, date2) => {
+  return date1.setHours(0, 0, 0, 0) >= date2.setHours(0, 0, 0, 0);
+};
+
+export const isSameOrBefore = (date1, date2) => {
+  return date1.setHours(0, 0, 0, 0) <= date2.setHours(0, 0, 0, 0);
 };

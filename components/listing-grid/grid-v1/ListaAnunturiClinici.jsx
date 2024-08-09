@@ -47,8 +47,12 @@ const ListaAnunturiClinici = ({ params }) => {
   const { statusType, featured, isGridOrList } = useSelector(
     (state) => state.filter
   );
-  const { currentUser, setSearchQueryPateneri, searchQueryParteneri } =
-    useAuth();
+  const {
+    currentUser,
+    setSearchQueryPateneri,
+    searchQueryParteneri,
+    userData,
+  } = useAuth();
 
   const [parteneri, setParteneri] = useState([]);
   const [cadreMedicale, setCadreMedical] = useState([]);

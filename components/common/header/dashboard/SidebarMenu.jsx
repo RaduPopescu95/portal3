@@ -13,7 +13,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useEffect } from "react";
 
 const SidebarMenu = ({ partenerId }) => {
-  const { currentUser, userData, loading } = useAuth();
+  const { currentUser, userData, loading, setUserData } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -141,13 +141,15 @@ const SidebarMenu = ({ partenerId }) => {
               >
                 <Link
                   href={item.route}
-                  onClick={(e) => {
+                  onClick={async (e) => {
                     // Prevenim comportamentul default al link-ului dacă este necesar
                     if (item.name === "Deconectare") {
                       e.preventDefault();
                       console.log(userData);
                       console.log(currentUser);
-                      handleLogout();
+                      await handleLogout().then(() => {
+                        setUserData({});
+                      });
                       router.push("/");
                     } else {
                       console.log("profile...");

@@ -7,6 +7,7 @@ import SidebarMenu from "@/components/common/header/dashboard-utilizator/Sidebar
 import MobileMenu from "@/components/common/header/MobileMenu";
 import CreateList from "@/components/dashboard-utilizator/creaza-anunt-cadru-medical/CreateList";
 import { unstable_noStore as noStore } from "next/cache";
+import { isSameOrAfter, isSameOrBefore } from "@/utils/commonUtils";
 
 const index = async ({ params }) => {
   noStore();
@@ -66,7 +67,12 @@ const index = async ({ params }) => {
 
                 <div className="col-lg-12 mb10">
                   <div className="breadcrumb_content style2">
-                    <h2 className="breadcrumb_title">Creaza anunt angajare</h2>
+                    <h2 className="breadcrumb_title">
+                      {" "}
+                      {oferta[0].dataDezactivare
+                        ? "Actualizeaza anunt"
+                        : "Creaza anunt angajare"}
+                    </h2>
                     {/* <p>We are glad to see you again!</p> */}
                   </div>
                 </div>
@@ -75,9 +81,40 @@ const index = async ({ params }) => {
                 <div className="col-lg-12">
                   <div className="my_dashboard_review">
                     <div className="row">
-                      <div className="col-lg-12">
-                        <h3 className="mb30">Creaza anunt angajare</h3>
+                      <div className="col-lg-10">
+                        <h3 className="mb30">
+                          {oferta[0].dataDezactivare
+                            ? "Actualizeaza anunt"
+                            : "Creaza anunt angajare"}
+                        </h3>
                       </div>
+                      {(() => {
+                        const today = new Date();
+                        const startDate = new Date(oferta[0].dataActivare);
+                        const endDate = new Date(oferta[0].dataDezactivare);
+
+                        const isActive =
+                          isSameOrAfter(today, startDate) &&
+                          isSameOrBefore(today, endDate);
+
+                        if (isActive) {
+                          return (
+                            <div className="col-lg-2">
+                              <h3 className="mb30 status_tag badge">
+                                Anunt activ
+                              </h3>
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <div className="col-lg-2">
+                              <h3 className="mb30 status_tag redbadge">
+                                Anunt inactiv
+                              </h3>
+                            </div>
+                          );
+                        }
+                      })()}
 
                       <CreateList oferta={oferta[0]} />
                     </div>

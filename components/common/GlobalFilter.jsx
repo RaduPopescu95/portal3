@@ -20,44 +20,36 @@ import { formatTitulatura } from "@/utils/strintText";
 
 const GlobalFilter = ({ className = "" }) => {
   const router = useRouter();
-  const {
-    judete,
-    setSearchQueryPateneri,
-    searchQueryParteneri,
-    judet,
-    setSelectedJudet,
-    localitate,
-    setSelectedLocalitate,
-    specialitate,
-    setSelectedSpecialty,
-    titulatura,
-    setSelectedCategory,
-    setTipAnunt,
-    tipAnunt,
-  } = useAuth();
-
+  const { judete, userData } = useAuth();
   const [selectedCategorie, setSelectedCategorie] = useState("");
-  const [localitati, setLocalitati] = useState([]);
   const [isJudetSelected, setIsJudetSelected] = useState(true);
   const [isLocalitateSelected, setIsLocalitateSelected] = useState(true);
   const [isCateogireSelected, setIsCategorieSelected] = useState(true);
+  const [searchQueryParteneri, setSearchQueryParteneri] = useState("");
+  const [judet, setJudet] = useState("");
+  const [localitate, setLocalitate] = useState("");
+  const [specialitate, setSpecialitate] = useState("");
+  const [titulatura, setTitulatura] = useState("");
+  const [tipAnunt, setTipAnunt] = useState("");
+  const [tipProgram, setTipProgram] = useState("");
+  const [localitati, setLocalitati] = useState([]);
 
   // Funcție pentru gestionarea schimbărilor pe selectul de categorii
   const handleCategoryChange = (event) => {
-    setSelectedCategory(event.target.value);
-    setSelectedSpecialty(""); // Resetăm specialitatea atunci când schimbăm categoria
+    setTitulatura(event.target.value);
+    setSpecialitate(""); // Resetăm specialitatea atunci când schimbăm categoria
   };
 
   // Funcție pentru gestionarea schimbărilor pe selectul de specialități
   const handleSpecialtyChange = (event) => {
-    setSelectedSpecialty(event.target.value);
+    setSpecialitate(event.target.value);
   };
 
   // Handler pentru schimbarea selectiei de judete
   const handleJudetChange = async (e) => {
     const judetSelectedName = e.target.value; // Numele județului selectat, un string
 
-    setSelectedJudet(judetSelectedName);
+    setJudet(judetSelectedName);
     setIsJudetSelected(!!judetSelectedName);
 
     // Găsește obiectul județului selectat bazat pe `judet`
@@ -87,7 +79,7 @@ const GlobalFilter = ({ className = "" }) => {
 
   const handleLocalitateChange = (e) => {
     // Acesta ar trebui să arate numele localității ca string
-    setSelectedLocalitate(e.target.value);
+    setLocalitate(e.target.value);
     setIsLocalitateSelected(!!e.target.value);
   };
   const handleCategorieChange = (e) => {
@@ -95,80 +87,87 @@ const GlobalFilter = ({ className = "" }) => {
     setIsCategorieSelected(!!e.target.value);
   };
 
-  // submit handler
+  // Submit handler for form submission
   const submitHandler = () => {
-    console.log("test...", titulatura);
-    console.log("test...", specialitate);
-    console.log("test...", localitate);
-    console.log("test...", judet);
-
-    if (!titulatura && !specialitate && !localitate && !judet) {
-      router.push(`/anunturi`);
-      return;
+    let path = "/";
+    let query = "";
+    let defaultPathSegment;
+    if (userData) {
+      defaultPathSegment =
+        userData.userType === "Partener" ? "Doctor" : "Anunturi";
+    } else {
+      defaultPathSegment = "Anunturi";
     }
 
-    if (titulatura && specialitate && !judet && !localitate) {
-      setSelectedCategory(titulatura);
-      setSelectedSpecialty(specialitate);
-      router.push(
-        `/${titulatura.toLocaleLowerCase()}-${specialitate.toLocaleLowerCase()}`
-      );
-      return;
+    // Build the URL path based on the provided params
+    if (titulatura) {
+      path += `${titulatura.toLocaleLowerCase()}`;
+      if (judet) path += `-${judet.toLocaleLowerCase()}`;
+    } else {
+      if (judet) {
+        path += `${defaultPathSegment.toLocaleLowerCase()}-${judet.toLocaleLowerCase()}`;
+      } else {
+        path += `${defaultPathSegment.toLocaleLowerCase()}`;
+      }
     }
-    if (titulatura && !specialitate && !judet && !localitate) {
-      setSelectedCategory(titulatura);
 
-      router.push(`/${titulatura.toLocaleLowerCase()}`);
-      return;
-    }
-    if (titulatura && specialitate && judet && localitate) {
-      setSelectedCategory(titulatura);
-      setSelectedSpecialty(specialitate);
-      setSelectedLocalitate(localitate);
-      setSelectedJudet(judet);
-      router.push(
-        `/${titulatura.toLocaleLowerCase()}-${specialitate.toLocaleLowerCase()}/${judet.toLocaleLowerCase()}-${localitate.toLocaleLowerCase()}`
-      );
-      return;
-    }
-    if (titulatura && specialitate && judet && !localitate) {
-      setSelectedCategory(titulatura);
-      setSelectedSpecialty(specialitate);
+    // Remove trailing slash if there are no query parameters
+    path = path.replace(/\/$/, "");
 
-      setSelectedJudet(judet.toLocaleLowerCase());
-      router.push(
-        `/${titulatura.toLocaleLowerCase()}-${specialitate.toLocaleLowerCase()}/${judet.toLocaleLowerCase()}`
-      );
-      return;
+    // Build query parameters string
+    const tAnunt =
+      userData.userType === "Partener"
+        ? "Anunturi Cadre Medicale"
+        : "Doctor"
+        ? "Clinica"
+        : tipAnunt;
+
+    if (tAnunt) query += `?tipAnunt=${tAnunt}`;
+    if (tipProgram) {
+      query += query
+        ? `&tipProgram=${tipProgram}`
+        : `?tipProgram=${tipProgram}`;
     }
-    if (!titulatura && !specialitate && judet && localitate) {
-      setSelectedLocalitate(localitate);
-      setSelectedJudet(judet);
-      router.push(
-        `/anunturi/${judet.toLocaleLowerCase()}-${localitate.toLocaleLowerCase()}`
-      );
-      return;
+    if (searchQueryParteneri) {
+      query += query
+        ? `&searchQueryParteneri=${searchQueryParteneri}`
+        : `?searchQueryParteneri=${searchQueryParteneri}`;
     }
-    if (!titulatura && !specialitate && judet && !localitate) {
-      setSelectedJudet(judet);
-      router.push(`/anunturi/${judet.toLocaleLowerCase()}`);
-      return;
+    if (specialitate) {
+      query += query
+        ? `&specialitate=${specialitate}`
+        : `?specialitate=${specialitate}`;
     }
-    if (titulatura && !specialitate && judet && !localitate) {
-      setSelectedJudet(judet);
-      router.push(
-        `/${titulatura.toLocaleLowerCase()}/${judet.toLocaleLowerCase()}`
-      );
-      return;
+    if (localitate) {
+      query += query
+        ? `&localitate=${localitate}`
+        : `?localitate=${localitate}`;
     }
+    if (judet) {
+      query += query ? `&judet=${judet}` : `?judet=${judet}`;
+    }
+    if (titulatura) {
+      query += query
+        ? `&titulatura=${titulatura}`
+        : `?titulatura=${titulatura}`;
+    }
+
+    // Use Next.js Router to navigate with the path and query parameters
+    router.push(`${path}${query}`);
   };
 
   useEffect(() => {
-    setSelectedCategory(undefined);
-    setSelectedSpecialty(undefined);
-    setSelectedLocalitate(undefined);
-    setSelectedJudet(undefined);
-    setTipAnunt("Clinica");
+    setTitulatura(undefined);
+    setSpecialitate(undefined);
+    setLocalitate(undefined);
+    setJudet(undefined);
+    setTipAnunt(
+      userData?.userType === "Partener"
+        ? "Doctor"
+        : userData?.userType === "Partener"
+        ? "Clinica"
+        : undefined
+    );
   }, []);
 
   return (
@@ -181,7 +180,7 @@ const GlobalFilter = ({ className = "" }) => {
               className="form-control"
               placeholder="Cauta dupa cuvant..."
               value={searchQueryParteneri}
-              onChange={(e) => setSearchQueryPateneri(e.target.value)}
+              onChange={(e) => setSearchQueryParteneri(e.target.value)}
             />
           </div>
         </li>
