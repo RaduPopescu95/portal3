@@ -92,7 +92,7 @@ const GlobalFilter = ({ className = "" }) => {
     event.preventDefault();
 
     try {
-      alert("Butonul a fost apăsat!");
+      // alert("Butonul a fost apăsat!");
       let path = "/";
       let query = "";
       let defaultPathSegment;
@@ -104,7 +104,7 @@ const GlobalFilter = ({ className = "" }) => {
         defaultPathSegment = "Anunturi";
       }
 
-      alert("Butonul a fost apăsat2!");
+      // alert("Butonul a fost apăsat2!");
 
       // Build the URL path based on the provided params
       if (titulatura) {
@@ -120,7 +120,7 @@ const GlobalFilter = ({ className = "" }) => {
 
       // Remove trailing slash if there are no query parameters
       path = path.replace(/\/$/, "");
-      alert("Butonul a fost apăsat3!");
+      // alert("Butonul a fost apăsat3!");
 
       // Build query parameters string
       const tAnunt =
@@ -129,46 +129,46 @@ const GlobalFilter = ({ className = "" }) => {
           : "Doctor"
           ? "Clinica"
           : tipAnunt;
-      alert("Butonul a fost apăsat3.1!");
+      // alert("Butonul a fost apăsat3.1!");
 
       if (tAnunt) query += `?tipAnunt=${tAnunt}`;
-      alert("Butonul a fost apăsat3.2!");
+      // alert("Butonul a fost apăsat3.2!");
       if (tipProgram) {
         query += query
           ? `&tipProgram=${tipProgram}`
           : `?tipProgram=${tipProgram}`;
       }
-      alert("Butonul a fost apăsat3.3!");
+      // alert("Butonul a fost apăsat3.3!");
       if (searchQueryParteneri) {
         query += query
           ? `&searchQueryParteneri=${searchQueryParteneri}`
           : `?searchQueryParteneri=${searchQueryParteneri}`;
       }
-      alert("Butonul a fost apăsat3.4!");
+      // alert("Butonul a fost apăsat3.4!");
       if (specialitate) {
         query += query
           ? `&specialitate=${specialitate}`
           : `?specialitate=${specialitate}`;
       }
-      alert("Butonul a fost apăsat3.5!");
+      // alert("Butonul a fost apăsat3.5!");
       if (localitate) {
         query += query
           ? `&localitate=${localitate}`
           : `?localitate=${localitate}`;
       }
-      alert("Butonul a fost apăsat3.6!");
+      // alert("Butonul a fost apăsat3.6!");
       if (judet) {
         query += query ? `&judet=${judet}` : `?judet=${judet}`;
       }
-      alert("Butonul a fost apăsat3.7!");
+      // alert("Butonul a fost apăsat3.7!");
       if (titulatura) {
         query += query
           ? `&titulatura=${titulatura}`
           : `?titulatura=${titulatura}`;
       }
-      alert("Butonul a fost apăsat3.8!");
+      // alert("Butonul a fost apăsat3.8!");
 
-      alert("Butonul a fost apăsat4!");
+      // alert("Butonul a fost apăsat4!");
 
       // Use Next.js Router to navigate with the path and query parameters
       const fullUrl = `${path}${query}`;
@@ -176,9 +176,11 @@ const GlobalFilter = ({ className = "" }) => {
       // Utilizează `router.push` pentru a face redirect și a forța un reload complet al paginii
       router.push(fullUrl);
 
-      alert("Butonul a fost apăsat5!");
+      // alert("Butonul a fost apăsat5!");
     } catch (error) {
-      alert("A apărut o eroare: " + error.message);
+      console.log(
+        "A apărut o eroare la apasarea butonului cauta....: " + error.message
+      );
     }
   };
 
