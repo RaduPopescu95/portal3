@@ -99,7 +99,7 @@ const GlobalFilter = ({ className = "" }) => {
 
       if (userData) {
         defaultPathSegment =
-          userData.userType === "Partener" ? "Doctor" : "Anunturi";
+          userData?.userType === "Partener" ? "Doctor" : "Anunturi";
       } else {
         defaultPathSegment = "Anunturi";
       }
@@ -124,7 +124,7 @@ const GlobalFilter = ({ className = "" }) => {
 
       // Build query parameters string
       const tAnunt =
-        userData.userType === "Partener"
+        userData?.userType === "Partener"
           ? "Anunturi Cadre Medicale"
           : "Doctor"
           ? "Clinica"
