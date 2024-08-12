@@ -38,15 +38,15 @@ const SearchData = ({ oferteInregistrate }) => {
           };
           await handleUpdateFirestoreSubcollection(
             data,
-            `Users/${oferta?.collectionId}/OferteInregistrate/${oferta?.documentId}`
+            `UsersJobs/${oferta?.collectionId}/OferteInregistrate/${oferta?.documentId}`
           );
           const doctor = await handleQueryFirestore(
-            "Users",
+            "UsersJobs",
             "user_uid",
             oferta?.idUtilizator
           );
           const partener = await handleQueryFirestore(
-            "Users",
+            "UsersJobs",
             "user_uid",
             oferta?.collectionId
           );
@@ -62,7 +62,7 @@ const SearchData = ({ oferteInregistrate }) => {
           console.log("test....doctor[0]....email", doctor[0].email);
           console.log("test....partener[0]....email", partener[0].email);
           await handleUpdateFirestore(
-            `Users/${oferta.idUtilizator}`,
+            `UsersJobs/${oferta.idUtilizator}`,
             doctor[0]
           );
           return { ...item, status: newStatus }; // Returnează obiectul actualizat

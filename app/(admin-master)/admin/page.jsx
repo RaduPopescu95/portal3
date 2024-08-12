@@ -13,12 +13,12 @@ export async function getServerData() {
   try {
     // Interoghează Firestore (sau orice altă bază de date) folosind 'locationPart'
     const numarParteneri = await getFirestoreQueryLength(
-      `Users`,
+      `UsersJobs`,
       "userType",
       "Partener"
     );
     const numarDoctori = await getFirestoreQueryLength(
-      `Users`,
+      `UsersJobs`,
       "userType",
       "Doctor"
     );

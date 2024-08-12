@@ -31,10 +31,10 @@ const SearchData = ({ mesajeInregistrare }) => {
   //         };
   //         await handleUpdateFirestoreSubcollection(
   //           data,
-  //           `Users/${oferta?.collectionId}/OferteInregistrate/${oferta?.documentId}`
+  //           `UsersJobs/${oferta?.collectionId}/OferteInregistrate/${oferta?.documentId}`
   //         );
   //         const doctor = await handleQueryFirestore(
-  //           "Users",
+  //           "UsersJobs",
   //           "user_uid",
   //           oferta?.idUtilizator
   //         );
@@ -49,7 +49,7 @@ const SearchData = ({ mesajeInregistrare }) => {
 
   //         console.log("test....doctor[0]....", doctor[0]);
   //         await handleUpdateFirestore(
-  //           `Users/${oferta.idUtilizator}`,
+  //           `UsersJobs/${oferta.idUtilizator}`,
   //           doctor[0]
   //         );
   //         return { ...item, status: newStatus }; // Returnează obiectul actualizat

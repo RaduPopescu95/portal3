@@ -53,9 +53,9 @@ const TableData = ({ oferte }) => {
       console.log("Deleting item with ID:", selectedItem);
 
       await handleDeleteFirestoreSubcollectionData(
-        `Users/${selectedItem.collectionId}/Anunturi/${selectedItem.documentId}`,
+        `UsersJobs/${selectedItem.collectionId}/Anunturi/${selectedItem.documentId}`,
         true,
-        `Users/${selectedItem.collectionId}/Anunturi`,
+        `UsersJobs/${selectedItem.collectionId}/Anunturi`,
         selectedItem
       );
 

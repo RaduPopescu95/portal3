@@ -213,7 +213,7 @@ const ProfileInfo = () => {
       }
 
       let utilizator = await handleQueryFirestoreSubcollection(
-        "Users",
+        "UsersJobs",
         "cui",
         cui
       );
@@ -282,13 +282,15 @@ const ProfileInfo = () => {
       };
       setUserData(data);
       const actionText = describeChanges();
-      await handleUpdateFirestore(`Users/${user_uid}`, data, actionText).then(
-        () => {
-          setIsLoading(false);
-          setButtonPressed(false);
-          showAlert("Actualizare cu succes!", "success");
-        }
-      );
+      await handleUpdateFirestore(
+        `UsersJobs/${user_uid}`,
+        data,
+        actionText
+      ).then(() => {
+        setIsLoading(false);
+        setButtonPressed(false);
+        showAlert("Actualizare cu succes!", "success");
+      });
     } catch (error) {
       setIsLoading(false);
       setButtonPressed(false);

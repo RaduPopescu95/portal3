@@ -178,7 +178,7 @@ const CreateList = ({ oferta }) => {
       const actionText = describeChanges();
       await handleUpdateFirestoreSubcollection(
         data,
-        `Users/${currentUser.uid}/Oferte/${oferta.documentId}`,
+        `UsersJobs/${currentUser.uid}/Oferte/${oferta.documentId}`,
         actionText
       );
       setIsLoading(false);
@@ -222,7 +222,7 @@ const CreateList = ({ oferta }) => {
 
       await handleUploadFirestoreSubcollection(
         data,
-        `Users/${currentUser.uid}/Oferte`,
+        `UsersJobs/${currentUser.uid}/Oferte`,
         currentUser.uid,
         actionText
       );

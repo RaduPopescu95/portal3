@@ -55,7 +55,7 @@ const ChangeEmail = () => {
 
       // Dacă actualizarea emailului a reușit, încercăm să actualizăm și Firestore
       await handleUpdateFirestore(
-        `Users/${userData.user_uid}`,
+        `UsersJobs/${userData.user_uid}`,
         data,
         `${userData.numeUtilizator} a schimbat adresa de e-mail la ${emailNew}`
       );

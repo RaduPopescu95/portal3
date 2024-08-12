@@ -269,7 +269,7 @@ const CreateList = ({ oferta }) => {
       const actionText = describeChanges();
       await handleUpdateFirestoreSubcollection(
         data,
-        `Users/${currentUser.uid}/Anunturi/${oferta.documentId}`,
+        `UsersJobs/${currentUser.uid}/Anunturi/${oferta.documentId}`,
         actionText
       );
       setIsLoading(false);
@@ -338,7 +338,7 @@ const CreateList = ({ oferta }) => {
 
       await handleUploadFirestoreSubcollection(
         data,
-        `Users/${currentUser.uid}/Anunturi`,
+        `UsersJobs/${currentUser.uid}/Anunturi`,
         currentUser.uid,
         actionText
       );
@@ -377,7 +377,7 @@ const CreateList = ({ oferta }) => {
 
       await handleUpdateFirestoreSubcollection(
         data,
-        `Users/${currentUser.uid}/Anunturi/${oferta.documentId}`,
+        `UsersJobs/${currentUser.uid}/Anunturi/${oferta.documentId}`,
         actionText
       );
       resetState();
@@ -823,32 +823,32 @@ const CreateList = ({ oferta }) => {
         </div>
       </div> */}
       {/* End .col */}
-      {(() => {
-        const today = new Date();
-        const startDate = new Date(oferta.dataActivare);
-        const endDate = new Date(oferta.dataDezactivare);
+      {oferta &&
+        (() => {
+          const today = new Date();
 
-        const isActive =
-          isSameOrAfter(today, startDate) && isSameOrBefore(today, endDate);
+          const endDate = new Date(oferta?.dataDezactivare);
 
-        if (isActive) {
-          return null;
-        } else {
-          return (
-            <div className="col-xl-6">
-              <div className="my_profile_setting_input">
-                <button
-                  onClick={handleActivateOffer}
-                  className="btn btn2 float-start"
-                >
-                  {isLoadingActivare ? <CommonLoader /> : "Activeză"}
-                </button>
+          const isActive = isSameOrBefore(today, endDate);
+
+          if (isActive) {
+            return null;
+          } else {
+            return (
+              <div className="col-xl-6">
+                <div className="my_profile_setting_input">
+                  <button
+                    onClick={handleActivateOffer}
+                    className="btn btn2 float-start"
+                  >
+                    {isLoadingActivare ? <CommonLoader /> : "Activeză"}
+                  </button>
+                </div>
               </div>
-            </div>
-          );
-        }
-      })()}
-      <div className="col-xl-6">
+            );
+          }
+        })()}
+      <div className={oferta ? "col-xl-6" : "col-xl-12"}>
         <div className="my_profile_setting_input">
           {alert.show && (
             <div className={`alert alert-${alert.type} mb-0`}>

@@ -237,7 +237,7 @@ const LoginSignupUtilizator = () => {
         "User created successfully with email: ",
         userCredential.user
       );
-      const collectionLength = await getFirestoreCollectionLength("Users");
+      const collectionLength = await getFirestoreCollectionLength("UsersJobs");
       let id = collectionLength + 1;
       const dateTime = getCurrentDateTime();
       let data = {
@@ -265,8 +265,8 @@ const LoginSignupUtilizator = () => {
         googleMapsLink,
         coordonate,
       };
-      // await handleUploadFirestore(data, "Users");
-      const collectionId = "Users";
+
+      const collectionId = "UsersJobs";
       const documentId = user_uid;
       setDoc(doc(db, collectionId, documentId), data).then(() => {
         showAlert("Înregistrare cu succes!", "success");

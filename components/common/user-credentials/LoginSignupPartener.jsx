@@ -134,7 +134,7 @@ const LoginSignupPartener = () => {
     }
 
     let utilizator = await handleQueryFirestoreSubcollection(
-      "Users",
+      "UsersJobs",
       "cui",
       cui
     );
@@ -190,7 +190,7 @@ const LoginSignupPartener = () => {
     }
 
     let utilizator = await handleQueryFirestoreSubcollection(
-      "Users",
+      "UsersJobs",
       "cui",
       cui
     );
@@ -234,7 +234,7 @@ const LoginSignupPartener = () => {
         "User created successfully with email: ",
         userCredential.user
       );
-      const collectionLength = await getFirestoreCollectionLength("Users");
+      const collectionLength = await getFirestoreCollectionLength("UsersJobs");
       let id = collectionLength + 1;
       const dateTime = getCurrentDateTime();
       const user_uid = userCredential.user.uid;
@@ -260,7 +260,7 @@ const LoginSignupPartener = () => {
         gradFidelitate: "Platinum",
       };
 
-      await setDoc(doc(db, "Users", user_uid), userData).then(() => {
+      await setDoc(doc(db, "UsersJobs", user_uid), userData).then(() => {
         showAlert("Înregistrare cu succes!", "success");
       });
       setUserData(userData);

@@ -10,7 +10,7 @@ export const metadata = {
 
 const index = async () => {
   noStore();
-  const doctori = await handleQueryFirestore("Users", "userType", "Doctor");
+  const doctori = await handleQueryFirestore("UsersJobs", "userType", "Doctor");
   return (
     <>
       <ListaDoctori doctori={doctori} />

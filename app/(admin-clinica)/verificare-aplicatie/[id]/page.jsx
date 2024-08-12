@@ -21,7 +21,6 @@ const index = async ({ params }) => {
   let cerereData = [];
   let utilizatorData = [];
 
-  // utilizatorData = await handleQueryFirestore("Users", "id", userId);
   cerereData = await handleQueryFirestoreSubcollection(
     "Cereri",
     "documentId",

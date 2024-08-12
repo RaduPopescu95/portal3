@@ -6,7 +6,7 @@ export const handleGetUserInfo = async () => {
   let auth = authentication;
   try {
     const q = query(
-      collection(db, "Users"),
+      collection(db, "UsersJobs"),
       where("user_uid", "==", auth.currentUser.uid)
     );
 

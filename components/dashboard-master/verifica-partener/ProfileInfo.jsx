@@ -22,7 +22,7 @@ const ProfileInfo = ({ partener: part }) => {
     let data = {
       statusCont: newStatus,
     };
-    await handleUpdateFirestore(`Users/${part.user_uid}`, data).then(() => {
+    await handleUpdateFirestore(`UsersJobs/${part.user_uid}`, data).then(() => {
       router.refresh();
     });
   };

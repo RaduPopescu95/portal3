@@ -15,7 +15,7 @@ const ProfileInfo = ({ doctor: doc }) => {
     let data = {
       statusCont: newStatus,
     };
-    await handleUpdateFirestore(`Users/${doc.user_uid}`, data).then(() => {
+    await handleUpdateFirestore(`UsersJobs/${doc.user_uid}`, data).then(() => {
       router.refresh();
     });
   };

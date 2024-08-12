@@ -44,7 +44,7 @@ const TableData = ({ doctori: docs }) => {
           let data = {
             statusCont: newStatus,
           };
-          await handleUpdateFirestore(`Users/${doctor.user_uid}`, data);
+          await handleUpdateFirestore(`UsersJobs/${doctor.user_uid}`, data);
           return { ...item, statusCont: newStatus }; // Returnează obiectul actualizat
         }
         return item; // Returnează obiectul neschimbat
@@ -74,9 +74,9 @@ const TableData = ({ doctori: docs }) => {
       console.log("location.....:", location);
 
       await handleDeleteFirestoreData(
-        `${"Users"}/${selectedItemId}`,
+        `${"UsersJobs"}/${selectedItemId}`,
         true,
-        "Users",
+        "UsersJobs",
         "Doctor"
       );
 

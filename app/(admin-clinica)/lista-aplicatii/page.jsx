@@ -13,7 +13,7 @@ import { query } from "firebase/database";
 // };
 
 const fetchItems = async (page) => {
-  const collectionPath = `Users/${authentication.currentUser?.uid}/Cereri`; // Replace with your actual path
+  const collectionPath = `UsersJobs/${authentication.currentUser?.uid}/Cereri`; // Replace with your actual path
   const ref = collection(db, collectionPath);
   let pageQuery;
 

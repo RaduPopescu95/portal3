@@ -46,16 +46,16 @@ const CreateList = ({ oferta }) => {
 
       await handleUpdateFirestoreSubcollection(
         data,
-        `Users/${oferta?.collectionId}/OferteInregistrate/${oferta?.documentId}`
+        `UsersJobs/${oferta?.collectionId}/OferteInregistrate/${oferta?.documentId}`
       );
 
       const doctor = await handleQueryFirestore(
-        "Users",
+        "UsersJobs",
         "user_uid",
         oferta?.idUtilizator
       );
       const partener = await handleQueryFirestore(
-        "Users",
+        "UsersJobs",
         "user_uid",
         oferta?.collectionId
       );
@@ -71,7 +71,10 @@ const CreateList = ({ oferta }) => {
       console.log("test....doctor[0]....email", doctor[0].email);
       console.log("test....partener[0]....email", partener[0].email);
 
-      await handleUpdateFirestore(`Users/${oferta.idUtilizator}`, doctor[0]);
+      await handleUpdateFirestore(
+        `UsersJobs/${oferta.idUtilizator}`,
+        doctor[0]
+      );
     } catch (error) {
       console.error("Failed to update the transaction status:", error);
     } finally {

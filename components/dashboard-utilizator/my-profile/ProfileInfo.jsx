@@ -192,13 +192,15 @@ const ProfileInfo = () => {
 
       const actionText = describeChanges();
 
-      await handleUpdateFirestore(`Users/${user_uid}`, data, actionText).then(
-        () => {
-          console.log("update succesfully....");
-          setIsLoading(false);
-          showAlert("Actualizare cu succes!", "success");
-        }
-      );
+      await handleUpdateFirestore(
+        `UsersJobs/${user_uid}`,
+        data,
+        actionText
+      ).then(() => {
+        console.log("update succesfully....");
+        setIsLoading(false);
+        showAlert("Actualizare cu succes!", "success");
+      });
     } catch (error) {
       showAlert(`Eroare la Actualizare: ${error.message}`, "danger");
       setIsLoading(false);

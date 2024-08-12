@@ -80,7 +80,7 @@ const FeaturedProperties = () => {
           }
           console.log("localitate a utilizatorului...", localitate);
           let parteneri = await handleQueryTripleParam(
-            "Users",
+            "UsersJobs",
             "localitate",
             localitate,
             "userType",

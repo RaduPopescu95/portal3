@@ -13,7 +13,11 @@ export default async function sitemap() {
   console.log("Judete Data:", judeteData);
 
   console.log("Fetching 'Parteneri' from Firestore...");
-  const parteneri = await handleQueryFirestore("Users", "userType", "Partener");
+  const parteneri = await handleQueryFirestore(
+    "UsersJobs",
+    "userType",
+    "Partener"
+  );
   console.log("Parteneri Data:", parteneri);
 
   const seenUrls = new Set();

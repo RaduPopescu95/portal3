@@ -6,7 +6,7 @@ import { getFirestoreCollectionLength } from "@/utils/firestoreUtils";
 const AllStatistics = async () => {
   const { userData } = useAuth();
   const numarOferte = await getFirestoreCollectionLength(
-    `Users/${userData?.user_uid}/Oferte`
+    `UsersJobs/${userData?.user_uid}/Oferte`
   );
   const allStatistics = [
     {

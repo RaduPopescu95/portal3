@@ -42,7 +42,7 @@ const Form = ({ partenerId }) => {
     }
 
     let utilizator = await handleQueryFirestoreSubcollection(
-      "Users",
+      "UsersJobs",
       "cui",
       cui
     );

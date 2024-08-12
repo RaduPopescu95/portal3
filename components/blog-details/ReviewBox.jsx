@@ -75,7 +75,7 @@ const ReviewBox = ({ partener, oferta, titluOferta }) => {
       // Încarcă datele în Firestore și gestionează succesele și eșecurile
       await handleUploadFirestoreSubcollection(
         data,
-        `Users/${partener.user_uid}/Cereri`,
+        `UsersJobs/${partener.user_uid}/Cereri`,
         partener.user_uid,
         actionText
       );

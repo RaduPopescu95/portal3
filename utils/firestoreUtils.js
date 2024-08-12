@@ -22,7 +22,7 @@ import { handleDeleteAccount } from "./authUtils";
 import { getCurrentDateTime } from "../utils/timeUtils";
 
 const auth = authentication;
-export const userLocation = `Users/${
+export const userLocation = `UsersJobs/${
   auth.currentUser ? auth.currentUser.uid : ""
 }`; // Calea către document
 
@@ -106,7 +106,7 @@ export const handleUpdateFirestore = async (
 
       await handleUploadFirestoreSubcollection(
         actionData,
-        `Users/${currentUser?.uid}/Actiuni`,
+        `UsersJobs/${currentUser?.uid}/Actiuni`,
         currentUser?.uid
       );
     }
@@ -157,7 +157,7 @@ export const handleUploadFirestore = async (data, location, actionText) => {
 
       await handleUploadFirestoreSubcollection(
         actionData,
-        `Users/${currentUser?.uid}/Actiuni`,
+        `UsersJobs/${currentUser?.uid}/Actiuni`,
         currentUser?.uid
       );
     }
@@ -203,7 +203,7 @@ export const handleUploadFirestoreSubcollection = async (
 
       await handleUploadFirestoreSubcollection(
         actionData,
-        `Users/${currentUser?.uid}/Actiuni`,
+        `UsersJobs/${currentUser?.uid}/Actiuni`,
         currentUser?.uid
       );
     }
@@ -242,7 +242,7 @@ export const handleUpdateFirestoreSubcollection = async (
 
       await handleUploadFirestoreSubcollection(
         actionData,
-        `Users/${currentUser?.uid}/Actiuni`,
+        `UsersJobs/${currentUser?.uid}/Actiuni`,
         currentUser?.uid
       );
     }
@@ -380,7 +380,7 @@ export const handleDeleteFirestoreSubcollectionData = async (
 
         const ref = doc(
           db,
-          `Users/${data[i].collectionId}/Oferte/${data[i].documentId}`
+          `UsersJobs/${data[i].collectionId}/Oferte/${data[i].documentId}`
         );
 
         const newData = {
@@ -627,7 +627,7 @@ export const handleQueryPatruParam = async (
 
 export const handlePaginateFirestore = (location) => {
   const auth = authentication;
-  const citiesRef = collection(db, "Users", auth.currentUser.uid, location);
+  const citiesRef = collection(db, "UsersJobs", auth.currentUser.uid, location);
   const q = query(citiesRef, startAt(1000000));
 };
 
@@ -884,7 +884,7 @@ export async function getLocalitatiWithUserCounts() {
     for (const judet of counties) {
       console.log(judet);
       const q = query(
-        collection(db, "Users"),
+        collection(db, "UsersJobs"),
         where("judet", "==", judet),
         where("statusCont", "==", "Activ"),
         where("userType", "==", "Partener")

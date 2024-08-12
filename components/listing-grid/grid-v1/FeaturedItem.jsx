@@ -114,7 +114,7 @@ const FeaturedItem = ({ params, searchQuery }) => {
       const announcementsWithDetails = await Promise.all(
         announcements.map(async (announcement) => {
           const userDetails = await handleQueryFirestore(
-            "Users",
+            "UsersJobs",
             "user_uid",
             announcement.collectionId
           );

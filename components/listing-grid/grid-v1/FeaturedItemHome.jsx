@@ -105,7 +105,7 @@ const FeaturedItemHome = ({ params }) => {
     let parteneriCuDistanta = await Promise.all(
       anunturi.map(async (partener) => {
         const cadruMedical = await handleQueryFirestore(
-          "Users",
+          "UsersJobs",
           "user_uid",
           partener.collectionId
         );

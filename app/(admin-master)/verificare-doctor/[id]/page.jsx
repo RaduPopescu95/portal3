@@ -13,7 +13,7 @@ import {
 const index = async ({ params }) => {
   const id = params.id;
   const userId = parseFloat(id);
-  const doctor = await handleQueryFirestore("Users", "id", userId);
+  const doctor = await handleQueryFirestore("UsersJobs", "id", userId);
   const actiuni = await handleQueryFirestoreSubcollection(
     "Actiuni",
     "collectionId",

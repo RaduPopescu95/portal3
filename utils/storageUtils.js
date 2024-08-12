@@ -25,7 +25,10 @@ export const uploadImage = async (
     if (newImage && deletedLogo) {
       console.log("is new image...started delete");
       // Create a reference to the file to delete
-      const deletedRef = ref(storage, `images/${firstLocation}/${deletedLogo}`);
+      const deletedRef = ref(
+        storage,
+        `imagesJobs/${firstLocation}/${deletedLogo}`
+      );
 
       // Delete the file
       deleteObject(deletedRef)
@@ -60,7 +63,7 @@ export const uploadImage = async (
       // Compress the image file
       const compressedFile = await imageCompression(imageUpload, options);
 
-      const imageRef = ref(storage, `images/${firstLocation}/${fileName}`);
+      const imageRef = ref(storage, `imagesJobs/${firstLocation}/${fileName}`);
 
       // Set the content type to image/jpeg
       const metadata = {
@@ -87,7 +90,10 @@ export const deleteImage = async (firstLocation, oldFileName) => {
   try {
     console.log("started delete...");
     // Create a reference to the file to delete
-    const deletedRef = ref(storage, `images/${firstLocation}/${oldFileName}`);
+    const deletedRef = ref(
+      storage,
+      `imagesJobs/${firstLocation}/${oldFileName}`
+    );
 
     // Delete the file
     deleteObject(deletedRef)
@@ -124,12 +130,15 @@ export const uploadMultipleImages = async (
 
     if (newImage && deletedImages.length > 0) {
       console.log("is new image...started delete");
-      // Presupunem că `images.fileNames` este un array cu numele fișierelor pe care vrei să le ștergi
+      // Presupunem că `imagesJobs.fileNames` este un array cu numele fișierelor pe care vrei să le ștergi
       // și că `firstLocation` este un string care reprezintă locația inițială a acestor fișiere în Firebase Storage
 
       for (let i = 0; i < deletedImages.length; i++) {
         const fileName = deletedImages[i].fileName; // Obținem fiecare nume de fișier din array
-        const deletedRef = ref(storage, `images/${firstLocation}/${fileName}`); // Creăm referința la fișier
+        const deletedRef = ref(
+          storage,
+          `imagesJobs/${firstLocation}/${fileName}`
+        ); // Creăm referința la fișier
 
         try {
           await deleteObject(deletedRef); // Încercăm să ștergem fișierul
@@ -145,7 +154,10 @@ export const uploadMultipleImages = async (
         console.log("file...");
         const fileName =
           new Date().getTime() + "_" + images.indexOf(imageUpload); // Asigură unicitate
-        const imageRef = ref(storage, `images/${firstLocation}/${fileName}`);
+        const imageRef = ref(
+          storage,
+          `imagesJobs/${firstLocation}/${fileName}`
+        );
         const metadata = {
           contentType: "image/jpeg",
         };
@@ -186,7 +198,10 @@ export const deleteMultipleImages = async (
   try {
     console.log("Started delete...");
     for (const fileName of oldFileNames) {
-      const deletedRef = ref(storage, `images/${firstLocation}/${fileName}`);
+      const deletedRef = ref(
+        storage,
+        `imagesJobs/${firstLocation}/${fileName}`
+      );
       await deleteObject(deletedRef);
       console.log("File deleted successfully:", fileName);
     }
@@ -197,7 +212,7 @@ export const deleteMultipleImages = async (
 };
 
 // export async function getUrlImageApi() {
-//   const imageRef = ref(storage, `images/PozaApi/apiimage.jpeg`);
+//   const imageRef = ref(storage, `imagesJobs/PozaApi/apiimage.jpeg`);
 //   try {
 //     const url = await getDownloadURL(imageRef);
 //     writeImg(url);

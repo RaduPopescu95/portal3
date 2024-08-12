@@ -24,7 +24,7 @@ export const deleteUserData = async () => {
   try {
     // DELETE DOC FROM DOCTOR COLLECTION AND SUBCOLLECTIO
     await deleteDoc(
-      doc(db, "Users", auth.currentUser.uid, auth.currentUser.uid)
+      doc(db, "UsersJobs", auth.currentUser.uid, auth.currentUser.uid)
     ).then(() => {
       handleDeleteAccount();
     });

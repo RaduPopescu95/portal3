@@ -30,7 +30,7 @@ const getDaysArray = (function () {
 
 export const retrieveTypeOfUser = async (uid) => {
   let userType = "";
-  const docRef = doc(db, "Users", uid);
+  const docRef = doc(db, "UsersJobs", uid);
   const docSnap = await getDoc(docRef);
   try {
     if (docSnap.data().isClinic) {

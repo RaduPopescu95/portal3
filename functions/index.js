@@ -15,15 +15,17 @@ const transporter = nodemailer.createTransport({
 });
 
 exports.sendConfirmationEmails = functions.firestore
-  .document("Users/{userId}/OferteInregistrate/{offerId}")
+  .document("UsersJobs/{userId}/OferteInregistrate/{offerId}")
   .onUpdate(async (change, context) => {
     const newV = change.after.data();
     const oldV = change.before.data();
 
     if (newV.status === "Confirmata" && oldV.status !== "Confirmata") {
       try {
-        const doctorRef = admin.firestore().doc(`Users/${newV.idUtilizator}`);
-        const partRef = admin.firestore().doc(`Users/${newV.collectionId}`);
+        const doctorRef = admin
+          .firestore()
+          .doc(`UsersJobs/${newV.idUtilizator}`);
+        const partRef = admin.firestore().doc(`UsersJobs/${newV.collectionId}`);
 
         const [doctor, partener] = await Promise.all([
           doctorRef.get(),
@@ -66,7 +68,7 @@ exports.sendDeactivationEmails = functions.pubsub
   .timeZone("Europe/Bucharest")
   .onRun(async (context) => {
     const today = new Date().toISOString().slice(0, 10);
-    const usersRef = admin.firestore().collection("Users");
+    const usersRef = admin.firestore().collection("UsersJobs");
 
     const querySnapshot = await usersRef.get();
     const emailsToSend = [];
