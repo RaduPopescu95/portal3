@@ -90,74 +90,7 @@ const GlobalFilter = ({ className = "" }) => {
   // Submit handler for form submission
   const submitHandler = (event) => {
     event.preventDefault();
-    let path = "/";
-    let query = "";
-    let defaultPathSegment;
-    if (userData) {
-      defaultPathSegment =
-        userData.userType === "Partener" ? "Doctor" : "Anunturi";
-    } else {
-      defaultPathSegment = "Anunturi";
-    }
-
-    // Build the URL path based on the provided params
-    if (titulatura) {
-      path += `${titulatura.toLocaleLowerCase()}`;
-      if (judet) path += `-${judet.toLocaleLowerCase()}`;
-    } else {
-      if (judet) {
-        path += `${defaultPathSegment.toLocaleLowerCase()}-${judet.toLocaleLowerCase()}`;
-      } else {
-        path += `${defaultPathSegment.toLocaleLowerCase()}`;
-      }
-    }
-
-    // Remove trailing slash if there are no query parameters
-    path = path.replace(/\/$/, "");
-
-    // Build query parameters string
-    const tAnunt =
-      userData.userType === "Partener"
-        ? "Anunturi Cadre Medicale"
-        : "Doctor"
-        ? "Clinica"
-        : tipAnunt;
-
-    if (tAnunt) query += `?tipAnunt=${tAnunt}`;
-    if (tipProgram) {
-      query += query
-        ? `&tipProgram=${tipProgram}`
-        : `?tipProgram=${tipProgram}`;
-    }
-    if (searchQueryParteneri) {
-      query += query
-        ? `&searchQueryParteneri=${searchQueryParteneri}`
-        : `?searchQueryParteneri=${searchQueryParteneri}`;
-    }
-    if (specialitate) {
-      query += query
-        ? `&specialitate=${specialitate}`
-        : `?specialitate=${specialitate}`;
-    }
-    if (localitate) {
-      query += query
-        ? `&localitate=${localitate}`
-        : `?localitate=${localitate}`;
-    }
-    if (judet) {
-      query += query ? `&judet=${judet}` : `?judet=${judet}`;
-    }
-    if (titulatura) {
-      query += query
-        ? `&titulatura=${titulatura}`
-        : `?titulatura=${titulatura}`;
-    }
-
-    // Use Next.js Router to navigate with the path and query parameters
-    const fullUrl = `${path}${query}`;
-
-    // Utilizează `router.push` pentru a face redirect și a forța un reload complet al paginii
-    router.push(fullUrl);
+    alert("Butonul a fost apăsat!");
   };
 
   useEffect(() => {
