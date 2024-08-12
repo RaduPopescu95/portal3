@@ -90,12 +90,10 @@ const index = async ({ params }) => {
                       </div>
                       {(() => {
                         const today = new Date();
-                        const startDate = new Date(oferta[0].dataActivare);
+
                         const endDate = new Date(oferta[0].dataDezactivare);
 
-                        const isActive =
-                          isSameOrAfter(today, startDate) &&
-                          isSameOrBefore(today, endDate);
+                        const isActive = isSameOrBefore(today, endDate);
 
                         if (isActive) {
                           return (

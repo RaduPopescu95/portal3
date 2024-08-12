@@ -127,6 +127,37 @@ const FeaturedItemHome = ({ params }) => {
       (a, b) => a.distanta - b.distanta
     );
 
+    if (parteneriOrdonati.length === 0) {
+      console.log("is no length....");
+      let cadre = await handleQueryFirestoreSubcollection(
+        "Anunturi",
+        "tipAnunt",
+        "CadruMedical",
+        "status",
+        "Activa"
+      );
+      parteneriOrdonati = await Promise.all(
+        cadre.map(async (partener) => {
+          const cadruMedical = await handleQueryFirestore(
+            "UsersJobs",
+            "user_uid",
+            partener.collectionId
+          );
+          const distanta = calculateDistance(
+            latitude,
+            longitude,
+            partener.coordonate.lat,
+            partener.coordonate.lng
+          );
+          return {
+            ...partener,
+            distanta: Math.floor(distanta),
+            cadruMedical: cadruMedical[0],
+          };
+        })
+      );
+    }
+
     setCadreMedical(parteneriOrdonati);
     setIsLoading(false);
   }

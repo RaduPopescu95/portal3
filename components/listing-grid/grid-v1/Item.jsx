@@ -72,7 +72,7 @@ const FeaturedProperty = ({ item, isGridOrList }) => {
               }}
               className="fp_price"
             >
-              {item?.cadruMedical.numeUtilizator}
+              {item?.cadruMedical?.numeUtilizator}
             </Link>
           )}
         </div>

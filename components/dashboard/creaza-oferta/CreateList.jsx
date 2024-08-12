@@ -228,7 +228,7 @@ const CreateList = ({ oferta }) => {
       specialitate,
       judet,
       localitate: judet === "Bucuresti" ? "Bucuresti" : localitate,
-      sector: judet === "Bucuresti" ? localitate : "",
+      sector: judet === "Bucuresti" ? sector : "",
       tipProgram,
       //QUERY STRINGS
       tipProgramQ: tipProgram.toLowerCase(),
@@ -294,7 +294,7 @@ const CreateList = ({ oferta }) => {
         specialitate,
         judet,
         localitate: judet === "Bucuresti" ? "Bucuresti" : localitate,
-        sector: judet === "Bucuresti" ? localitate : "",
+        sector: judet === "Bucuresti" ? sector : "",
         tipProgram,
         //QUERY STRINGS
         tipProgramQ: tipProgram.toLowerCase(),
