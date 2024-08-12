@@ -129,7 +129,7 @@ const SidebarMenu = () => {
                     // Prevenim comportamentul default al link-ului dacă este necesar
                     if (item.name === "Deconectare") {
                       e.preventDefault();
-                      await thandleLogout().then(() => {
+                      await handleLogout().then(() => {
                         setUserData({});
                       });
                       router.push("/");
