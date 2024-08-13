@@ -102,7 +102,7 @@ const TableData = ({ parteneri: parts }) => {
       );
       await handleUploadFirestore(
         { uidToDelete: selectedItemId },
-        "DeletedUsers"
+        "DeletedUsersJobs"
       );
 
       // Aici adaugi logica pentru a șterge elementul din sursa ta de date

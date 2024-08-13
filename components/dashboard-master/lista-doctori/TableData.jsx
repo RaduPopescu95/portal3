@@ -82,7 +82,7 @@ const TableData = ({ doctori: docs }) => {
 
       await handleUploadFirestore(
         { uidToDelete: selectedItemId },
-        "DeletedUsers"
+        "DeletedUsersJobs"
       );
 
       router.refresh();

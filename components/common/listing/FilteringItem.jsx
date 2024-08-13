@@ -62,6 +62,10 @@ const FilteringItem = ({ params }) => {
       (judet) => judet.judet === judetSelectedName
     );
 
+    if (judetSelected != "Bucuresti") {
+      setLocalitate("");
+    }
+
     if (judetSelected) {
       try {
         // Utilizăm judet pentru a interoga Firestore
@@ -74,11 +78,15 @@ const FilteringItem = ({ params }) => {
         setLocalitati(localitatiFromFirestore);
       } catch (error) {
         console.error("Failed to fetch locations:", error);
-        setLocalitati([]); // Resetează localitățile în caz de eroare
+        setLocalitati([]);
+        setLocalitate("");
+        setJudet("");
       }
     } else {
       // Dacă nu găsim județul selectat, resetăm localitățile
       setLocalitati([]);
+      setLocalitate("");
+      setJudet("");
     }
   };
 
@@ -233,9 +241,7 @@ const FilteringItem = ({ params }) => {
         <div className="search_option_two">
           <div className="candidate_revew_select">
             <select
-              className={`selectpicker w100 form-select show-tick ${
-                !isCateogireSelected ? "border-danger" : ""
-              }`}
+              className={`selectpicker w100 form-select show-tick`}
               onChange={(e) => setTipAnunt(e.target.value)}
               value={tipAnunt}
             >
@@ -253,9 +259,7 @@ const FilteringItem = ({ params }) => {
         <div className="search_option_two">
           <div className="candidate_revew_select">
             <select
-              className={`selectpicker w100 form-select show-tick ${
-                !isCateogireSelected ? "border-danger" : ""
-              }`}
+              className={`selectpicker w100 form-select show-tick`}
               onChange={(e) => setTipProgram(e.target.value)}
               value={tipProgram}
             >
@@ -275,9 +279,7 @@ const FilteringItem = ({ params }) => {
         <div className="search_option_two">
           <div className="candidate_revew_select">
             <select
-              className={`selectpicker w100 form-select show-tick ${
-                !isCateogireSelected ? "border-danger" : ""
-              }`}
+              className={`selectpicker w100 form-select show-tick`}
               onChange={handleCategoryChange}
               value={titulatura}
             >
@@ -297,9 +299,7 @@ const FilteringItem = ({ params }) => {
         <div className="search_option_two">
           <div className="candidate_revew_select">
             <select
-              className={`selectpicker w100 form-select show-tick ${
-                !isCateogireSelected ? "border-danger" : ""
-              }`}
+              className={`selectpicker w100 form-select show-tick`}
               onChange={handleSpecialtyChange}
               value={specialitate}
             >
@@ -327,7 +327,7 @@ const FilteringItem = ({ params }) => {
               onChange={(e) => handleJudetChange(e.target.value)}
               value={judet}
             >
-              <option value="">Judete</option>
+              <option value="">Toate judetele</option>
               {judete &&
                 judete.map((judet, index) => (
                   <option key={index} value={judet.judet}>
@@ -351,7 +351,7 @@ const FilteringItem = ({ params }) => {
                 onChange={handleLocalitateChange}
                 value={localitate}
               >
-                <option value="">Sector</option>
+                <option value="">Toate Sectorele</option>
                 {localitati.map((location, index) => (
                   <option key={index} value={location.localitate}>
                     {location.localitate}

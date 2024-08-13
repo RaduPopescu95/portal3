@@ -13,7 +13,7 @@ export const metadata = {
 
 const index = async () => {
   noStore();
-  let plangeriInregistrate = await handleGetFirestore("Plângeri");
+  let plangeriInregistrate = await handleGetFirestore("PlângeriJobs");
   return (
     <>
       <MySavedSearch plangeriInregistrate={plangeriInregistrate} />

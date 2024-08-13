@@ -52,7 +52,7 @@ const Form = () => {
 
     if (isFormValid) {
       try {
-        await handleUploadFirestore(formData, "Mesaje");
+        await handleUploadFirestore(formData, "MesajeJobs");
         showAlert("Mesaj trimis cu succes!", "success");
         console.log("Formularul este valid și poate fi trimis:", formData);
         handleReset(); // Resetează formularul după trimiterea cu succes

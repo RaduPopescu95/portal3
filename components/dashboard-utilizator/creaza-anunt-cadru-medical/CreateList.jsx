@@ -114,8 +114,15 @@ const CreateList = ({ oferta }) => {
     setSpecialitate(event.target.value);
   };
 
+  const handlePutLocalitat = async (judet) => {
+    await handleJudetChange(judet).then(() => {
+      setLocalitate(oferta?.sector);
+    });
+  };
+
   useEffect(() => {
     if (oferta) {
+      handlePutLocalitat(oferta?.judet);
       setInitialData({
         titluOferta: oferta.titluOferta || "",
         descriereOferta: oferta.descriereOferta || "",
@@ -423,7 +430,7 @@ const CreateList = ({ oferta }) => {
   };
 
   const handleJudetChange = async (e) => {
-    const judetSelectedName = e.target.value; // Numele județului selectat, un string
+    const judetSelectedName = e; // Numele județului selectat, un string
     console.log("judetSelectedName...", judetSelectedName);
     setJudet(judetSelectedName);
     setIsJudetSelected(!!judetSelectedName);
@@ -487,9 +494,16 @@ const CreateList = ({ oferta }) => {
 
   useEffect(() => {
     if (judet.length > 0) {
+      handlePutLocalitat(oferta?.judet);
       handleGetLocalitatiJudet();
     }
   }, []);
+
+  const today = new Date();
+
+  const endDate = new Date(oferta?.dataDezactivare);
+
+  const isActive = isSameOrBefore(today, endDate);
 
   return (
     <>
@@ -681,8 +695,9 @@ const CreateList = ({ oferta }) => {
             data-live-search="true"
             data-width="100%"
             value={judet}
-            onChange={handleJudetChange}
+            onChange={(e) => handleJudetChange(e.target.value)}
           >
+            <option value="">Selectează judet</option>
             {judete &&
               judete.map((judet, index) => (
                 <option key={index} value={judet.judet}>
@@ -714,6 +729,11 @@ const CreateList = ({ oferta }) => {
               }
             }}
           >
+            <option value="">
+              {judet === "Bucuresti"
+                ? "Selecteaza Sector"
+                : "Selecteaza localitate"}
+            </option>
             {localitati.map((location, index) => (
               <option key={index} value={location.localitate}>
                 {location.localitate}
@@ -841,14 +861,14 @@ const CreateList = ({ oferta }) => {
                     onClick={handleActivateOffer}
                     className="btn btn2 float-start"
                   >
-                    {isLoadingActivare ? <CommonLoader /> : "Activeză"}
+                    {isLoadingActivare ? <CommonLoader /> : "Activează anunț"}
                   </button>
                 </div>
               </div>
             );
           }
         })()}
-      <div className={oferta ? "col-xl-6" : "col-xl-12"}>
+      <div className={isActive ? "col-xl-12" : "col-xl-6"}>
         <div className="my_profile_setting_input">
           {alert.show && (
             <div className={`alert alert-${alert.type} mb-0`}>

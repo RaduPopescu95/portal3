@@ -57,6 +57,10 @@ const GlobalFilter = ({ className = "" }) => {
       (judet) => judet.judet === judetSelectedName
     );
 
+    if (judetSelected != "Bucuresti") {
+      setLocalitate("");
+    }
+
     if (judetSelected) {
       try {
         // Utilizăm judet pentru a interoga Firestore
@@ -69,11 +73,18 @@ const GlobalFilter = ({ className = "" }) => {
         setLocalitati(localitatiFromFirestore);
       } catch (error) {
         console.error("Failed to fetch locations:", error);
-        setLocalitati([]); // Resetează localitățile în caz de eroare
+        setLocalitati([]);
+        setLocalitate("");
+        setJudet("");
       }
-    } else {
+    } else if (judetSelected != "Bucuresti") {
       // Dacă nu găsim județul selectat, resetăm localitățile
       setLocalitati([]);
+      setLocalitate("");
+    } else {
+      setLocalitati([]);
+      setLocalitate("");
+      setJudet("");
     }
   };
 

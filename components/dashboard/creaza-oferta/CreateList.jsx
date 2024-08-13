@@ -17,6 +17,7 @@ import {
 } from "@/utils/constanteTitulatura";
 import { formatTitulatura } from "@/utils/strintText";
 import AutocompleteInput from "@/components/common/AutocompleteInput";
+import { isSameOrBefore } from "@/utils/commonUtils";
 
 const CreateList = ({ oferta }) => {
   const { currentUser, userData, judete } = useAuth();
@@ -106,8 +107,15 @@ const CreateList = ({ oferta }) => {
     setSpecialitate(event.target.value);
   };
 
+  const handlePutLocalitat = async (judet) => {
+    await handleJudetChange(judet).then(() => {
+      setLocalitate(oferta?.sector);
+    });
+  };
+
   useEffect(() => {
     if (oferta) {
+      handlePutLocalitat(oferta?.judet);
       setInitialData({
         titluOferta: oferta.titluOferta || "",
         descriereOferta: oferta.descriereOferta || "",
@@ -326,6 +334,45 @@ const CreateList = ({ oferta }) => {
     }
   };
 
+  const handleActivateOffer = async () => {
+    setIsLoadingActivare(true);
+    setButtonPressed(true);
+    console.log("currentUser...", currentUser.uid);
+    console.log("userData...", userData);
+    console.log("files...", files);
+    let lg = {};
+    try {
+      const currentDate = new Date();
+      const deactivationDate = new Date(
+        currentDate.setDate(currentDate.getDate() + 30)
+      );
+      const formattedDeactivationDate = deactivationDate
+        .toISOString()
+        .split("T")[0]; // Formatează data în formatul "YYYY-MM-DD"
+
+      let data = {
+        dataDezactivare: formattedDeactivationDate,
+      };
+      console.log("activare data....", data);
+      const actionText = `${userData.numeUtilizator} a reactivat anuntul de angajare ${titluOferta}, acum avand data de dezactivare ${formattedDeactivationDate}`;
+
+      await handleUpdateFirestoreSubcollection(
+        data,
+        `UsersJobs/${currentUser.uid}/Anunturi/${oferta.documentId}`,
+        actionText
+      );
+      resetState();
+      setIsLoadingActivare(false);
+      showAlert("Anunt a fost reactivat cu succes!", "success");
+      setButtonPressed(false);
+    } catch (error) {
+      setButtonPressed(false);
+      setIsLoadingActivare(false);
+      console.error("Eroare la reactivarea anuntului: ", error);
+      showAlert(`Eroare la reactivarea anuntului: ${error.message}`, "danger");
+    }
+  };
+
   // delete logo
   const deleteLogo = (name) => {
     if (logo[0].fileName) {
@@ -357,7 +404,7 @@ const CreateList = ({ oferta }) => {
   };
 
   const handleJudetChange = async (e) => {
-    const judetSelectedName = e.target.value; // Numele județului selectat, un string
+    const judetSelectedName = e; // Numele județului selectat, un string
     console.log("judetSelectedName...", judetSelectedName);
     setJudet(judetSelectedName);
     setIsJudetSelected(!!judetSelectedName);
@@ -422,6 +469,12 @@ const CreateList = ({ oferta }) => {
       handleGetLocalitatiJudet();
     }
   }, []);
+
+  const today = new Date();
+
+  const endDate = new Date(oferta?.dataDezactivare);
+
+  const isActive = isSameOrBefore(today, endDate);
 
   return (
     <>
@@ -580,8 +633,9 @@ const CreateList = ({ oferta }) => {
             data-live-search="true"
             data-width="100%"
             value={judet}
-            onChange={handleJudetChange}
+            onChange={(e) => handleJudetChange(e.target.value)}
           >
+            <option value="">Selectează judet</option>
             {judete &&
               judete.map((judet, index) => (
                 <option key={index} value={judet.judet}>
@@ -613,6 +667,11 @@ const CreateList = ({ oferta }) => {
               }
             }}
           >
+            <option value="">
+              {judet === "Bucuresti"
+                ? "Selecteaza Sector"
+                : "Selecteaza localitate"}
+            </option>
             {localitati.map((location, index) => (
               <option key={index} value={location.localitate}>
                 {location.localitate}
@@ -723,7 +782,33 @@ const CreateList = ({ oferta }) => {
       </div> */}
       {/* End .col */}
 
-      <div className="col-xl-12">
+      {oferta &&
+        (() => {
+          const today = new Date();
+
+          const endDate = new Date(oferta?.dataDezactivare);
+
+          const isActive = isSameOrBefore(today, endDate);
+
+          if (isActive) {
+            return null;
+          } else {
+            return (
+              <div className="col-xl-6">
+                <div className="my_profile_setting_input">
+                  <button
+                    onClick={handleActivateOffer}
+                    className="btn btn2 float-start"
+                  >
+                    {isLoadingActivare ? <CommonLoader /> : "Activează anunț"}
+                  </button>
+                </div>
+              </div>
+            );
+          }
+        })()}
+
+      <div className={isActive ? "col-xl-12" : "col-xl-6"}>
         <div className="my_profile_setting_input">
           {alert.show && (
             <div className={`alert alert-${alert.type} mb-0`}>
