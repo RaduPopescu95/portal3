@@ -321,9 +321,7 @@ const FilteringItem = ({ params }) => {
         <div className="search_option_two">
           <div className="candidate_revew_select">
             <select
-              className={`selectpicker w100 form-select show-tick ${
-                !isJudetSelected ? "border-danger" : ""
-              }`}
+              className={`selectpicker w100 form-select show-tick`}
               onChange={(e) => handleJudetChange(e.target.value)}
               value={judet}
             >
