@@ -1,9 +1,13 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { authentication } from "../firebase";
-import { handleGetUserInfo } from "../utils/handleFirebaseQuery";
+import { authentication, db } from "../firebase";
+import {
+  handleGetUserInfo,
+  handleGetUserInfoJobs,
+} from "../utils/handleFirebaseQuery";
 import { handleGetFirestore } from "@/utils/firestoreUtils";
+import { doc, setDoc } from "firebase/firestore";
 
 const AuthContext = createContext();
 
@@ -20,7 +24,7 @@ export const AuthProvider = ({ children }) => {
   const [searchQueryParteneri, setSearchQueryPateneri] = useState("");
   const [tipAnunt, setTipAnunt] = useState("Clinica");
   const [tipProgram, setTipProgram] = useState(undefined);
-  
+
   const [titulatura, setSelectedCategory] = useState(undefined);
   const [specialitate, setSelectedSpecialty] = useState(undefined);
   const [localitate, setSelectedLocalitate] = useState(undefined);
@@ -41,11 +45,42 @@ export const AuthProvider = ({ children }) => {
       console.log("start use effect from auth context", user);
       if (user) {
         try {
-          const userDataFromFirestore = await handleGetUserInfo();
+          // Încearcă să obții datele utilizatorului din handleGetUserInfoJobs
+          let userDataFromFirestore = await handleGetUserInfoJobs();
           console.log(
-            "user data fetched at onAuthStateChanged....",
+            "User data fetched at onAuthStateChanged from handleGetUserInfoJobs...",
             userDataFromFirestore
           );
+
+          // Dacă datele sunt undefined sau nu sunt primite date, încearcă handleGetUsersInfo
+          if (!userDataFromFirestore) {
+            console.log(
+              "No data found in handleGetUserInfoJobs, trying handleGetUsersInfo..."
+            );
+            //Rescrie in userJobs informatiile contactului
+            userDataFromFirestore = await handleGetUserInfo();
+
+            if (userDataFromFirestore) {
+              const collectionId = "UsersJobs";
+              const documentId = user.uid;
+              userDataFromFirestore.user_uid = user.uid;
+              setDoc(
+                doc(db, collectionId, documentId),
+                userDataFromFirestore
+              ).then(() => {
+                console.log("Înregistrare in portal nou cu succes!");
+                console.log(
+                  "User data fetched at onAuthStateChanged from handleGetUsersInfo...",
+                  userDataFromFirestore
+                );
+              });
+            } else {
+              console.log(
+                "No data found in both handleGetUserInfoJobs and handleGetUsersInfo."
+              );
+            }
+          }
+
           setUserData(userDataFromFirestore);
         } catch (error) {
           console.error("Failed to fetch user data:", error);

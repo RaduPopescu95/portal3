@@ -14,56 +14,131 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-exports.sendConfirmationEmails = functions.firestore
-  .document("UsersJobs/{userId}/OferteInregistrate/{offerId}")
-  .onUpdate(async (change, context) => {
-    const newV = change.after.data();
-    const oldV = change.before.data();
+exports.notifyDoctorsOnNewAnunt = functions.firestore
+  .document("UsersJobs/{userId}/Anunturi/{offerId}")
+  .onCreate(async (snap, context) => {
+    const newAnunt = snap.data();
 
-    if (newV.status === "Confirmata" && oldV.status !== "Confirmata") {
-      try {
-        const doctorRef = admin
-          .firestore()
-          .doc(`UsersJobs/${newV.idUtilizator}`);
-        const partRef = admin.firestore().doc(`UsersJobs/${newV.collectionId}`);
+    try {
+      const judetAnunt = newAnunt.judet;
+      const collectionId = newAnunt.collectionId;
 
-        const [doctor, partener] = await Promise.all([
-          doctorRef.get(),
-          partRef.get(),
-        ]);
+      if (!collectionId) {
+        console.log("Anunțul nu are collectionId, emailul nu va fi trimis.");
+        return null;
+      }
 
-        const emails = [doctor.data().email, partener.data().email];
+      // Căutare userType "Partener" și user_uid egal cu collectionId
+      const partnerRef = admin
+        .firestore()
+        .collection("UsersJobs")
+        .where("userType", "==", "Partener")
+        .where("user_uid", "==", collectionId);
+
+      const partnerSnapshot = await partnerRef.get();
+
+      if (partnerSnapshot.empty) {
+        console.log("Nu s-a găsit Partener cu user_uid corespunzător.");
+        return null;
+      }
+
+      // Căutare utilizatori cu userType "Doctor" și judet corespunzător
+      const usersRef = admin.firestore().collection("UsersJobs");
+      const doctorQuerySnapshot = await usersRef
+        .where("userType", "==", "Doctor")
+        .where("judet", "==", judetAnunt)
+        .get();
+
+      const emailsToSend = [];
+
+      doctorQuerySnapshot.forEach((doc) => {
+        const userData = doc.data();
+        if (userData.email) {
+          emailsToSend.push(userData.email);
+        }
+      });
+
+      if (emailsToSend.length > 0) {
         const text =
-          `Tranzactia înregistrată pentru oferta` +
-          ` ${oldV.oferta.titluOferta} a fost confirmată de către echipa ` +
-          `noastră. Pentru detalii suplimentare accesați www.exclusivmd.ro`;
+          `Un nou anunț pentru ${newAnunt.titluOferta}` +
+          ` a fost publicat în județul dvs., ${judetAnunt}.` +
+          `Pentru detalii suplimentare accesați www.jobsmd.ro`;
 
+        // Trimitere email către toți utilizatorii Doctor din același judet
         const mailOptions = (email) => ({
           from: "exclusivmd@creditemedicale.ro",
           to: email,
-          subject: `Confirmare Oferta ${oldV.oferta.titluOferta}`,
+          subject: `Anunț nou în județul ${judetAnunt}`,
           text,
         });
 
-        for (const email of emails) {
+        for (const email of emailsToSend) {
           try {
             await transporter.sendMail(mailOptions(email));
             console.log(`Email trimis cu succes la: ${email}`);
           } catch (error) {
-            console.error(
-              `Eroare la trimiterea emailului la ${email}: `,
-              error
-            );
+            console.error(`Eroare trimiterea emailului la ${email}: `, error);
           }
         }
-      } catch (error) {
-        console.error("Eroare la preluarea datelor utilizatorilor: ", error);
+      } else {
+        console.log(
+          "Nu s-au găsit utilizatori Doctor pentru a trimite emailuri."
+        );
       }
+    } catch (error) {
+      console.error(
+        "Eroare la prelucrarea anunțului și trimiterea emailurilor: ",
+        error
+      );
     }
+
     return null;
   });
 
-exports.sendDeactivationEmails = functions.pubsub
+exports.sendInformareEmailsCereriAnunturi = functions.firestore
+  .document("UsersJobs/{userId}/Cereri/{offerId}")
+  .onUpdate(async (change, context) => {
+    const newV = change.after.data();
+    const oldV = change.before.data();
+
+    try {
+      const partRef = admin
+        .firestore()
+        .doc(`UsersJobs/${newV.partener.user_uid}`);
+
+      const [partener] = await Promise.all([partRef.get()]);
+
+      const emails = [partener.data().email];
+      const text =
+        `A fost înregistrată o nouă cerere de către` +
+        ` ${oldV.utilizator.numeUtilizator}, ` +
+        `din ${oldV.utilizator.localitate}, ${oldV.utilizator.judet}.` +
+        `pentru anuntul ${oldV.oferta.titluOferta}` +
+        `Pentru detalii suplimentare accesați www.jobsmd.ro`;
+
+      const mailOptions = (email) => ({
+        from: "exclusivmd@creditemedicale.ro",
+        to: email,
+        subject: `Noua cerere pentru ${oldV.oferta.titluOferta}`,
+        text,
+      });
+
+      for (const email of emails) {
+        try {
+          await transporter.sendMail(mailOptions(email));
+          console.log(`Email trimis cu succes la: ${email}`);
+        } catch (error) {
+          console.error(`Eroare trimiterea emailului la ${email}: `, error);
+        }
+      }
+    } catch (error) {
+      console.error("Eroare la preluarea datelor utilizatorilor: ", error);
+    }
+
+    return null;
+  });
+
+exports.sendDeactivationEmailsAnunturi = functions.pubsub
   .schedule("every 24 hours")
   .timeZone("Europe/Bucharest")
   .onRun(async (context) => {
@@ -74,7 +149,7 @@ exports.sendDeactivationEmails = functions.pubsub
     const emailsToSend = [];
 
     for (const doc of querySnapshot.docs) {
-      const oR = doc.ref.collection("Oferte");
+      const oR = doc.ref.collection("Anunturi");
       const oS = await oR.where("dataDezactivare", "==", today).get();
       if (!oS.empty) {
         const userData = doc.data();
@@ -89,12 +164,12 @@ exports.sendDeactivationEmails = functions.pubsub
     }
 
     for (const { email, offerTitle } of emailsToSend) {
-      const cText = "Pentru detalii suplimentare accesați www.exclusivmd.ro";
-      const text = `Oferta ${offerTitle} a expirat astăzi. ${cText}`;
+      const cText = "Pentru detalii suplimentare accesați www.jobsmd.ro";
+      const text = `Anuntul ${offerTitle} a expirat astăzi. ${cText}`;
       const mailOptions = {
         from: "exclusivmd@creditemedicale.ro",
         to: email,
-        subject: `Expirare Oferta ${offerTitle}`,
+        subject: `Expirare anunt ${offerTitle}`,
         text,
       };
 

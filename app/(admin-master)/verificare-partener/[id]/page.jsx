@@ -43,7 +43,7 @@ const index = async ({ params }) => {
   const userId = parseFloat(id);
   const partener = await handleQueryFirestore("UsersJobs", "id", userId);
   const actiuni = await handleQueryFirestoreSubcollection(
-    "Actiuni",
+    "ActiuniJobs",
     "collectionId",
     partener[0].user_uid
   );

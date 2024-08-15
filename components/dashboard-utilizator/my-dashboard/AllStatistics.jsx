@@ -1,9 +1,15 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
+import {
+  getFirestoreQueryLength,
+  getFirestoreSubcollectionLength,
+} from "@/utils/firestoreUtils";
+import { useEffect, useState } from "react";
 
 const AllStatistics = () => {
   const { userData } = useAuth();
+  const [candidaturi, setCandidaturi] = useState(0);
   const allStatistics = [
     {
       id: 1,
@@ -34,14 +40,25 @@ const AllStatistics = () => {
     //   name: "Total Favorites",
     // },
   ];
+  const handleGetNumarCandidaturi = async () => {
+    const nrCand = await getFirestoreSubcollectionLength(
+      `Cereri`,
+      "idUtilizator",
+      userData.user_uid
+    );
+    setCandidaturi(nrCand);
+  };
+  useEffect(() => {
+    handleGetNumarCandidaturi();
+  }, []);
 
   return (
     <>
       <div className="col-sm-6 col-md-6 col-lg-6 col-xl-3">
         <div className={`ff_one`}>
           <div className="detais">
-            <div className="timer">{userData?.rulajCont}</div>
-            <p>Candidaturi Active</p>
+            <div className="timer">{candidaturi}</div>
+            <p>Candidaturi</p>
           </div>
           <div className="icon">
             <span className="flaticon-invoice"></span>

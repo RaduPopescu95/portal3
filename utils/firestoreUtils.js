@@ -45,6 +45,20 @@ export const getFirestoreQueryLength = async (
   return snapshot.data().count;
 };
 
+export const getFirestoreSubcollectionLength = async (
+  subcollection,
+  queryParam,
+  element
+) => {
+  const q = query(
+    collectionGroup(db, subcollection),
+    where(queryParam, "==", element)
+  );
+
+  const snapshot = await getCountFromServer(q);
+  return snapshot.data().count;
+};
+
 //FUNCTIE DE QUERY DIN SUBCOLLECTI CU NR NELIMITAT DE PARAMETRI
 export const handleQueryFirestoreSubcollectionVariableParams = async (
   location,
@@ -106,7 +120,7 @@ export const handleUpdateFirestore = async (
 
       await handleUploadFirestoreSubcollection(
         actionData,
-        `UsersJobs/${currentUser?.uid}/Actiuni`,
+        `UsersJobs/${currentUser?.uid}/ActiuniJobs`,
         currentUser?.uid
       );
     }
@@ -157,7 +171,7 @@ export const handleUploadFirestore = async (data, location, actionText) => {
 
       await handleUploadFirestoreSubcollection(
         actionData,
-        `UsersJobs/${currentUser?.uid}/Actiuni`,
+        `UsersJobs/${currentUser?.uid}/ActiuniJobs`,
         currentUser?.uid
       );
     }
@@ -203,7 +217,7 @@ export const handleUploadFirestoreSubcollection = async (
 
       await handleUploadFirestoreSubcollection(
         actionData,
-        `UsersJobs/${currentUser?.uid}/Actiuni`,
+        `UsersJobs/${currentUser?.uid}/ActiuniJobs`,
         currentUser?.uid
       );
     }
@@ -242,7 +256,7 @@ export const handleUpdateFirestoreSubcollection = async (
 
       await handleUploadFirestoreSubcollection(
         actionData,
-        `UsersJobs/${currentUser?.uid}/Actiuni`,
+        `UsersJobs/${currentUser?.uid}/ActiuniJobs`,
         currentUser?.uid
       );
     }

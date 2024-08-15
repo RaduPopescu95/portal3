@@ -14,7 +14,7 @@ export const metadata = {
 const index = async () => {
   noStore();
   let mesajeInregistrare = await handleGetFirestore(
-    "Mesaje",
+    "MesajeJobs",
     "firstUploadDate"
   );
   return (
