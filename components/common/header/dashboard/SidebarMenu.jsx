@@ -104,20 +104,20 @@ const SidebarMenu = ({ partenerId }) => {
             </li>
             <li
               className={`treeview ${
-                isSinglePageActive("/creaza-oferta", pathname) ? "active" : ""
+                isSinglePageActive("/creaza-anunt", pathname) ? "active" : ""
               }`}
             >
-              <Link href="/creaza-oferta">
+              <Link href="/creaza-anunt">
                 <i className="flaticon-plus"></i>
                 <span>Creaza anunt de angajare</span>
               </Link>
             </li>
             <li
               className={`treeview ${
-                isSinglePageActive("/lista-oferte", pathname) ? "active" : ""
+                isSinglePageActive("/lista-anunturi", pathname) ? "active" : ""
               }`}
             >
-              <Link href="/lista-oferte">
+              <Link href="/lista-anunturi">
                 <i className="flaticon-layers"></i>
                 <span>Lista anunturi angajare</span>
               </Link>

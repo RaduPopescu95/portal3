@@ -7,9 +7,9 @@ export default function robots() {
       allow: "/",
       disallow: [
         "/autentificare-cont-clinici",
-        "/creaza-oferta",
+        "/creaza-anunt",
         "/creaza-produs-serviciu",
-        "lista-oferte",
+        "lista-anunturi",
         "panou-clinici",
         "clinici-favourites",
         "clinici-message",

@@ -97,7 +97,7 @@ const SidebarMenu = () => {
                   : ""
               }`}
             >
-              <Link href="/creaza-oferta">
+              <Link href="/creaza-anunt">
                 <i className="flaticon-plus"></i>
                 <span>Creaza anunt de angajare</span>
               </Link>

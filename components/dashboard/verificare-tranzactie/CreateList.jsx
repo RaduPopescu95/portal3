@@ -105,7 +105,7 @@ const CreateList = ({ cerere }) => {
     setAlert({ show: true, message, type });
     setTimeout(() => {
       setAlert({ show: false, message: "", type: "" });
-      router.push("/lista-oferte");
+      router.push("/lista-anunturi");
     }, 3000); // Alerta va dispărea după 3 secunde
   };
 
