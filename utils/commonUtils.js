@@ -115,38 +115,50 @@ export const filtrareCadreMedicale = (
   parteneriFiltrati,
   searchQueryParteneri
 ) => {
-  // Împărțim query-ul de căutare în cuvinte individuale
-  const normalizeText = (text) =>
-    text
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase();
-
-  // Împărțim query-ul de căutare în cuvinte individuale, eliminăm diacriticele și transformăm în litere mici
-  const searchTerms = searchQueryParteneri.split(/\s+/).map(normalizeText);
-
-  // Funcție care verifică dacă toate cuvintele de căutare apar în text
-  const matchesSearch = (text) => {
-    const normalizedText = normalizeText(text);
-    return searchTerms.every((term) => normalizedText.includes(term));
-  };
-
-  // Filtrăm partenerii pe baza denumirii brandului, categoriilor, adresei, descrierii, telefonului și emailului
-  const parteneriFiltratiGasiti = parteneriFiltrati.filter(
-    (partener) =>
-      matchesSearch(partener.cadruMedical.numeUtilizator) ||
-      matchesSearch(partener.titulatura) ||
-      matchesSearch(partener.adresaSediu) ||
-      matchesSearch(partener.cadruMedical.adresaSediu) ||
-      matchesSearch(partener.descriere) ||
-      matchesSearch(partener.cadruMedical.telefonContact) ||
-      matchesSearch(partener.cadruMedical.email) ||
-      matchesSearch(partener.descriereOferta) ||
-      matchesSearch(partener.specialitate || "")
-  );
-
-  return parteneriFiltratiGasiti;
+  try {
+    console.log("filtrareCadreMedicale...pe search query...cu...", searchQueryParteneri);
+    console.log("filtrareCadreMedicale...pe search query...cu...", parteneriFiltrati);
+    
+    const normalizeText = (text) =>
+      text
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    
+    console.log("test-----------1");
+    
+    const searchTerms = searchQueryParteneri.split(/\s+/).map(normalizeText);
+    
+    console.log("test-----------2");
+    
+    const matchesSearch = (text, filedCautat) => {
+      console.log(filedCautat, text);
+      const normalizedText = normalizeText(text);
+      return searchTerms.every((term) => normalizedText.includes(term));
+    };
+    
+    console.log("test-----------3");
+    
+    const parteneriFiltratiGasiti = parteneriFiltrati.filter(
+      (partener) =>
+        matchesSearch(partener?.cadruMedical?.numeUtilizator || "","partener.cadruMedical.numeUtilizator") ||
+        matchesSearch(partener?.titulatura || "","partener.titulatura") ||
+        matchesSearch(partener?.adresaSediu || "","partener.adresaSediu") ||
+        matchesSearch(partener?.cadruMedical?.adresaSediu || "","partener.cadruMedical.adresaSediu") ||
+        matchesSearch(partener?.cadruMedical?.telefonContact || "", "partener.cadruMedical.telefonContact") ||
+        matchesSearch(partener?.cadruMedical?.email || "", "partener.cadruMedical.email") ||
+        matchesSearch(partener?.descriereOferta || "", "partener.descriereOferta") ||
+        matchesSearch(partener?.specialitate || "", "partener.specialitate")
+    );
+    
+    console.log("test-----------4");
+    return parteneriFiltratiGasiti;
+  } catch (error) {
+    console.error("Error in filtrareCadreMedicale: ", error);
+    return []; // Return an empty array or handle the error as needed
+  }
 };
+
 export const filtrareGenerala = (parteneriFiltrati, searchQueryParteneri) => {
   // Împărțim query-ul de căutare în cuvinte individuale
   const normalizeText = (text) =>
@@ -457,3 +469,29 @@ export const isSameOrAfter = (date1, date2) => {
 export const isSameOrBefore = (date1, date2) => {
   return date1.setHours(0, 0, 0, 0) <= date2.setHours(0, 0, 0, 0);
 };
+
+
+export function calculeazaSiOrdoneazaParteneriDupaDistanta(
+  parteneri,
+  latitude,
+  longitude
+) {
+  // Adaugă distanța ca o proprietate pentru fiecare partener
+  const parteneriCuDistanta = parteneri.map((partener) => {
+    const distanta = calculateDistance(
+      latitude,
+      longitude,
+      partener.coordonate.lat,
+      partener.coordonate.lng
+    );
+
+    return { ...partener, distanta: Math.floor(distanta) };
+  });
+
+  // Sortează partenerii după distanță
+  const parteneriOrdonati = parteneriCuDistanta.sort(
+    (a, b) => a.distanta - b.distanta
+  );
+
+  return parteneriOrdonati;
+}

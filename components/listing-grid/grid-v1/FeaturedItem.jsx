@@ -12,6 +12,7 @@ import properties from "../../../data/properties";
 import Image from "next/image";
 import {
   calculateDistance,
+  calculeazaSiOrdoneazaParteneriDupaDistanta,
   filtrareCadreMedicale,
   filtrareClinici,
   filtrareOferte,
@@ -136,25 +137,53 @@ const FeaturedItem = ({ params, searchQuery }) => {
       );
       console.log("anunturi....3", announcements);
 
-      if (searchQueryParteneri) {
-        const filteredResults =
-          tAnunt === "Clinica"
-            ? filtrareClinici(announcementsWithDetails, searchQueryParteneri)
-            : tAnunt === "CadruMedical"
-            ? filtrareCadreMedicale(
-                announcementsWithDetails,
-                searchQueryParteneri
-              )
-            : filtrareGenerala(announcementsWithDetails, searchQueryParteneri);
+      const processFinalResults = (latitude, longitude) => {
+        if (searchQueryParteneri) {
+          const filteredResults =
+            tAnunt === "Clinica"
+              ? filtrareClinici(announcementsWithDetails, searchQueryParteneri)
+              : tAnunt === "CadruMedical"
+              ? filtrareCadreMedicale(
+                  announcementsWithDetails,
+                  searchQueryParteneri
+                )
+              : filtrareGenerala(announcementsWithDetails, searchQueryParteneri);
+                let final;
+                if(latitude === null) {
 
-        console.log("anunturi....4", announcements);
-        setParteneri(filteredResults);
-      } else {
-        setParteneri(announcementsWithDetails);
-        console.log("anunturi....5", announcements);
-      }
+                  final =filteredResults
+                }else{
+                  final = calculeazaSiOrdoneazaParteneriDupaDistanta(filteredResults, latitude, longitude);
+                }
+          setParteneri(final);
+        } else {
+ 
+          let final;
+          if(latitude === null) {
 
-      setIsLoading(false);
+            final =announcementsWithDetails
+          }else{
+            final = calculeazaSiOrdoneazaParteneriDupaDistanta(announcementsWithDetails, latitude, longitude);
+          }
+          setParteneri(final);
+        }
+  
+        setIsLoading(false);
+      };
+  
+      // Obține coordonatele curente
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          console.log("User's coordinates:", latitude, longitude);
+          processFinalResults(latitude, longitude);
+        },
+        (error) => {
+          console.error("Error getting geolocation:", error);
+          // Dacă nu reușește să obțină coordonatele, folosește coordonatele default
+          processFinalResults(null, null);
+        }
+      );
     } catch (error) {
       console.error("Error fetching announcements: ", error);
       setIsLoading(false);
