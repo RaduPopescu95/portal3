@@ -15,6 +15,7 @@ import {
   calculeazaSiOrdoneazaParteneriDupaDistanta,
   filtrareCadreMedicale,
   filtrareClinici,
+  filtrareGenerala,
   filtrareOferte,
   filtrareParteneri,
   generateRandomGradient,
@@ -156,7 +157,7 @@ const FeaturedItem = ({ params, searchQuery }) => {
           const filteredResults =
             tAnunt === "Clinica"
               ? filtrareClinici(announcementsWithDetails, searchQueryParteneri)
-              : tAnunt === "CadruMedical"
+              : tipAnunt === "CadruMedical"
               ? filtrareCadreMedicale(
                   announcementsWithDetails,
                   searchQueryParteneri

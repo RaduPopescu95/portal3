@@ -160,48 +160,63 @@ export const filtrareCadreMedicale = (
 };
 
 export const filtrareGenerala = (parteneriFiltrati, searchQueryParteneri) => {
-  // Împărțim query-ul de căutare în cuvinte individuale
-  const normalizeText = (text) =>
-    text
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase();
+  try {
+    // Împărțim query-ul de căutare în cuvinte individuale
+    console.log("filtrare...generala...", searchQueryParteneri);
+    
+    const normalizeText = (text) =>
+      text
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
 
-  // Împărțim query-ul de căutare în cuvinte individuale, eliminăm diacriticele și transformăm în litere mici
-  const searchTerms = searchQueryParteneri.split(/\s+/).map(normalizeText);
+    // Împărțim query-ul de căutare în cuvinte individuale, eliminăm diacriticele și transformăm în litere mici
+    const searchTerms = searchQueryParteneri.split(/\s+/).map(normalizeText);
 
-  // Funcție care verifică dacă toate cuvintele de căutare apar în text
-  const matchesSearch = (text) => {
-    const normalizedText = normalizeText(text);
-    return searchTerms.every((term) => normalizedText.includes(term));
-  };
+    // Funcție care verifică dacă toate cuvintele de căutare apar în text
+    const matchesSearch = (text) => {
+      // Verificăm dacă textul este definit înainte de a încerca să-l normalizăm
+      if (typeof text !== "string") {
+        return false;
+      }
+      
+      const normalizedText = normalizeText(text);
+      return searchTerms.every((term) => normalizedText.includes(term));
+    };
+    
 
-  // Filtrăm partenerii pe baza denumirii brandului, categoriilor, adresei, descrierii, telefonului și emailului
-  const parteneriFiltratiGasiti = parteneriFiltrati.filter(
-    (partener) =>
-      matchesSearch(partener?.cadruMedical?.numeUtilizator) ||
-      matchesSearch(partener?.titulatura) ||
-      matchesSearch(partener?.adresaSediu) ||
-      matchesSearch(partener?.cadruMedical?.adresaSediu) ||
-      matchesSearch(partener?.descriere) ||
-      matchesSearch(partener?.cadruMedical?.telefonContact) ||
-      matchesSearch(partener?.cadruMedical?.email) ||
-      matchesSearch(partener?.descriereOferta) ||
-      matchesSearch(partener?.specialitate || "") ||
-      matchesSearch(partener?.clinica?.denumireBrand) ||
-      matchesSearch(partener?.titulatura) ||
-      matchesSearch(partener?.adresaSediu) ||
-      matchesSearch(partener?.clinica?.adresaSediu) ||
-      matchesSearch(partener?.descriereOferta) ||
-      matchesSearch(partener?.cerintePost) ||
-      matchesSearch(partener?.titluOferta) ||
-      matchesSearch(partener?.clinica?.telefonContact) ||
-      matchesSearch(partener?.clinica?.email) ||
-      matchesSearch(partener?.specialitate || "")
-  );
+    // Filtrăm partenerii pe baza denumirii brandului, categoriilor, adresei, descrierii, telefonului și emailului
+    const parteneriFiltratiGasiti = parteneriFiltrati.filter(
+      (partener) =>
+        matchesSearch(partener?.cadruMedical?.numeUtilizator) ||
+        matchesSearch(partener?.titulatura) ||
+        matchesSearch(partener?.adresaSediu) ||
+        matchesSearch(partener?.cadruMedical?.adresaSediu) ||
+        matchesSearch(partener?.descriere) ||
+        matchesSearch(partener?.cadruMedical?.telefonContact) ||
+        matchesSearch(partener?.cadruMedical?.email) ||
+        matchesSearch(partener?.descriereOferta) ||
+        matchesSearch(partener?.specialitate || "") ||
+        matchesSearch(partener?.clinica?.denumireBrand) ||
+        matchesSearch(partener?.titulatura) ||
+        matchesSearch(partener?.adresaSediu) ||
+        matchesSearch(partener?.clinica?.adresaSediu) ||
+        matchesSearch(partener?.descriereOferta) ||
+        matchesSearch(partener?.cerintePost) ||
+        matchesSearch(partener?.titluOferta) ||
+        matchesSearch(partener?.clinica?.telefonContact) ||
+        matchesSearch(partener?.clinica?.email) ||
+        matchesSearch(partener?.specialitate || "")
+    );
 
-  return parteneriFiltratiGasiti;
+    return parteneriFiltratiGasiti;
+  } catch (error) {
+    console.error("Eroare în timpul filtrării generale:", error);
+    // Poți decide ce să returnezi în caz de eroare, de exemplu, un array gol sau un mesaj de eroare
+    return [];
+  }
 };
+
 
 export const filtrareOferte = (oferte, searchQueryParteneri) => {
   // Împărțim query-ul de căutare în cuvinte individuale
