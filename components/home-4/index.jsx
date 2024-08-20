@@ -61,7 +61,7 @@ const index = ({ params }) => {
                     Gaseste usor operatorul economic cel mai apropiata de tine
                   </p>
                 </div>
-                <GlobalHeroFilter className="home4" />
+                <GlobalHeroFilter className="home4" userData={userData}/>
               </div>
             </div>
           </div>

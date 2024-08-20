@@ -437,7 +437,8 @@ export const handleGetAnunturiArray = async (t, s, j, l, tA, tP) => {
   }
   console.log("before filter....", anunturi);
   // Filtrarea array-ului `anunturi` pe baza proprietăților doar dacă sunt definite și nu sunt șiruri goale
-  anunturi = anunturi.filter((anunt) => {
+  anunturi = anunturi.filter((anunt,i) => {
+    console.log(`-----------filtrare----------${i}--------`)
     const matchesTipProgram =
       tipProgram && tipProgram !== "" ? anunt.tipProgram === tipProgram : true;
     const matchesTipAnunt =
@@ -450,7 +451,13 @@ export const handleGetAnunturiArray = async (t, s, j, l, tA, tP) => {
       specialitate && specialitate !== ""
         ? anunt.specialitate && anunt.specialitate === specialitate
         : true;
+        if(i ===0 ){
 
+          console.log("filtrare.tipProgram:", anunt.tipProgram, "tipProgram:", tipProgram, "matchesTipProgram:", matchesTipProgram);
+          console.log("filtrare.tipAnunt:", anunt.tipAnunt, "tipAnunt:", tipAnunt, "matchesTipAnunt:", matchesTipAnunt);
+          console.log("filtrare.[localitateQuery]:", anunt[localitateQuery], "localitate:", localitate, "matchesLocalitate:", matchesLocalitate);
+          console.log("filtrare.specialitate:", anunt.specialitate, "specialitate:", specialitate, "matchesSpecialitate:", matchesSpecialitate);
+        }
     return (
       matchesTipProgram &&
       matchesTipAnunt &&

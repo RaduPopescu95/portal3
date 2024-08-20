@@ -245,11 +245,27 @@ const FilteringItem = ({ params }) => {
               onChange={(e) => setTipAnunt(e.target.value)}
               value={tipAnunt}
             >
+              
+              {!userData?.userType
+              &&   
+              <>
               <option value="">Tip Anunt</option>
               <option data-tokens="Anunturi Cadre Medicale">
-                Anunturi Cadre Medicale
-              </option>
-              <option data-tokens="Anunturi Clinici">Anunturi Clinici</option>
+              Anunturi Cadre Medicale
+            </option>
+             <option data-tokens="Anunturi Clinici">Anunturi Clinici</option>
+             </>
+              }
+              {userData?.userType === "Doctor"
+              &&   <option data-tokens="Anunturi Cadre Medicale">
+              Anunturi Cadre Medicale
+            </option>
+              }
+               {userData?.userType === "Partener"
+              &&     <option data-tokens="Anunturi Clinici">Anunturi Clinici</option>
+              }
+            
+            
             </select>
           </div>
         </div>

@@ -96,7 +96,7 @@ const FeaturedItem = ({ params, searchQuery }) => {
       const tAnunt =
         tipAnunt === "Anunturi Cadre Medicale"
           ? "CadruMedical"
-          : "Clinica"
+          : tipAnunt === "Anunturi Clinici" || tipAnunt === "Clinica"
           ? "Clinica"
           : "";
 
@@ -126,12 +126,26 @@ const FeaturedItem = ({ params, searchQuery }) => {
               // distanta: Math.floor(distanta),
               clinica: userDetails[0],
             };
-          } else {
+          } else if(tipAnunt === "CadruMedical" || tipAnunt === "Anunturi Cadre Medicale"){
             return {
               ...announcement,
               // distanta: Math.floor(distanta),
               cadruMedical: userDetails[0],
             };
+          } else{
+            if(announcement.tipAnunt === "CadruMedical"){
+              return {
+                ...announcement,
+                // distanta: Math.floor(distanta),
+                cadruMedical: userDetails[0],
+              };
+            }else{
+              return {
+                ...announcement,
+                // distanta: Math.floor(distanta),
+                clinica: userDetails[0],
+              };
+            }
           }
         })
       );

@@ -137,9 +137,9 @@ const GlobalFilter = ({ className = "" }) => {
       const tAnunt =
         userData?.userType === "Partener"
           ? "Anunturi Cadre Medicale"
-          : "Doctor"
+          : userData?.userType === "Doctor"
           ? "Clinica"
-          : tipAnunt;
+          : "";
       // alert("Butonul a fost apăsat3.1!");
 
       if (tAnunt) query += `?tipAnunt=${tAnunt}`;
