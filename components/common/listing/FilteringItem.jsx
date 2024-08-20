@@ -256,13 +256,13 @@ const FilteringItem = ({ params }) => {
              <option data-tokens="Anunturi Clinici">Anunturi Clinici</option>
              </>
               }
-              {userData?.userType === "Doctor"
-              &&   <option data-tokens="Anunturi Cadre Medicale">
-              Anunturi Cadre Medicale
-            </option>
+              {userData?.userType === "Doctor" &&   <option data-tokens="Anunturi Clinici">Anunturi Clinici</option>
               }
                {userData?.userType === "Partener"
-              &&     <option data-tokens="Anunturi Clinici">Anunturi Clinici</option>
+             
+              &&  <option data-tokens="Anunturi Cadre Medicale">
+              Anunturi Cadre Medicale
+            </option>   
               }
             
             
