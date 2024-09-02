@@ -157,8 +157,10 @@ const FeaturedItemHome = ({ params }) => {
         })
       );
     }
+    console.log("parteneriOrdonati....status", parteneriOrdonati)
+    const parteneriFiltrati = parteneriOrdonati.filter(partener => partener.cadruMedical.statusCont === 'Activ');
 
-    setCadreMedical(parteneriOrdonati);
+    setCadreMedical(parteneriFiltrati);
     setIsLoading(false);
   }
 

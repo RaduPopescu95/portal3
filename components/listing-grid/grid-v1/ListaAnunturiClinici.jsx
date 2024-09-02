@@ -79,7 +79,7 @@ const ListaAnunturiClinici = ({ params }) => {
           const localitate = handleDiacrtice(firstLocality.locality);
           setTimeout(() => {
             updatePartnersByLocation(localitate, latitude, longitude);
-          }, 1500);
+          }, 1000);
         } else {
           console.error("Localitate missing in all results:", res);
         }
@@ -160,8 +160,12 @@ const ListaAnunturiClinici = ({ params }) => {
       );
     }
 
-    console.log("anunturi....", parteneriCuDistanta);
-    setParteneri(parteneriOrdonati);
+    console.log("anunturi....",parteneriOrdonati);
+    console.log("anunturi....",typeof parteneriOrdonati);
+    console.log("anunturi....", parteneriOrdonati[0].clinica.statusCont);
+    const parteneriFiltrati = parteneriOrdonati.filter(partener => partener.clinica.statusCont === 'Activ');
+
+    setParteneri(parteneriFiltrati);
     setIsLoading(false);
   }
 

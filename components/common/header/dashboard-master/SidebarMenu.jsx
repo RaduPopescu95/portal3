@@ -109,7 +109,7 @@ const SidebarMenu = () => {
             >
               <Link href="/lista-doctori">
                 <i className="flaticon-layers"></i>
-                <span>Lista Utilizatori</span>
+                <span>Lista Cadre Medicale</span>
               </Link>
             </li>
             <li

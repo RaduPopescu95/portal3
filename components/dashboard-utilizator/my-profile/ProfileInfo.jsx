@@ -37,6 +37,7 @@ const ProfileInfo = () => {
 
   const [judet, setJudet] = useState(userData?.judet || "");
   const [localitate, setLocalitate] = useState(userData?.localitate || "");
+  const [sector, setSector] = useState(userData?.sector || "");
   const [titulatura, setTitulatura] = useState(userData?.titulatura || "");
   const [specializare, setSpecializare] = useState(
     userData?.specializare || ""
@@ -147,7 +148,8 @@ const ProfileInfo = () => {
         codParafa,
         specializare,
         titulatura,
-        localitate,
+        localitate: judet === "Bucuresti" ? "Bucuresti" : localitate,
+        sector: judet === "Bucuresti" ? sector : "",
         judet,
         dataNasterii,
         email: emailNew,
@@ -436,7 +438,15 @@ const ProfileInfo = () => {
             data-live-search="true"
             data-width="100%"
             value={localitate}
-            onChange={(e) => setLocalitate(e.target.value)}
+            onChange={(e) => {
+              console.log("Test...");
+              if (e.target.value.includes("Sector")) {
+                setLocalitate(e.target.value);
+                setSector(e.target.value);
+              } else {
+                setLocalitate(e.target.value);
+              }
+            }}
           >
             {localitati.map((location, index) => (
               <option key={index} value={location.localitate}>

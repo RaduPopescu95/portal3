@@ -272,6 +272,15 @@ const ProfileInfo = ({ partener: part }) => {
 
       {/* End .col */}
 
+      {/* <div className="col-xl-12 text-right mt-4">
+        <div className="my_profile_setting_input">
+          <button className="btn btn2" onClick={handleUpdateProfile}>
+            {isLoading ? <CommonLoader /> : "Actualizeaza Profil"}
+          </button>
+        </div>
+      </div> */}
+      {/* End .col */}
+
       {/* <div className="col-xl-12">
               <div className="my_profile_setting_textarea">
                   <label htmlFor="exampleFormControlTextarea1">
