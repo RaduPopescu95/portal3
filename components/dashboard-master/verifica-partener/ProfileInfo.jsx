@@ -67,7 +67,7 @@ const ProfileInfo = ({ partener: part }) => {
     <div className="row">
       <div className="col-lg-6 col-xl-6">
         <div className="my_profile_setting_input form-group">
-          <label htmlFor="formGroupExampleInput1">Denumire Brand</label>
+          <label htmlFor="formGroupExampleInput1">Denumire Clinica</label>
           <input
             type="text"
             className="form-control"
@@ -181,7 +181,7 @@ const ProfileInfo = ({ partener: part }) => {
       </div>
       {/* End .col */}
 
-      <div className="col-lg-6 col-xl-6">
+      {/* <div className="col-lg-6 col-xl-6">
         <div className="my_profile_setting_input ui_kit_select_search form-group">
           <label>Categorie</label>
           <select
@@ -200,13 +200,13 @@ const ProfileInfo = ({ partener: part }) => {
             <option data-tokens="Altele">Altele</option>
           </select>
         </div>
-      </div>
+      </div> */}
       {/* End .col */}
 
       <div className="col-xl-12">
         <div className="my_profile_setting_textarea">
           <label htmlFor="exampleFormControlTextarea1">
-            Descriere partener
+            Descriere clinica
           </label>
           <textarea
             className="form-control"

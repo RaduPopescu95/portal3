@@ -94,7 +94,7 @@ const index = async ({ params }) => {
 
                 <div className="col-lg-12 mb10">
                   <div className="breadcrumb_content style2">
-                    <h2 className="breadcrumb_title">Informatii partener</h2>
+                    <h2 className="breadcrumb_title">Informatii clinica</h2>
                     {/* <p>We are glad to see you again!</p> */}
                   </div>
                 </div>
@@ -119,7 +119,7 @@ const index = async ({ params }) => {
                     <div className="my_dashboard_review">
                       <div className="row">
                         <div className="col-xl-12">
-                          <h4>Actiuni Partener</h4>
+                          <h4>Actiuni Clinica</h4>
                         </div>
                         <div className="col-xl-12">
                           <Activities actiuni={actiuni} />
