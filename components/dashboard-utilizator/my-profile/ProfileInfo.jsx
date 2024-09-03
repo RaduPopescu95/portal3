@@ -179,17 +179,7 @@ const ProfileInfo = () => {
         setIsLoading(false);
         return;
       }
-      // if (!cuim && !cif && !codParafa) {
-      //   console.log("noo...", cuim);
-      //   console.log("noo...", cif);
-      //   console.log("noo...", codParafa);
-      //   showAlert("Introduceti cuim/cif/cod parafa!", "danger");
-      //   setIsLoading(false);
-      //   setIsNoCuimCifCodParafa(true);
-      //   return;
-      // } else {
-      //   setIsNoCuimCifCodParafa(false);
-      // }
+
       setUserData(data);
 
       const actionText = describeChanges();
@@ -306,34 +296,7 @@ const ProfileInfo = () => {
 
   return (
     <div className="row">
-      {/* <div className="col-lg-12">
-                <div className="wrap-custom-file">
-                    <input
-                        type="file"
-                        id="image1"
-                        accept="image/png, image/gif, image/jpeg"
-                        onChange={uploadProfile}
-                    />
-                    <label
-                        style={
-                            profile !== null
-                                ? {
-                                      backgroundImage: `url(${URL.createObjectURL(
-                                          profile
-                                      )})`,
-                                  }
-                                : undefined
-                        }
-                        htmlFor="image1"
-                    >
-                        <span>
-                            <i className="flaticon-download"></i> Upload Photo{" "}
-                        </span>
-                    </label>
-                </div>
-                <p>*minimum 260px x 260px</p>
-            </div> */}
-      {/* End .col */}
+
 
       <div className="col-lg-12">
         <h3 className="mb30">Imagine Profil</h3>
@@ -384,20 +347,6 @@ const ProfileInfo = () => {
       </div>
       {/* End .col */}
 
-      {/* <div className="col-lg-6 col-xl-6">
-        <div className="my_profile_setting_input form-group">
-          <label htmlFor="formGroupExampleInput3">Nume</label>
-          <input
-            type="text"
-            className="form-control"
-            id="formGroupExampleInput3"
-            placeholder="Nume"
-            value={numeUtilizator}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-      </div> */}
-      {/* End .col */}
 
       <div className="col-lg-6 col-xl-6">
         <div className="my_profile_setting_input ui_kit_select_search form-group">
@@ -478,16 +427,7 @@ const ProfileInfo = () => {
       <div className="col-lg-6 col-xl-6">
         <div className="my_profile_setting_input form-group">
           <label htmlFor="formGroupExampleInput7">Data nașterii</label>
-          {/* <input
-            type="text"
-            className={`form-control ${
-              !dataNasterii && buttonPressed && "border-danger"
-            }`}
-            id="formGroupExampleInput7"
-            placeholder="Data Nasterii"
-            value={dataNasterii}
-            readOnly
-          /> */}
+     
           <div
             className={`form-control d-flex align-items-center ${
               !telefon && buttonPressed && "border-danger"
@@ -527,32 +467,7 @@ const ProfileInfo = () => {
         </div>
       </div>
 
-      {/* End .col */}
-
-      {/* <div className="col-xl-12">
-                <div className="my_profile_setting_input form-group">
-                    <label htmlFor="formGroupExampleInput13">Address</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="formGroupExampleInput13"
-                    />
-                </div>
-            </div> */}
-      {/* End .col */}
-
-      {/* <div className="col-xl-12">
-                <div className="my_profile_setting_textarea">
-                    <label htmlFor="exampleFormControlTextarea1">
-                        About me
-                    </label>
-                    <textarea
-                        className="form-control"
-                        id="exampleFormControlTextarea1"
-                        rows="7"
-                    ></textarea>
-                </div>
-            </div> */}
+    
       {/* End .col */}
       <div className="col-lg-12">
         <h4 className="mb30">Introduceti zona de interes</h4>

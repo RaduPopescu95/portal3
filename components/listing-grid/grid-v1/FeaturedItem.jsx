@@ -170,7 +170,10 @@ const FeaturedItem = ({ params, searchQuery }) => {
                 }else{
                   final = calculeazaSiOrdoneazaParteneriDupaDistanta(filteredResults, latitude, longitude);
                 }
-          setParteneri(final);
+                const parteneriFiltrati = final.filter(partener => {
+                  return (partener.cadruMedical?.statusCont === 'Activ') || (partener.clinica?.statusCont === 'Activ');
+              });
+          setParteneri(parteneriFiltrati);
         } else {
  
           let final;
@@ -180,7 +183,12 @@ const FeaturedItem = ({ params, searchQuery }) => {
           }else{
             final = calculeazaSiOrdoneazaParteneriDupaDistanta(announcementsWithDetails, latitude, longitude);
           }
-          setParteneri(final);
+      
+          const parteneriFiltrati = final.filter(partener => {
+            return (partener.cadruMedical?.statusCont === 'Activ') || (partener.clinica?.statusCont === 'Activ');
+        });
+        
+          setParteneri(parteneriFiltrati);
         }
   
         setIsLoading(false);
