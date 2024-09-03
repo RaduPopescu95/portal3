@@ -92,42 +92,43 @@ const FeaturedItemHome = ({ params }) => {
 
   async function updatePartnersByLocation(localitate, latitude, longitude) {
     console.log("here...is...stat....", localitate);
-    let anunturi = await handleQueryFirestoreSubcollectionTripleParam(
-      "Anunturi",
-      "localitate",
-      localitate,
-      "tipAnunt",
-      "CadruMedical",
-      "status",
-      "Activa"
-    );
+    // let anunturi = await handleQueryFirestoreSubcollectionTripleParam(
+    //   "Anunturi",
+    //   "localitate",
+    //   localitate,
+    //   "tipAnunt",
+    //   "CadruMedical",
+    //   "status",
+    //   "Activa"
+    // );
 
-    let parteneriCuDistanta = await Promise.all(
-      anunturi.map(async (partener) => {
-        const cadruMedical = await handleQueryFirestore(
-          "UsersJobs",
-          "user_uid",
-          partener.collectionId
-        );
-        const distanta = calculateDistance(
-          latitude,
-          longitude,
-          partener.coordonate.lat,
-          partener.coordonate.lng
-        );
-        return {
-          ...partener,
-          distanta: Math.floor(distanta),
-          cadruMedical: cadruMedical[0],
-        };
-      })
-    );
+    // let parteneriCuDistanta = await Promise.all(
+    //   anunturi.map(async (partener) => {
+    //     const cadruMedical = await handleQueryFirestore(
+    //       "UsersJobs",
+    //       "user_uid",
+    //       partener.collectionId
+    //     );
+    //     const distanta = calculateDistance(
+    //       latitude,
+    //       longitude,
+    //       partener.coordonate.lat,
+    //       partener.coordonate.lng
+    //     );
+    //     return {
+    //       ...partener,
+    //       distanta: Math.floor(distanta),
+    //       cadruMedical: cadruMedical[0],
+    //     };
+    //   })
+    // );
 
-    let parteneriOrdonati = parteneriCuDistanta.sort(
-      (a, b) => a.distanta - b.distanta
-    );
+    // let parteneriOrdonati = parteneriCuDistanta.sort(
+    //   (a, b) => a.distanta - b.distanta
+    // );
 
-    if (parteneriOrdonati.length === 0) {
+    // if (parteneriOrdonati.length === 0) {
+    let parteneriOrdonati;
       console.log("is no length....");
       let cadre = await handleQueryFirestoreSubcollection(
         "Anunturi",
@@ -156,7 +157,7 @@ const FeaturedItemHome = ({ params }) => {
           };
         })
       );
-    }
+    // }
     console.log("parteneriOrdonati....status", parteneriOrdonati)
     const parteneriFiltrati = parteneriOrdonati.filter(partener => partener.cadruMedical.statusCont === 'Activ');
 

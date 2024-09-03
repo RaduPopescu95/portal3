@@ -189,7 +189,7 @@ const ProfileInfo = ({ doctor: doc }) => {
             className="form-control"
             id="formGroupExampleEmail"
             readOnly
-            value={doc?.localitate}
+            value={doc?.localitate === "Bucuresti" ? doc?.sector : doc?.localitate}
           />
         </div>
       </div>

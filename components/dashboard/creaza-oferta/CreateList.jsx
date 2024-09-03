@@ -109,7 +109,8 @@ const CreateList = ({ oferta }) => {
 
   const handlePutLocalitat = async (judet) => {
     await handleJudetChange(judet).then(() => {
-      setLocalitate(oferta?.sector);
+      const l = oferta?.localitate === "Bucuresti" ? oferta?.sector : oferta?.localitate
+      setLocalitate(l);
     });
   };
 

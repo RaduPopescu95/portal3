@@ -93,43 +93,44 @@ const ListaAnunturiClinici = ({ params }) => {
   }
 
   async function updatePartnersByLocation(localitate, latitude, longitude) {
-    let anunturi = await handleQueryFirestoreSubcollectionTripleParam(
-      "Anunturi",
-      "localitate",
-      localitate,
-      "tipAnunt",
-      "Clinica",
-      "status",
-      "Activa"
-    );
+    // let anunturi = await handleQueryFirestoreSubcollectionTripleParam(
+    //   "Anunturi",
+    //   "localitate",
+    //   localitate,
+    //   "tipAnunt",
+    //   "Clinica",
+    //   "status",
+    //   "Activa"
+    // );
 
-    let parteneriCuDistanta = await Promise.all(
-      anunturi.map(async (partener) => {
-        const clinica = await handleQueryFirestore(
-          "UsersJobs",
-          "user_uid",
-          partener.collectionId
-        );
-        const distanta = calculateDistance(
-          latitude,
-          longitude,
-          partener.coordonate.lat,
-          partener.coordonate.lng
-        );
-        console.log("anunturi....", clinica[0]);
-        return {
-          ...partener,
-          distanta: Math.floor(distanta),
-          clinica: clinica[0],
-        };
-      })
-    );
+    // let parteneriCuDistanta = await Promise.all(
+    //   anunturi.map(async (partener) => {
+    //     const clinica = await handleQueryFirestore(
+    //       "UsersJobs",
+    //       "user_uid",
+    //       partener.collectionId
+    //     );
+    //     const distanta = calculateDistance(
+    //       latitude,
+    //       longitude,
+    //       partener.coordonate.lat,
+    //       partener.coordonate.lng
+    //     );
+    //     console.log("anunturi....", clinica[0]);
+    //     return {
+    //       ...partener,
+    //       distanta: Math.floor(distanta),
+    //       clinica: clinica[0],
+    //     };
+    //   })
+    // );
 
-    let parteneriOrdonati = parteneriCuDistanta.sort(
-      (a, b) => a.distanta - b.distanta
-    );
+    // let parteneriOrdonati = parteneriCuDistanta.sort(
+    //   (a, b) => a.distanta - b.distanta
+    // );
 
-    if (parteneriOrdonati.length === 0) {
+    // if (parteneriOrdonati.length === 0) {
+    let parteneriOrdonati
       console.log("is no length....");
       let anunturi = await handleQueryFirestoreSubcollection(
         "Anunturi",
@@ -158,7 +159,7 @@ const ListaAnunturiClinici = ({ params }) => {
           };
         })
       );
-    }
+    // }
 
     console.log("anunturi....",parteneriOrdonati);
     console.log("anunturi....",typeof parteneriOrdonati);
