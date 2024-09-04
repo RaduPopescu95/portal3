@@ -109,7 +109,7 @@ const ReviewBox = ({ partener, oferta, titluOferta }) => {
         </div>
         <div className="form-group">
           <input
-            type="number"
+            type="text"
             className="form-control"
             placeholder="Numar de contact*"
             required

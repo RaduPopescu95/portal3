@@ -95,26 +95,43 @@ exports.notifyDoctorsOnNewAnunt = functions.firestore
     return null;
   });
 
-exports.sendInformareEmailsCereriAnunturi = functions.firestore
+  exports.sendInformareEmailsCereriAnunturi = functions.firestore
   .document("UsersJobs/{userId}/Cereri/{offerId}")
   .onUpdate(async (change, context) => {
     const newV = change.after.data();
     const oldV = change.before.data();
+
+    console.log("Funcția sendInformareEmailsCereriAnunturi a fost declanșată.");
+    console.log("Datele noi:", newV);
+    console.log("Datele vechi:", oldV);
 
     try {
       const partRef = admin
         .firestore()
         .doc(`UsersJobs/${newV.partener.user_uid}`);
 
+      console.log(`Preluarea partenerului cu user_uid: ${newV.partener.user_uid}`);
+
       const [partener] = await Promise.all([partRef.get()]);
 
+      if (!partener.exists) {
+        console.error(`Partenerul cu user_uid ${newV.partener.user_uid} nu a fost găsit.`);
+        return null;
+      }
+
+      console.log("Date partener:", partener.data());
+
       const emails = [partener.data().email];
+      console.log("Emailuri de trimis:", emails);
+
       const text =
         `A fost înregistrată o nouă cerere de către` +
         ` ${oldV.utilizator.numeUtilizator}, ` +
         `din ${oldV.utilizator.localitate}, ${oldV.utilizator.judet}.` +
-        `pentru anuntul ${oldV.oferta.titluOferta}` +
-        `Pentru detalii suplimentare accesați www.jobsmd.ro`;
+        ` pentru anuntul ${oldV.oferta.titluOferta}.` +
+        ` Pentru detalii suplimentare accesați www.jobsmd.ro`;
+
+      console.log("Textul emailului:", text);
 
       const mailOptions = (email) => ({
         from: "exclusivmd@creditemedicale.ro",
@@ -132,11 +149,13 @@ exports.sendInformareEmailsCereriAnunturi = functions.firestore
         }
       }
     } catch (error) {
-      console.error("Eroare la preluarea datelor utilizatorilor: ", error);
+      console.error("Eroare la preluarea datelor utilizatorilor sau trimiterea emailului: ", error);
     }
 
+    console.log("Funcția sendInformareEmailsCereriAnunturi a fost finalizată.");
     return null;
   });
+
 
 exports.sendDeactivationEmailsAnunturi = functions.pubsub
   .schedule("every 24 hours")
