@@ -95,6 +95,65 @@ const CreateList = ({ oferta }) => {
   const [isLocalitateSelected, setIsLocalitateSelected] = useState(true);
   const [isCateogireSelected, setIsCategorieSelected] = useState(true);
 
+  const validateForm = () => {
+    // Check for required fields
+
+    
+    if (logo.length === 0) {
+      showAlert("Este necesara selectarea unei poze pentru anunt", "danger");
+      return false;
+    }
+    
+    if (!titluOferta) {
+      showAlert("Titlul anuntului este obligatoriu!", "danger");
+      return false;
+    }
+    if (!descriereOferta) {
+      showAlert("Campul Prezentare generală este obligatorie!", "danger");
+      return false;
+    }
+  
+    if (!titulatura) {
+      showAlert("Titulatura este obligatorie!", "danger");
+      return false;
+    }
+  
+    if (!specialitate) {
+      showAlert("Specialitatea este obligatorie!", "danger");
+      return false;
+    }
+  
+    if (!tipProgram) {
+      showAlert("Tipul de program este obligatoriu!", "danger");
+      return false;
+    }
+  
+    if (!judet) {
+      showAlert("Județul este obligatoriu!", "danger");
+      return false;
+    }
+  
+    if (!localitate) {
+      showAlert("Localitatea este obligatorie!", "danger");
+      return false;
+    }
+
+    if (!adresaSediu) {
+      showAlert("Adresa pentru zona de interes este obligatorie!", "danger");
+      return false;
+    }
+  
+    // Check if at least one document is uploaded
+    if (files.length === 0) {
+      showAlert("Trebuie să încarci cel puțin un document!", "danger");
+      return false;
+    }
+  
+    // All validations passed
+    return true;
+  };
+  
+
   const handleLocationSelect = (lat, lng, adresa, urlMaps) => {
     console.log(`Selected location - Lat: ${lat}, Lng: ${lng}`);
     setAdresaSediu(adresa);
@@ -167,7 +226,7 @@ const CreateList = ({ oferta }) => {
     setAlert({ show: true, message, type });
     setTimeout(() => {
       setAlert({ show: false, message: "", type: "" });
-      router.push("/lista-anunturi-cadre-medicale");
+      // router.push("/lista-anunturi-cadre-medicale");
     }, 3000); // Alerta va dispărea după 3 secunde
   };
 
@@ -234,6 +293,12 @@ const CreateList = ({ oferta }) => {
   const handleUpdateOffer = async () => {
     setIsLoading(true);
     setButtonPressed(true);
+
+    if (!validateForm()) {
+      setIsLoading(false);
+      // setButtonPressed(false);
+      return; // Stop the function if validation fails
+    }
     console.log("currentUser...", currentUser.uid);
     console.log("userData...", userData);
     let lg = {};
@@ -293,9 +358,18 @@ const CreateList = ({ oferta }) => {
   const handleAddOffer = async () => {
     setIsLoading(true);
     setButtonPressed(true);
+  
+    // Perform validation
+    if (!validateForm()) {
+      setIsLoading(false);
+      // setButtonPressed(false);
+      return; // Stop the function if validation fails
+    }
+  
     console.log("currentUser...", currentUser.uid);
     console.log("userData...", userData);
     console.log("files...", files);
+  
     let lg = {};
     try {
       if (!logo[0].fileName) {
@@ -303,17 +377,17 @@ const CreateList = ({ oferta }) => {
       } else {
         lg = logo[0];
       }
-
+  
       const docsUrls = await handleUploadDocs(files);
-
+  
       const currentDate = new Date();
       const deactivationDate = new Date(
         currentDate.setDate(currentDate.getDate() + 30)
       );
       const formattedDeactivationDate = deactivationDate
         .toISOString()
-        .split("T")[0]; // Formatează data în formatul "YYYY-MM-DD"
-
+        .split("T")[0];
+  
       let data = {
         dataDezactivare: formattedDeactivationDate,
         descriereOferta,
@@ -331,7 +405,6 @@ const CreateList = ({ oferta }) => {
         localitate: judet === "Bucuresti" ? "Bucuresti" : localitate,
         sector: judet === "Bucuresti" ? sector : "",
         tipProgram,
-        //QUERY STRINGS
         tipProgramQ: tipProgram.toLowerCase(),
         titulaturaQ: titulatura.toLowerCase(),
         specialitateQ: specialitate.toLowerCase(),
@@ -340,9 +413,9 @@ const CreateList = ({ oferta }) => {
           judet === "Bucuresti" ? "bucuresti" : localitate.toLowerCase(),
         sectorQ: judet === "Bucuresti" ? sector.toLowerCase() : "",
       };
-
+  
       const actionText = `${userData.numeUtilizator} a creat anuntul de angajare ${titluOferta}`;
-
+  
       await handleUploadFirestoreSubcollection(
         data,
         `UsersJobs/${currentUser.uid}/Anunturi`,
@@ -360,6 +433,7 @@ const CreateList = ({ oferta }) => {
       showAlert(`Eroare la crearea anuntului: ${error.message}`, "danger");
     }
   };
+  
   const handleActivateOffer = async () => {
     setIsLoadingActivare(true);
     setButtonPressed(true);
@@ -549,6 +623,22 @@ const CreateList = ({ oferta }) => {
         </label>
       </div>
 
+      <div className="col-lg-12">
+        <div className="my_profile_setting_input form-group">
+          <label htmlFor="propertyTitle">Titlu anunt angajare</label>
+          <input
+            type="text"
+            className={`form-select ${
+              !titluOferta && "border-danger"
+            }`}
+            id="propertyTitle"
+            value={titluOferta}
+            onChange={(e) => setTitluOferta(e.target.value)}
+          />
+        </div>
+      </div>
+      {/* End .col */}
+
       {files.length > 0 && (
         <ul className="list-group mb-3">
           {files.map((file, index) => (
@@ -635,7 +725,9 @@ const CreateList = ({ oferta }) => {
         <div className="my_profile_setting_textarea">
           <label htmlFor="propertyDescription">Prezentare generală</label>
           <textarea
-            className="form-control"
+            className={`form-select ${
+              !descriereOferta && "border-danger"
+            }`}
             id="propertyDescription"
             rows="7"
             value={descriereOferta}

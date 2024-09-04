@@ -4,7 +4,7 @@ export default function FormularContact({ docCV }) {
   return (
     <a
       className="details custom-alignment"
-      href={docCV.docUrl}
+      href={docCV?.docUrl}
       target="_blank"
       rel="noopener noreferrer"
     >

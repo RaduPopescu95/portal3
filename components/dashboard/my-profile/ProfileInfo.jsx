@@ -199,7 +199,7 @@ const ProfileInfo = () => {
       }
 
       if (
-        !email ||
+
         !denumireBrand ||
         !numeContact ||
         !telefonContact ||
@@ -468,21 +468,6 @@ const ProfileInfo = () => {
       </div>
       {/* End .col */}
 
-      <div className="col-lg-6 col-xl-6">
-        <div className="my_profile_setting_input form-group">
-          <label htmlFor="formGroupExampleEmail">Email</label>
-          <input
-            type="email"
-            className={`form-control ${
-              !email && buttonPressed && "border-danger"
-            }`}
-            id="formGroupExampleEmail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-      </div>
-      {/* End .col */}
 
       <div className="col-xl-12">
         <div className="my_profile_setting_textarea">

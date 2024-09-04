@@ -114,9 +114,9 @@ const ProfileInfo = () => {
   };
 
   const handleUpdateProfile = async (event) => {
+    event.preventDefault();
     setButtonPressed(true);
     setIsLoading(true);
-    event.preventDefault();
     const emailNew = emailWithoutSpace(email);
     // Verifică dacă parola este confirmată corect și apoi creează utilizatorul
     // if (titulatura === "Asistent Medical") {
@@ -164,7 +164,6 @@ const ProfileInfo = () => {
         logo: lg,
       };
       if (
-        !email ||
         !numeUtilizator ||
         // !titulatura ||
         // titulatura === "Titulatura" ||
@@ -194,23 +193,24 @@ const ProfileInfo = () => {
         showAlert("Actualizare cu succes!", "success");
       });
     } catch (error) {
-      showAlert(`Eroare la Actualizare: ${error.message}`, "danger");
+      showAlert(`Eroare la Actalizare: ${error.message}`, "danger");
       setIsLoading(false);
       console.error("Error signing up: ", error);
     }
   };
 
   const handleJudetChange = async (e) => {
-    const judetSelectedName = e.target.value; // Numele județului selectat, un string
-    console.log("judetSelectedName...", judetSelectedName);
+    const judetSelectedName = e; // Numele județului selectat, un string
     setJudet(judetSelectedName);
     setIsJudetSelected(!!judetSelectedName);
-
+    
+    console.log("judetSelectedName...", judete);
     // Găsește obiectul județului selectat bazat pe `judet`
     const judetSelected = judete.find(
       (judet) => judet.judet === judetSelectedName
     );
-
+    
+    console.log("fetch localitati...", judetSelected);
     if (judetSelected) {
       try {
         // Utilizăm judet pentru a interoga Firestore
@@ -219,6 +219,7 @@ const ProfileInfo = () => {
           "judet",
           judetSelected.judet
         );
+        console.log("localitatile...", localitatiFromFirestore)
         // Presupunem că localitatiFromFirestore este array-ul corect al localităților
         setLocalitati(localitatiFromFirestore);
       } catch (error) {
@@ -251,6 +252,7 @@ const ProfileInfo = () => {
         );
         // Presupunem că localitatiFromFirestore este array-ul corect al localităților
         setLocalitati(localitatiFromFirestore);
+  
       } catch (error) {
         console.error("Failed to fetch locations:", error);
         setLocalitati([]); // Resetează localitățile în caz de eroare
@@ -260,10 +262,22 @@ const ProfileInfo = () => {
       setLocalitati([]);
     }
   };
+  const handlePutLocalitat = async (judet) => {
+    await handleJudetChange(judet).then(() => {
+      if(userData?.localitate === "Bucuresti"){
+
+        setLocalitate(userData?.localitate);
+        setSector(userData?.sector)
+      }else{
+
+        setLocalitate(userData?.localitate);
+      }
+    });
+  };
 
   useEffect(() => {
     if (judet.length > 0) {
-      handleGetLocalitatiJudet();
+      handlePutLocalitat(userData?.judet)
     }
   }, []);
 
@@ -330,22 +344,7 @@ const ProfileInfo = () => {
       </div>
       {/* End .col */}
 
-      <div className="col-lg-6 col-xl-6">
-        <div className="my_profile_setting_input form-group">
-          <label htmlFor="formGroupExampleEmail">Email</label>
-          <input
-            type="email"
-            className={`form-control ${
-              !email && buttonPressed && "border-danger"
-            }`}
-            id="formGroupExampleEmail"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-      </div>
-      {/* End .col */}
+
 
 
       <div className="col-lg-6 col-xl-6">
@@ -360,7 +359,7 @@ const ProfileInfo = () => {
             data-live-search="true"
             data-width="100%"
             value={judet}
-            onChange={handleJudetChange}
+            onChange={(e) => handleJudetChange(e.target.value)}
           >
             <option data-tokens="SelectRole">Judet</option>
             {judete &&
@@ -430,7 +429,7 @@ const ProfileInfo = () => {
      
           <div
             className={`form-control d-flex align-items-center ${
-              !telefon && buttonPressed && "border-danger"
+              !dataNasterii && buttonPressed && "border-danger"
             }`}
           >
             <select

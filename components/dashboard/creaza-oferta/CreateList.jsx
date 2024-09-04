@@ -88,6 +88,70 @@ const CreateList = ({ oferta }) => {
   const [isLocalitateSelected, setIsLocalitateSelected] = useState(true);
   const [isCateogireSelected, setIsCategorieSelected] = useState(true);
 
+  const validateForm = () => {
+    // Check for required fields
+
+    
+    if (logo.length === 0) {
+      showAlert("Este necesara selectarea unei poze pentru anunt", "danger");
+      return false;
+    }
+    
+    if (!titluOferta) {
+      showAlert("Titlul anuntului este obligatoriu!", "danger");
+      return false;
+    }
+  
+    if (!descriereOferta) {
+      showAlert("Campul Descriere Post este obligatoriu!", "danger");
+      return false;
+    }
+
+    if (!cerintePost) {
+      showAlert("Campul Cerinte post este obligatoriu!", "danger");
+      return false;
+    }
+  
+    if (!titulatura) {
+      showAlert("Titulatura este obligatorie!", "danger");
+      return false;
+    }
+  
+    if (!specialitate) {
+      showAlert("Specialitatea este obligatorie!", "danger");
+      return false;
+    }
+  
+    if (!tipProgram) {
+      showAlert("Tipul de program este obligatoriu!", "danger");
+      return false;
+    }
+  
+    if (!judet) {
+      showAlert("Județul este obligatoriu!", "danger");
+      return false;
+    }
+  
+    if (!localitate) {
+      showAlert("Localitatea este obligatorie!", "danger");
+      return false;
+    }
+
+    if (!adresaSediu) {
+      showAlert("Adresa pentru zona de interes este obligatorie!", "danger");
+      return false;
+    }
+  
+    // Check if at least one document is uploaded
+    if (files.length === 0) {
+      showAlert("Trebuie să încarci cel puțin un document!", "danger");
+      return false;
+    }
+  
+    // All validations passed
+    return true;
+  };
+
   const handleLocationSelect = (lat, lng, adresa, urlMaps) => {
     console.log(`Selected location - Lat: ${lat}, Lng: ${lng}`);
     setAdresaSediu(adresa);
@@ -161,7 +225,7 @@ const CreateList = ({ oferta }) => {
     setAlert({ show: true, message, type });
     setTimeout(() => {
       setAlert({ show: false, message: "", type: "" });
-      router.push("/lista-anunturi");
+      // router.push("/lista-anunturi");
     }, 3000); // Alerta va dispărea după 3 secunde
   };
 
@@ -214,6 +278,12 @@ const CreateList = ({ oferta }) => {
   const handleUpdateOffer = async () => {
     setIsLoading(true);
     setButtonPressed(true);
+    
+    if (!validateForm()) {
+      setIsLoading(false);
+      // setButtonPressed(false);
+      return; // Stop the function if validation fails
+    }
     console.log("currentUser...", currentUser.uid);
     console.log("userData...", userData);
     let lg = {};
@@ -270,6 +340,11 @@ const CreateList = ({ oferta }) => {
   const handleAddOffer = async () => {
     setIsLoading(true);
     setButtonPressed(true);
+    if (!validateForm()) {
+      setIsLoading(false);
+      // setButtonPressed(false);
+      return; // Stop the function if validation fails
+    }
     console.log("currentUser...", currentUser.uid);
     console.log("userData...", userData);
     let lg = {};
@@ -514,7 +589,9 @@ const CreateList = ({ oferta }) => {
           <label htmlFor="propertyTitle">Titlu anunt angajare</label>
           <input
             type="text"
-            className="form-control"
+            className={`form-select ${
+              !titluOferta && "border-danger"
+            }`}
             id="propertyTitle"
             value={titluOferta}
             onChange={(e) => setTitluOferta(e.target.value)}
@@ -573,7 +650,9 @@ const CreateList = ({ oferta }) => {
         <div className="my_profile_setting_textarea">
           <label htmlFor="propertyDescription">Descriere post</label>
           <textarea
-            className="form-control"
+                 className={`form-select ${
+                  !descriereOferta && "border-danger"
+                }`}
             id="propertyDescription"
             rows="7"
             value={descriereOferta}
@@ -587,7 +666,9 @@ const CreateList = ({ oferta }) => {
         <div className="my_profile_setting_textarea">
           <label htmlFor="propertyDescription">Cerinte post</label>
           <textarea
-            className="form-control"
+               className={`form-select ${
+                !cerintePost && "border-danger"
+              }`}
             id="propertyDescription"
             rows="7"
             value={cerintePost}

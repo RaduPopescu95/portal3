@@ -1,5 +1,4 @@
-"use client";
-
+"use client"
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { authentication, db } from "../firebase";
 import {
@@ -22,7 +21,9 @@ export const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState(
     JSON.parse(localStorage.getItem("userData")) || null
   );
-  const [judete, setJudete] = useState([]);
+  const [judete, setJudete] = useState(
+    JSON.parse(localStorage.getItem("judete")) || []  // Inițializează judete din localStorage
+  );
   const [loading, setLoading] = useState(true);
   const [isGuestUser, setIsGuestUser] = useState(
     localStorage.getItem("isGuestUser") === "true"
@@ -36,7 +37,6 @@ export const AuthProvider = ({ children }) => {
   const [localitate, setSelectedLocalitate] = useState(undefined);
   const [judet, setSelectedJudet] = useState(undefined);
 
-  // Funcția pentru a seta utilizatorul ca guest user
   const setAsGuestUser = (isGuest) => {
     try {
       localStorage.setItem("isGuestUser", isGuest ? "true" : "false");
@@ -92,8 +92,12 @@ export const AuthProvider = ({ children }) => {
       setCurrentUser(user);
 
       try {
-        const judeteRomania = await handleGetFirestore("Judete");
-        console.log("judete....", judeteRomania);
+        // Verifică dacă județele sunt deja salvate în localStorage
+        let judeteRomania = JSON.parse(localStorage.getItem("judete"));
+        if (!judeteRomania) {
+          judeteRomania = await handleGetFirestore("Judete");
+          localStorage.setItem("judete", JSON.stringify(judeteRomania));  // Salvează județele în localStorage
+        }
         setJudete(judeteRomania);
       } catch (error) {
         console.error("Failed to fetch judete data in context auth:", error);
@@ -105,7 +109,6 @@ export const AuthProvider = ({ children }) => {
     return unsubscribe;
   }, []);
 
-  // Actualizează localStorage când se schimbă userData sau currentUser
   useEffect(() => {
     if (userData) {
       localStorage.setItem("userData", JSON.stringify(userData));
@@ -126,8 +129,8 @@ export const AuthProvider = ({ children }) => {
     currentUser,
     userData,
     loading,
-    isGuestUser, // Includeți isGuestUser în context
-    setAsGuestUser, // Expuși funcția prin context
+    isGuestUser,
+    setAsGuestUser,
     setUserData,
     setCurrentUser,
     judete,

@@ -124,37 +124,37 @@ export const handleFirebaseAuthError = (error) => {
   console.log("test...", error.code);
   switch (error.code) {
     case "auth/invalid-email":
-      message = "Error Invalid Email";
+      message = "E-mail invalid";
       break;
     case "auth/email-already-in-use":
-      message = "Error Email Already In Use";
+      message = "E-mail deja folosit";
       break;
     case "auth/weak-password":
-      message = "Error Weak Password";
+      message = "Parola slaba, parola trebuie sa fie de cel putin 6 caractere.";
       break;
     case "auth/user-not-found":
-      message = "Error User Not Found";
+      message = "Utilizatorul nu a fost gasit";
       break;
     case "auth/user-disabled":
-      message = "Error User Disabled";
+      message = "Utilizatorul este dezactivat, contactati echipa jobsMD!";
       break;
     case "auth/wrong-password":
-      message = "Error Wrong Password";
+      message = "Parola gresita";
       break;
     case "auth/too-many-requests":
-      message = "Error Too Many Requests";
+      message = "Prea multe cereri de autentificare esuate. Va rugam sa resetati parola.";
       break;
     case "auth/operation-not-allowed":
-      message = "Error Operation Not Allowed";
+      message = "Operatiunea nu este permisa, contactati echipa jobsMD!";
       break;
     case "auth/network-request-failed":
-      message = "Error Network Request Failed. Check network connection and try again.";
+      message = "Cererea de rețea a eșuat. Verificați conexiunea la rețea și încercați din nou.";
       break;
     case "auth/invalid-credential":
-      message = "Error Invalid Credentials";
+      message = "Credentiale invalide";
       break;
     default:
-      message = "Error Unknown";
+      message = "Eroare necunoscuta. Contactati echipa jobsMD";
   }
   return message;
 };

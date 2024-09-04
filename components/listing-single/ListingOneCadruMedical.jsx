@@ -1,5 +1,6 @@
 "use client";
 
+import { formatTitulatura } from "@/utils/strintText";
 import Image from "next/image";
 
 export default function ListingOneCadruMedical({ partener, oferta }) {
@@ -12,7 +13,7 @@ export default function ListingOneCadruMedical({ partener, oferta }) {
               <h2>{partener?.numeUtilizator}</h2>
               {oferta?.titulatura && (
                 <h4>
-                  {oferta.titulatura} - {oferta.specialitate}
+                  {formatTitulatura(oferta.titulatura)} - {oferta.specialitate}
                 </h4>
               )}
               {partener.userType != "Doctor" ? (

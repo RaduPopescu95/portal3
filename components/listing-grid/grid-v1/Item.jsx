@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { toUrlSlug } from "@/utils/commonUtils"; // Ensure this util is correctly imported for slugification
+import { formatTitulatura } from "@/utils/strintText";
 
 const FeaturedProperty = ({ item, isGridOrList }) => {
   return (
@@ -92,7 +93,7 @@ const FeaturedProperty = ({ item, isGridOrList }) => {
       <div className="details">
         <div className="tc_content">
           <p className="text-thm">
-            {item?.titulatura} {`(${item?.specialitate})` || ""} -{" "}
+            {formatTitulatura(item?.titulatura)} {`(${item?.specialitate})` || ""} -{" "}
             {item?.localitate}
           </p>
           <p>

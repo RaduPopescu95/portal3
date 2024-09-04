@@ -16,6 +16,7 @@ import {
 } from "@/utils/firestoreUtils";
 import PropertyHeaderCadruMedical from "@/components/listing-details-v1/PropertyHeaderCadruMedical";
 import { unstable_noStore as noStore } from "next/cache";
+import { formatTitulatura } from "@/utils/strintText";
 
 const ListingDynamicDetailsV1 = async ({ params, searchParams }) => {
   noStore();
@@ -62,14 +63,14 @@ const ListingDynamicDetailsV1 = async ({ params, searchParams }) => {
               <PropertyHeaderCadruMedical
                 partener={partener[0]}
                 oferta={oferte[0]}
-                titulatura={oferte[0].titulatura}
+                titulatura={ formatTitulatura(oferte[0].titulatura)}
               />
             </div>
             <div className="col-md-12 col-lg-12">
               <DetailsContent
                 partener={partener[0]}
                 oferta={oferte[0]}
-                titulatura={oferte[0].titulatura}
+                titulatura={formatTitulatura(oferte[0].titulatura)}
               />
             </div>
 
