@@ -589,8 +589,8 @@ const CreateList = ({ oferta }) => {
           <label htmlFor="propertyTitle">Titlu anunt angajare</label>
           <input
             type="text"
-            className={`form-select ${
-              !titluOferta && "border-danger"
+            className={`form-control ${
+              !titluOferta && buttonPressed && "border-danger"
             }`}
             id="propertyTitle"
             value={titluOferta}
@@ -605,7 +605,7 @@ const CreateList = ({ oferta }) => {
           <label>Titulatura</label>
           <select
             className={`selectpicker form-select ${
-              !titulatura && "border-danger"
+              !titulatura && buttonPressed && "border-danger"
             }`}
             data-live-search="true"
             data-width="100%"
@@ -627,7 +627,7 @@ const CreateList = ({ oferta }) => {
           <label>Specialitate</label>
           <select
             className={`selectpicker form-select ${
-              !specialitate && "border-danger"
+              !specialitate && buttonPressed && "border-danger"
             }`}
             data-live-search="true"
             data-width="100%"
@@ -650,8 +650,8 @@ const CreateList = ({ oferta }) => {
         <div className="my_profile_setting_textarea">
           <label htmlFor="propertyDescription">Descriere post</label>
           <textarea
-                 className={`form-select ${
-                  !descriereOferta && "border-danger"
+                 className={`form-control ${
+                  !descriereOferta && buttonPressed && "border-danger"
                 }`}
             id="propertyDescription"
             rows="7"
@@ -666,8 +666,8 @@ const CreateList = ({ oferta }) => {
         <div className="my_profile_setting_textarea">
           <label htmlFor="propertyDescription">Cerinte post</label>
           <textarea
-               className={`form-select ${
-                !cerintePost && "border-danger"
+               className={`form-control ${
+                !cerintePost && buttonPressed && "border-danger"
               }`}
             id="propertyDescription"
             rows="7"
@@ -683,7 +683,7 @@ const CreateList = ({ oferta }) => {
           <label>Tip Program</label>
           <select
             className={`selectpicker form-select ${
-              !tipProgram && "border-danger"
+              !tipProgram && buttonPressed && "border-danger"
             }`}
             data-live-search="true"
             data-width="100%"
