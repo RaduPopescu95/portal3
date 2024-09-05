@@ -5,10 +5,31 @@ import Activities from "@/components/dashboard-master/my-dashboard/Activities";
 import ChangePassword from "@/components/dashboard-master/verifica-utilizator/ChangePassword";
 import ProfileInfo from "@/components/dashboard-master/verifica-utilizator/ProfileInfo";
 import SocialMedia from "@/components/dashboard-master/verifica-utilizator/SocialMedia";
+import TabelOferte from "@/components/dashboard-master/verificare-doctor/TabelOferte";
+import { db } from "@/firebase";
 import {
   handleQueryFirestore,
   handleQueryFirestoreSubcollection,
 } from "@/utils/firestoreUtils";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
+
+const fetchItems = async (userId) => {
+  const collectionPath = `UsersJobs/${userId}/Anunturi`; // Replace with your actual path
+  const ref = collection(db, collectionPath);
+  let pageQuery;
+
+  pageQuery = query(ref, orderBy("firstUploadDate", "desc"));
+
+  if (!pageQuery) return;
+
+  const documentSnapshots = await getDocs(pageQuery);
+  const newItems = documentSnapshots.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+  console.log("newItems....", newItems);
+  return newItems;
+};
 
 const index = async ({ params }) => {
   const id = params.id;
@@ -19,6 +40,7 @@ const index = async ({ params }) => {
     "collectionId",
     doctor[0].user_uid
   );
+  let oferte = await fetchItems(doctor[0].user_uid);
   return (
     <>
       {/* <!-- Main Header Nav --> */}
@@ -83,6 +105,8 @@ const index = async ({ params }) => {
                     </div>
                   </div>
                   {/* End prifle info wrapper end */}
+
+                  <TabelOferte oferte={oferte} />
 
                   <div className="col-lg-12 mt10">
                     <div className="my_dashboard_review">

@@ -11,6 +11,8 @@ import { useEffect, useState } from "react";
 
 import CommonLoader from "@/components/common/CommonLoader";
 import LogoUpload from "@/components/dashboard/my-profile/LogoUpload";
+import { TITLES_AND_SPECIALTIES } from "@/utils/constanteTitulatura";
+import { formatTitulatura } from "@/utils/strintText";
 
 const CreateList = ({ oferta }) => {
   const { currentUser, userData } = useAuth();
@@ -23,6 +25,11 @@ const CreateList = ({ oferta }) => {
     oferta?.procentReducere || ""
   );
   const [titluOferta, setTitluOferta] = useState(oferta?.titluOferta || "");
+  const [titulatura, setTitulatura] = useState(oferta?.titulatura || "");
+  const [specialitate, setSpecialitate] = useState(oferta?.specialitate || "");
+  const [specialitati, setSpecialitati] = useState(
+    oferta?.titulatura ? TITLES_AND_SPECIALTIES[oferta?.titulatura] : []
+  );
   const [descriereOferta, setDescriereOferta] = useState(
     oferta?.descriereOferta || ""
   );
@@ -57,6 +64,13 @@ const CreateList = ({ oferta }) => {
   const [initialData, setInitialData] = useState({});
 
   let isEdit = oferta?.imagineOferta?.finalUri ? true : false;
+
+  const handleTitleChange = (event) => {
+    const title = event.target.value;
+    setTitulatura(title);
+    setSpecialitati(TITLES_AND_SPECIALTIES[title] || []);
+    setSpecialitate(""); // Reset specialty when title changes
+  };
 
   useEffect(() => {
     if (oferta) {
@@ -280,7 +294,7 @@ const CreateList = ({ oferta }) => {
       {/* End .col */}
       <div className="col-lg-12">
         <div className="my_profile_setting_input form-group">
-          <label htmlFor="propertyTitle">Titlu oferta</label>
+          <label htmlFor="propertyTitle">Titlu anunt angajare</label>
           <input
             type="text"
             className="form-control"
@@ -292,6 +306,71 @@ const CreateList = ({ oferta }) => {
         </div>
       </div>
       {/* End .col */}
+
+      <div className="col-lg-6 col-xl-6">
+        <div className="my_profile_setting_input ui_kit_select_search form-group">
+          <label>Titulatura</label>
+          <select
+            className={`selectpicker form-select ${
+              !titulatura && buttonPressed && "border-danger"
+            }`}
+            data-live-search="true"
+            data-width="100%"
+            value={titulatura}
+            readOnly
+          >
+            <option value="">Selectează o titulatură</option>
+            {Object.keys(TITLES_AND_SPECIALTIES).map((title) => (
+              <option key={title} value={title}>
+                {formatTitulatura(title)}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      {/* End .col */}
+      <div className="col-lg-6 col-xl-6">
+        <div className="my_profile_setting_input ui_kit_select_search form-group">
+          <label>Specialitate</label>
+          <select
+            className={`selectpicker form-select ${
+              !specialitate && buttonPressed && "border-danger"
+            }`}
+            data-live-search="true"
+            data-width="100%"
+            value={specialitate}
+            readOnly
+          >
+            <option value="">Selectează o specialitate</option>
+            {specialitati.map((specialty) => (
+              <option key={specialty} value={specialty}>
+                {specialty}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      {/* End .col */}
+
+{oferta.tipAnunt === "CadruMedical"
+?
+<div className="col-lg-12">
+<div className="my_profile_setting_textarea">
+  <label htmlFor="propertyDescription">Prezentare generala</label>
+  <textarea
+    className="form-control"
+    id="propertyDescription"
+    rows="7"
+    value={descriereOferta}
+    // onChange={(e) => setDescriereOferta(e.target.value)}
+    readOnly
+  ></textarea>
+</div>
+</div>
+
+:
+<>
+
 
       <div className="col-lg-12">
         <div className="my_profile_setting_textarea">
@@ -322,6 +401,10 @@ const CreateList = ({ oferta }) => {
         </div>
       </div>
       {/* End .col */}
+</>}
+
+
+  
 
       {/* <div className="col-lg-6 col-xl-6">
         <div className="my_profile_setting_input ui_kit_select_search form-group">

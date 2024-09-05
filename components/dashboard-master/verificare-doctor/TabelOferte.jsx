@@ -21,7 +21,7 @@ export default function TabelOferte({ oferte }) {
       <div className="my_dashboard_review">
         <div className="row">
           <div className="col-xl-12">
-            <h4>Anunturi Clinica</h4>
+            <h4>Anunturi Cadru medical</h4>
           </div>
         </div>
         <div className="property_table">
