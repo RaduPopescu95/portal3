@@ -61,7 +61,7 @@ const ListingDynamicDetailsV1 = async ({ params, searchParams }) => {
               <DetailsContent
                 partener={partener[0]}
                 oferta={oferte[0]}
-                titluOferta={oferte[0].titluOferta}
+                titluOferta={oferte[0]?.titluOferta}
               />
             </div>
 
