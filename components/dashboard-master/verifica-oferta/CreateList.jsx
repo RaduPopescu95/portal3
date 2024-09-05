@@ -354,7 +354,7 @@ const CreateList = ({ oferta }) => {
 
       {/* {tipOferta === "Oferta specifică" && ( */}
       <>
-        <div className="col-lg-6 col-xl-6">
+        {/* <div className="col-lg-6 col-xl-6">
           <div className="my_profile_setting_input form-group">
             <label htmlFor="activationDate">Data de activare</label>
             <input
@@ -366,7 +366,7 @@ const CreateList = ({ oferta }) => {
               readOnly
             />
           </div>
-        </div>
+        </div> */}
         {/* End .col */}
 
         <div className="col-lg-6 col-xl-6">

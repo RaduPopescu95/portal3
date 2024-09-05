@@ -119,11 +119,10 @@ const TableData = ({ oferte }) => {
       <td>
         {(() => {
           const today = new Date();
-          const startDate = new Date(item.dataActivare);
           const endDate = new Date(item.dataDezactivare);
 
           const isActive =
-            isSameOrAfter(today, startDate) && isSameOrBefore(today, endDate);
+      isSameOrBefore(today, endDate);
 
           if (isActive) {
             return <span className="status_tag badge">Activa</span>;

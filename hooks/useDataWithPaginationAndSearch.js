@@ -14,6 +14,7 @@ export function useDataWithPaginationAndSearch(
   const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
+    console.log("anunturi....", data)
     // Aplică filtrarea folosind câmpul specificat
     const filteredData = data.filter((item) =>
       item[searchField].toLowerCase().includes(searchTerm.toLowerCase())

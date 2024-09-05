@@ -20,7 +20,7 @@ import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { unstable_noStore as noStore } from "next/cache";
 
 const fetchItems = async (userId) => {
-  const collectionPath = `UsersJobs/${userId}/Oferte`; // Replace with your actual path
+  const collectionPath = `UsersJobs/${userId}/Anunturi`; // Replace with your actual path
   const ref = collection(db, collectionPath);
   let pageQuery;
 
