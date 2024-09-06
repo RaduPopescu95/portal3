@@ -233,7 +233,7 @@ const ListaAnunturiClinici = ({ params }) => {
               pathname: `/partener/${toUrlSlug(item?.titluOferta)}_${
                 item?.clinica?.id
               }`,
-              query: { slug: item?.clinica?.user_uid, an:item?.id },
+              query: { slug: item?.clinica?.user_uid, an:item?.documentId },
             }}
             key={item?.id}
             passHref

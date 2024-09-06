@@ -166,7 +166,7 @@ const TableData = ({ oferte }) => {
             title="Edit"
           >
             <Link
-              href={`creaza-anunt-cadru-medical/${item.id}-${item.collectionId}`}
+              href={`creaza-anunt-cadru-medical/${item.documentId}-${item.collectionId}`}
             >
               <span className="flaticon-edit"></span>
             </Link>

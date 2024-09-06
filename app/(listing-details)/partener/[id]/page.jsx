@@ -25,7 +25,7 @@ const ListingDynamicDetailsV1 = async ({ params, searchParams }) => {
   const id = params.id;
 
   const number = searchParams.slug;
-  const an = parseFloat(searchParams.an);;
+  const an = searchParams.an;
 
   let partenerId = number;
   console.log("searchParamssssswwwwssss", searchParams);
@@ -35,7 +35,7 @@ const ListingDynamicDetailsV1 = async ({ params, searchParams }) => {
 
   let oferte = await handleQueryFirestoreSubcollection(
     `Anunturi`,
-    "id",
+    "documentId",
     an,
     "collectionId",
     partenerId

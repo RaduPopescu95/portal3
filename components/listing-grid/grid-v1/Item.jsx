@@ -59,7 +59,7 @@ const FeaturedProperty = ({ item, isGridOrList }) => {
                 pathname: `/partener/${toUrlSlug(item?.titluOferta)}_${
                   item?.clinica?.user_uid
                 }`,
-                query: { slug: item?.clinica?.user_uid, an:item.id },
+                query: { slug: item?.clinica?.user_uid, an:item.documentId },
               }}
               className="fp_price"
             >
@@ -69,7 +69,7 @@ const FeaturedProperty = ({ item, isGridOrList }) => {
             <Link
               href={{
                 pathname: `/cadru-medical/anunt-${toUrlSlug(item?.titulatura)}`,
-                query: { slug: item?.cadruMedical?.id, an:item?.id },
+                query: { slug: item?.cadruMedical?.id, an:item?.documentId },
               }}
               className="fp_price"
             >

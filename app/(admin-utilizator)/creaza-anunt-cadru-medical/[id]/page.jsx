@@ -14,10 +14,13 @@ const index = async ({ params }) => {
   const parts = params.id.split("-");
   const id = parseFloat(parts[0]);
   const partenerId = parts[1];
+  const anuntId = parts[0];
   const oferta = await handleQueryFirestoreSubcollection(
     "Anunturi",
     "collectionId",
-    partenerId
+    partenerId,
+    "documentId",
+    anuntId
   );
 
   return (
