@@ -16,8 +16,6 @@ const index = async ({ params }) => {
   const partenerId = parts[1];
   const oferta = await handleQueryFirestoreSubcollection(
     "Anunturi",
-    "id",
-    id,
     "collectionId",
     partenerId
   );

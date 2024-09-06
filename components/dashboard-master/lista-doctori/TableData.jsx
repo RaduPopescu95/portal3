@@ -96,7 +96,7 @@ const TableData = ({ doctori: docs }) => {
     }
   };
 
-  let theadConent = ["id","Doctor", "Data Inregistrare", "Status Cont", "Actiune"];
+  let theadConent = ["Cadru", "Data Inregistrare", "Status Cont", "Actiune"];
   let tbodyContent = docs?.map((item) => (
     <tr key={item.id}>
       <td scope="row">
@@ -117,19 +117,7 @@ const TableData = ({ doctori: docs }) => {
               </ul>
             </div>
           </div> */}
-          <div className="details">
-            <div className="tc_content">
-              <h4>{item.id}</h4>
-              {/* <p>
-                <span className="flaticon-placeholder"></span>
-                {item.location}
-              </p> */}
-              {/* <a className="fp_price text-thm" href="#">
-                ${item.price}
-                <small>/mo</small>
-              </a> */}
-            </div>
-          </div>
+     
           <div className="details">
             <div className="tc_content">
               <h4>{item.numeUtilizator}</h4>
@@ -168,7 +156,7 @@ const TableData = ({ doctori: docs }) => {
             data-placement="top"
             title="Edit"
           >
-            <Link href={`/verificare-doctor/${item.id}`}>
+            <Link href={`/verificare-doctor/${item.user_uid}`}>
               <span className="flaticon-view"></span>
             </Link>
           </li>

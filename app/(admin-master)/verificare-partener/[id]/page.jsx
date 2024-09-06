@@ -40,14 +40,14 @@ const fetchItems = async (userId) => {
 const index = async ({ params }) => {
   noStore();
   const id = params.id;
-  const userId = parseFloat(id);
-  const partener = await handleQueryFirestore("UsersJobs", "id", userId);
+  const userId = id;
+  const partener = await handleQueryFirestore("UsersJobs", "user_uid", userId);
   const actiuni = await handleQueryFirestoreSubcollection(
     "ActiuniJobs",
     "collectionId",
-    partener[0].user_uid
+    userId
   );
-  let oferte = await fetchItems(partener[0].user_uid);
+  let oferte = await fetchItems(userId);
   return (
     <>
       {/* <!-- Main Header Nav --> */}

@@ -26,12 +26,12 @@ const ListingDynamicDetailsV1 = async ({ params, searchParams }) => {
   }
   const id = params.id;
 
-  const number = parseFloat(searchParams.slug);
+  const number = searchParams.slug;
 
   let partenerId = number;
   console.log("searchParamssssswwwwssss", searchParams);
   console.log("id.parts..", partenerId);
-  let partener = await handleQueryFirestore("UsersJobs", "id", partenerId);
+  let partener = await handleQueryFirestore("UsersJobs", "user_uid", partenerId);
   console.log("id.parts..", partener);
 
   let oferte = await handleQueryFirestoreSubcollection(

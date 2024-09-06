@@ -25,7 +25,7 @@ const index = async ({ params }) => {
   let ofertaData = [];
   let utilizatorData = [];
   if (userId) {
-    utilizatorData = await handleQueryFirestore("UsersJobs", "id", userId);
+    utilizatorData = await handleQueryFirestore("UsersJobs", "user_uid", userId);
     ofertaData = await handleQueryFirestoreSubcollection(
       "Oferte",
       "documentId",

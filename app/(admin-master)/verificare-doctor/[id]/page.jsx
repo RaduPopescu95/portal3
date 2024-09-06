@@ -17,30 +17,34 @@ const fetchItems = async (userId) => {
   const collectionPath = `UsersJobs/${userId}/Anunturi`; // Replace with your actual path
   const ref = collection(db, collectionPath);
   let pageQuery;
-
+  
   pageQuery = query(ref, orderBy("firstUploadDate", "desc"));
-
+  console.log("Start....", userId)
   if (!pageQuery) return;
-
+  
   const documentSnapshots = await getDocs(pageQuery);
   const newItems = documentSnapshots.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   }));
+
   console.log("newItems....", newItems);
   return newItems;
 };
 
 const index = async ({ params }) => {
   const id = params.id;
-  const userId = parseFloat(id);
-  const doctor = await handleQueryFirestore("UsersJobs", "id", userId);
+  const userId = id;
+  const doctor = await handleQueryFirestore("UsersJobs", "user_uid", userId);
+
   const actiuni = await handleQueryFirestoreSubcollection(
     "ActiuniJobs",
     "collectionId",
-    doctor[0].user_uid
+    userId
   );
-  let oferte = await fetchItems(doctor[0].user_uid);
+
+  let oferte = await fetchItems(userId);
+  console.log("anuntui...", oferte)
   return (
     <>
       {/* <!-- Main Header Nav --> */}

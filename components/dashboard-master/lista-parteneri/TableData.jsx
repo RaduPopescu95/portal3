@@ -118,7 +118,7 @@ const TableData = ({ parteneri: parts }) => {
     }
   };
 
-  let theadConent = ["Id","Partener", "Data Inregistrare", "Status Cont", "Actiune"];
+  let theadConent = ["Clinica", "Data Inregistrare", "Status Cont", "Actiune"];
   let tbodyContent = parts?.map((item) => (
     <tr key={item.id}>
       <td scope="row">
@@ -139,19 +139,7 @@ const TableData = ({ parteneri: parts }) => {
               </ul>
             </div>
           </div> */}
-          <div className="details">
-            <div className="tc_content">
-              <h4>{item.id}</h4>
-              {/* <p>
-                <span className="flaticon-placeholder"></span>
-                {item.location}
-              </p> */}
-              {/* <a className="fp_price text-thm" href="#">
-                ${item.price}
-                <small>/mo</small>
-              </a> */}
-            </div>
-          </div>
+ 
           <div className="details">
             <div className="tc_content">
               <h4>{item.denumireBrand}</h4>
@@ -190,7 +178,7 @@ const TableData = ({ parteneri: parts }) => {
             data-placement="top"
             title="Edit"
           >
-            <Link href={`/verificare-partener/${item.id}`}>
+            <Link href={`/verificare-partener/${item.user_uid}`}>
               <span className="flaticon-view"></span>
             </Link>
           </li>
