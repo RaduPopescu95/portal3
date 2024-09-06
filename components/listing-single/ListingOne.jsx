@@ -1,8 +1,9 @@
 "use client";
 
+import { formatTitulatura } from "@/utils/strintText";
 import Image from "next/image";
 
-export default function ListingOne({ partener }) {
+export default function ListingOne({ partener, oferta }) {
   console.log("partener...", partener);
   return (
     <section className="listing-title-area mt85 md-mt0">
@@ -10,7 +11,8 @@ export default function ListingOne({ partener }) {
         <div className="row mb30">
           <div className="col-lg-7 col-xl-8">
             <div className="single_property_title mt30-767">
-              <h2>{partener?.denumireBrand}</h2>
+              <h1>{partener?.denumireBrand}</h1>
+              <h2>Anunt {formatTitulatura(oferta?.titulatura)} - {oferta?.specialitate}</h2>
               <p>{partener?.adresaSediu}</p>
             </div>
           </div>

@@ -25,6 +25,7 @@ const ListingDynamicDetailsV1 = async ({ params, searchParams }) => {
   const id = params.id;
 
   const number = searchParams.slug;
+  const an = parseFloat(searchParams.an);;
 
   let partenerId = number;
   console.log("searchParamssssswwwwssss", searchParams);
@@ -34,8 +35,10 @@ const ListingDynamicDetailsV1 = async ({ params, searchParams }) => {
 
   let oferte = await handleQueryFirestoreSubcollection(
     `Anunturi`,
+    "id",
+    an,
     "collectionId",
-    partener[0].user_uid
+    partenerId
   );
 
   console.log("test oferte...ss", oferte);
@@ -52,7 +55,7 @@ const ListingDynamicDetailsV1 = async ({ params, searchParams }) => {
       <PopupSignInUp />
 
       {/* <!-- Listing Single Property --> */}
-      <ListingOne partener={partener[0]} />
+      <ListingOne partener={partener[0]}         oferta={oferte[0]}/>
       {/* <!-- Agent Single Grid View --> */}
       <section className="our-agent-single bgc-f7 pb30-991">
         <div className="container">
