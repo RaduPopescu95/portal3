@@ -623,22 +623,6 @@ const CreateList = ({ oferta }) => {
         </label>
       </div>
 
-      <div className="col-lg-12">
-        <div className="my_profile_setting_input form-group">
-          <label htmlFor="propertyTitle">Titlu anunt angajare</label>
-          <input
-            type="text"
-            className={`form-control ${
-              !titluOferta && buttonPressed && "border-danger"
-            }`}
-            id="propertyTitle"
-            value={titluOferta}
-            onChange={(e) => setTitluOferta(e.target.value)}
-          />
-        </div>
-      </div>
-      {/* End .col */}
-
       {files.length > 0 && (
         <ul className="list-group mb-3">
           {files.map((file, index) => (
@@ -659,6 +643,24 @@ const CreateList = ({ oferta }) => {
         </ul>
       )}
 
+
+      <div className="col-lg-12">
+        <div className="my_profile_setting_input form-group">
+          <label htmlFor="propertyTitle">Titlu anunt angajare</label>
+          <input
+            type="text"
+            className={`form-control ${
+              !titluOferta && buttonPressed && "border-danger"
+            }`}
+            id="propertyTitle"
+            value={titluOferta}
+            onChange={(e) => setTitluOferta(e.target.value)}
+          />
+        </div>
+      </div>
+      {/* End .col */}
+
+   
       {/* )} */}
       {/* End .col */}
       {/* <div className="col-lg-12">

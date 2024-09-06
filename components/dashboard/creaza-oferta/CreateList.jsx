@@ -142,11 +142,7 @@ const CreateList = ({ oferta }) => {
       return false;
     }
   
-    // Check if at least one document is uploaded
-    if (files.length === 0) {
-      showAlert("Trebuie să încarci cel puțin un document!", "danger");
-      return false;
-    }
+  
   
     // All validations passed
     return true;
