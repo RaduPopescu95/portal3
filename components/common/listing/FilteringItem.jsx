@@ -10,7 +10,7 @@ import {
 
 import PricingRangeSlider from "../../common/PricingRangeSlider";
 import { v4 as uuidv4 } from "uuid";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { handleQueryFirestoreSubcollection } from "@/utils/firestoreUtils";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -38,6 +38,7 @@ const FilteringItem = ({ params }) => {
   const [titulatura, setTitulatura] = useState("");
   const [tipAnunt, setTipAnunt] = useState("");
   const [tipProgram, setTipProgram] = useState("");
+  const pathname = usePathname()
 
   // Handler pentru schimbarea selectiei de judete
   const handleCategoryChange = (event) => {
@@ -100,6 +101,65 @@ const FilteringItem = ({ params }) => {
     setIsCategorieSelected(!!e.target.value);
   };
 
+  // clearFilters
+  const clearFilters = () => {
+    // Creăm un nou URLSearchParams gol
+    const params = new URLSearchParams();
+  
+    // Adăugăm `tipAnunt` în funcție de `userData`
+    const tAnunt =
+      userData?.userType === "Partener"
+        ? "Anunturi Cadre Medicale"
+        : userData?.userType === "Doctor"
+        ? "Clinica"
+        : "";
+  
+    if (tAnunt) {
+      params.set("tipAnunt", tAnunt); // Adaugă `tipAnunt` în searchParams dacă este setat
+    }
+  
+    // Resetăm stările locale pentru filtre
+    setSearchQueryParteneri("");
+    setJudet("");
+    setLocalitate("");
+    setSpecialitate("");
+    setTitulatura("");
+    setTipAnunt(tAnunt);
+    setTipProgram("");
+  
+    // Construim calea URL-ului pe baza valorilor pentru `titulatura` și `judet`
+    let path = "/";
+    let defaultPathSegment;
+  
+    // if (userData) {
+    //   defaultPathSegment =
+    //     userData?.userType === "Partener" ? "Doctor" : "Anunturi";
+    // } else {
+      defaultPathSegment = "Anunturi";
+      path = defaultPathSegment.toLocaleLowerCase()
+    // }
+  
+    // Verificăm `titulatura` și `judet` pentru a construi calea URL-ului
+    // if (titulatura) {
+    //   path += `${titulatura.toLocaleLowerCase()}`;
+    //   if (judet) path += `-${judet.toLocaleLowerCase()}`;
+    // } else {
+    //   if (judet) {
+    //     path += `${defaultPathSegment.toLocaleLowerCase()}-${judet.toLocaleLowerCase()}`;
+    //   } else {
+    //     path += `${defaultPathSegment.toLocaleLowerCase()}`;
+    //   }
+    // }
+  
+    // Actualizăm URL-ul cu calea și parametrii construiți
+    const newQuery = params.toString();
+    router.push(`${path}?${newQuery}`, undefined, { shallow: true });
+  
+    // Poți apela și `handleGetAnunturi` după resetare, dacă dorești să actualizezi anunțurile
+    // handleGetAnunturi();
+  };
+  
+  
   // submit handler
   const submitHandler = (event) => {
     event.preventDefault();
@@ -388,6 +448,19 @@ const FilteringItem = ({ params }) => {
             aria-label="Close"
           >
             Cauta
+          </button>
+        </div>
+      </li>
+      <li>
+        <div className="search_option_button">
+          <button
+            onClick={clearFilters}
+            type="button"
+            className="btn btn-block btn-thm w-100 mt10"
+            data-bs-dismiss="offcanvas"
+            aria-label="Close"
+          >
+            Elimina filtre
           </button>
         </div>
       </li>

@@ -238,19 +238,23 @@ const FeaturedItem = ({ params, searchQuery }) => {
           ? "Clinica"
           : "";
   
-      // Dacă avem un tip de anunț, actualizăm query-ul URL-ului
+      // Construim URLSearchParams din searchParams existente
+      const params = new URLSearchParams(searchParams);
+  
+      // Dacă avem un tip de anunț, actualizăm sau adăugăm în query-ul URL-ului
       if (tAnunt) {
-        const currentUrl = pathname;
-        console.log("current url...", currentUrl)
-        const newQuery = `?tipAnunt=${tAnunt}`;
-        router.push(`${currentUrl}${newQuery}`, undefined, { shallow: true });
+        params.set("tipAnunt", tAnunt); // Setăm sau suprascriem tipAnunt
       }
   
-      // Apelăm funcția handleGetAnunturi
+      // Reconstruim URL-ul cu toți parametrii
+      const newQuery = params.toString();
+      router.push(`${pathname}?${newQuery}`, undefined, { shallow: true });
+  
+      // Apelăm funcția handleGetAnunturi după ce actualizăm URL-ul
       handleGetAnunturi();
     };
   
-    // Apelăm la intrarea inițială în componentă
+    // Apelăm la intrarea inițială în componentă și la schimbarea lui userData sau searchParams
     updateQueryAndFetchAnunturi();
   }, [userData, searchParams]); // Rerulează la schimbarea lui userData sau searchParams
   
