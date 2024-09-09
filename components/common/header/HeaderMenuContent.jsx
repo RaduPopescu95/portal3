@@ -134,7 +134,7 @@ const HeaderMenuContent = ({ float = "" }) => {
       </li>
       {/* End .simpleitem */}
 
-      {(currentUser && userData?.userType) || (currentUser.uid === "ZUXX9smtXBdxve8dOhk5MTZRU903") ? null : (
+      {(currentUser && userData?.userType) || (currentUser?.uid === "ZUXX9smtXBdxve8dOhk5MTZRU903") ? null : (
         <>
           <li className={`list-inline-item list_s ${float}`}>
             <a
@@ -200,7 +200,7 @@ const HeaderMenuContent = ({ float = "" }) => {
           </Link>
         </li>
       ) : null}
-      {currentUser.uid === "ZUXX9smtXBdxve8dOhk5MTZRU903" &&   <li className={`list-inline-item add_listing ${float}`}>
+      {currentUser?.uid === "ZUXX9smtXBdxve8dOhk5MTZRU903" &&   <li className={`list-inline-item add_listing ${float}`}>
           <Link href="/admin">
             <span className="dn-lg">CONTUL ADMIN</span>
           </Link>

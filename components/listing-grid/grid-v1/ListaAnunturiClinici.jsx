@@ -169,6 +169,44 @@ const ListaAnunturiClinici = ({ params }) => {
     setParteneri(parteneriFiltrati);
     setIsLoading(false);
   }
+  async function updatePartnersWithoutLocation() {
+  
+      console.log("is no location....clinici");
+      let anunturi = await handleQueryFirestoreSubcollection(
+        "Anunturi",
+        "tipAnunt",
+        "Clinica",
+        "status",
+        "Activa"
+      );
+      let parteneriOrdonati;
+      parteneriOrdonati = await Promise.all(
+        anunturi.map(async (partener) => {
+          const clinica = await handleQueryFirestore(
+            "UsersJobs",
+            "user_uid",
+            partener.collectionId
+          );
+
+          return {
+            ...partener,
+
+            clinica: clinica[0],
+          };
+        })
+      );
+    // }
+
+    console.log("anunturi....",parteneriOrdonati);
+    console.log("anunturi....",typeof parteneriOrdonati);
+    console.log("anunturi....", parteneriOrdonati[0].clinica.statusCont);
+    const parteneriFiltrati = parteneriOrdonati.filter(partener => partener.clinica.statusCont === 'Activ');
+
+    setParteneri(parteneriFiltrati);
+    setIsLoading(false);
+  }
+
+
 
   function handleGeoSuccess(position) {
     const { latitude, longitude } = position.coords;
@@ -182,6 +220,7 @@ const ListaAnunturiClinici = ({ params }) => {
     // setIsNoLocation(true);
     // Informează utilizatorul despre cum poate activa locația manual
     if (error.code === error.PERMISSION_DENIED) {
+      updatePartnersWithoutLocation()
       setIsNoLocation(true);
     }
   }
@@ -259,16 +298,16 @@ const ListaAnunturiClinici = ({ params }) => {
 
   return (
     <>
-      {isLoading ? <SkeletonLoader /> : content}
-
       {isNoLocation && (
         <div className="d-flex justify-content-center align-items-center">
           <p>
-            Accesul la locație a fost blocat. Te rog activează accesul la
-            locație din setările browserului sau dispozitivului tău.
+          Accesul la locație a fost blocat. Te rog activează accesul la
+            locație din setările browserului sau dispozitivului tău pentru a vedea anunturile din apropiere.
           </p>
         </div>
       )}
+      {isLoading ? <SkeletonLoader /> : content}
+
       {paginatedParteneri().length === 0 && !isLoading && (
         <div className="d-flex justify-content-center align-items-center">
           <p>

@@ -164,6 +164,40 @@ const FeaturedItemHome = ({ params }) => {
     setCadreMedical(parteneriFiltrati);
     setIsLoading(false);
   }
+  async function updatePartnersWithoutLocation() {
+
+  
+    let parteneriOrdonati;
+      console.log("is no location activated....");
+      let cadre = await handleQueryFirestoreSubcollection(
+        "Anunturi",
+        "tipAnunt",
+        "CadruMedical",
+        "status",
+        "Activa"
+      );
+      parteneriOrdonati = await Promise.all(
+        cadre.map(async (partener) => {
+          const cadruMedical = await handleQueryFirestore(
+            "UsersJobs",
+            "user_uid",
+            partener.collectionId
+          );
+
+          return {
+            ...partener,
+
+            cadruMedical: cadruMedical[0],
+          };
+        })
+      );
+    // }
+    console.log("parteneriOrdonati....status", parteneriOrdonati)
+    const parteneriFiltrati = parteneriOrdonati.filter(partener => partener.cadruMedical.statusCont === 'Activ');
+
+    setCadreMedical(parteneriFiltrati);
+    setIsLoading(false);
+  }
 
   function handleGeoSuccess(position) {
     const { latitude, longitude } = position.coords;
@@ -177,6 +211,7 @@ const FeaturedItemHome = ({ params }) => {
     // setIsNoLocation(true);
     // Informează utilizatorul despre cum poate activa locația manual
     if (error.code === error.PERMISSION_DENIED) {
+      updatePartnersWithoutLocation();
       setIsNoLocation(true);
     }
   }
@@ -253,15 +288,15 @@ const FeaturedItemHome = ({ params }) => {
 
   return (
     <>
-      {isLoading ? <SkeletonLoader /> : contentCadreMedicale}
       {isNoLocation && (
         <div className="d-flex justify-content-center align-items-center">
           <p>
             Accesul la locație a fost blocat. Te rog activează accesul la
-            locație din setările browserului sau dispozitivului tău.
+            locație din setările browserului sau dispozitivului tău pentru a vedea anunturile din apropiere.
           </p>
         </div>
       )}
+      {isLoading ? <SkeletonLoader /> : contentCadreMedicale}
 
       {paginatedCadreMedicale().length === 0 && !isLoading && (
         <div className="d-flex justify-content-center align-items-center">
