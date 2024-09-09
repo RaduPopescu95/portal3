@@ -46,12 +46,16 @@ const SidebarMenu = () => {
 
   useEffect(() => {
     if (!loading) {
-      if (!currentUser || currentUser.uid !== "ZUXX9smtXBdxve8dOhk5MTZRU903") {
+      if (currentUser && currentUser.uid === "ZUXX9smtXBdxve8dOhk5MTZRU903") {
+        console.log("User authenticated");
+        // Utilizatorul este autentificat, nu face nimic
+      } else {
         console.log("User not authenticated or UID mismatch");
-        router.push("/signin");
+        router.push("/signin"); // Trimite la pagina de autentificare doar dacă nu este autentificat
       }
     }
   }, [loading, currentUser, router]);
+  
 
   return (
     <>

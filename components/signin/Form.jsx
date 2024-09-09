@@ -21,8 +21,10 @@ const Form = () => {
     handleSignIn(email, password)
       .then((userCredentials) => {
         console.log("user credentials...", userCredentials);
-        setCurrentUser(userCredentials); // Aici trebuie să asiguri că userCredentials este gestionat corect
-        router.push("/admin");
+        // setCurrentUser(userCredentials); // Aici trebuie să asiguri că userCredentials este gestionat corect
+        setTimeout(() => {
+          router.push("/admin");
+        }, 500); // Timeout de 1 secundă (1000 milisecunde)
       })
       .catch((error) => {
         console.error("Error during sign in:", error.message);

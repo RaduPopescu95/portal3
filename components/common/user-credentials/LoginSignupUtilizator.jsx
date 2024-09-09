@@ -677,7 +677,7 @@ const LoginSignupUtilizator = () => {
                   <div className="form-group input-group mb-3">
                     <div
                       className={`form-control d-flex align-items-center ${
-                        !telefon && buttonPressed && "border-danger"
+                        !dataNasterii && buttonPressed && "border-danger"
                       }`}
                     >
                       <label
