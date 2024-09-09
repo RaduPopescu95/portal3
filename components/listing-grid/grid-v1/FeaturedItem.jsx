@@ -41,7 +41,7 @@ import {
 import FeaturedProperty from "./Item";
 import { useAuth } from "@/context/AuthContext";
 import SkeletonLoader from "@/components/common/SkeletonLoader";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Router } from "next/router";
 
 const FeaturedItem = ({ params, searchQuery }) => {
@@ -56,6 +56,7 @@ const FeaturedItem = ({ params, searchQuery }) => {
   const [anunturiCadre, setAnunturiCadre] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const pathname = usePathname()
   const itemsPerPage = 6;
 
   const dispatch = useDispatch();
@@ -228,25 +229,32 @@ const FeaturedItem = ({ params, searchQuery }) => {
   //   handleGetAnunturi(params);
   // }, [searchParams]);
   useEffect(() => {
-    // Verificăm tipul de utilizator și actualizăm query-ul URL-ului
-    const tAnunt =
-      userData?.userType === "Partener"
-        ? "Anunturi Cadre Medicale"
-        : userData?.userType === "Doctor"
-        ? "Clinica"
-        : "";
+    // Funcție pentru actualizarea query-ului în URL și apelarea handleGetAnunturi
+    const updateQueryAndFetchAnunturi = () => {
+      const tAnunt =
+        userData?.userType === "Partener"
+          ? "Anunturi Cadre Medicale"
+          : userData?.userType === "Doctor"
+          ? "Clinica"
+          : "";
   
-    // Dacă avem un tip de anunț, actualizăm query-ul
-    if (tAnunt) {
-      const currentUrl = router.pathname;
-      const newQuery = `?tipAnunt=${tAnunt}`;
-      router.push(`${currentUrl}${newQuery}`, undefined, { shallow: true });
+      // Dacă avem un tip de anunț, actualizăm query-ul URL-ului
+      if (tAnunt) {
+        const currentUrl = pathname;
+        console.log("current url...", currentUrl)
+        const newQuery = `?tipAnunt=${tAnunt}`;
+        router.push(`${currentUrl}${newQuery}`, undefined, { shallow: true });
+      }
   
-      // După ce URL-ul a fost actualizat, apelăm din nou funcția pentru a obține anunțurile
-    }
-    handleGetAnunturi();
-  }, [searchParams, userData]); // Efectul va rula de fiecare dată când se schimbă userData
+      // Apelăm funcția handleGetAnunturi
+      handleGetAnunturi();
+    };
   
+    // Apelăm la intrarea inițială în componentă
+    updateQueryAndFetchAnunturi();
+  }, [userData, searchParams]); // Rerulează la schimbarea lui userData sau searchParams
+  
+
 
 
   // Funcție pentru schimbarea paginilor

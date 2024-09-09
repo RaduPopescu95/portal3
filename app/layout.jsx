@@ -6,6 +6,7 @@ import ScrollToTop from "@/components/common/ScrollTop";
 import "../public/assets/scss/index.scss";
 import { AuthProvider } from "@/context/AuthContext";
 import { LoadScript } from "@react-google-maps/api";
+import WhatsAppComponent from "@/components/WhatsAppComponent/whatsAppComponent";
 
 if (typeof window !== "undefined") {
   require("bootstrap/dist/js/bootstrap");
@@ -36,7 +37,8 @@ export default function RootLayout({ children }) {
             <Provider store={store}>{children}</Provider>
           </AuthProvider>
         </LoadScript>
-        <ScrollToTop />
+        {/* <ScrollToTop /> */}
+        <WhatsAppComponent />
       </body>
     </html>
   );
