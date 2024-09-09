@@ -22,6 +22,7 @@ import { use, useRef, useState } from "react";
 import { AlertModal } from "../AlertModal";
 import useDataNasterii from "@/hooks/useDataNasterii";
 import AutocompleteInput from "../AutocompleteInput";
+import { handleGetUserInfoJobs } from "@/utils/handleFirebaseQuery";
 
 const LoginSignupUtilizator = () => {
   const { userData, currentUser, setCurrentUser, setUserData, judete } =
@@ -135,37 +136,46 @@ const LoginSignupUtilizator = () => {
   };
 
   const handleLogIn = async (event) => {
-    console.log(userData);
     event.preventDefault();
     setButtonPressed(true);
-
+  
     if (!password || !email) {
       return;
     }
-
+  
     signInWithEmailAndPassword(authentication, email, password)
       .then(async (userCredentials) => {
+        // Setează utilizatorul curent
         setCurrentUser(userCredentials);
-        console.log("success login");
-        if (closeButtonRef.current) {
-          closeButtonRef.current.click();
+        let userDataFromFirestore = await handleGetUserInfoJobs();
+        console.log("userdata...de acum...", userDataFromFirestore)
+        // Așteaptă până primești userData
+        if (userDataFromFirestore?.userType === "Partener") {
+          // Dacă utilizatorul este "Partener", faceți logout și afișați un mesaj de eroare
+          await authentication.signOut();
+          showAlert(
+            "Autentificare nereușită. Acest cont este pentru un cont de clinica. Te rugăm să folosești contul corect de cadru medical.",
+            "danger"
+          );
+          router.push("/"); // Redirecționează utilizatorul înapoi la pagina de autentificare
+        } else {
+          // Dacă totul este ok, continuăm cu logarea normală
+          console.log("success login");
+          if (closeButtonRef.current) {
+            closeButtonRef.current.click();
+          }
+          router.refresh(); // Redirecționează după ce mesajul de succes este afișat și închis
         }
-        // router.push("/panou-utilizator"); // Redirecționează după ce mesajul de succes este afișat și închis
-        router.refresh(); // Redirecționează după ce mesajul de succes este afișat și închis
       })
       .catch((error) => {
         const errorMessage = handleFirebaseAuthError(error);
         showAlert(`Eroare la autentificare: ${errorMessage}`, "danger");
-
-        // Aici puteți folosi errorMessage pentru a afișa un snackbar sau un alert
-        // setShowSnackback(true);
-        // setMessage(errorMessage);
-
+  
         console.log("error on sign in user...", error.message);
         console.log("error on sign in user...", error.code);
       });
   };
-
+  
   const handleSignUp = async (event) => {
     event.preventDefault();
     const emailNew = emailWithoutSpace(email);
