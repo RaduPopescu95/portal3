@@ -238,7 +238,7 @@ const FeaturedItemHome = ({ params }) => {
           <a
             key={item?.id}
             data-bs-toggle="modal"
-            data-bs-target=".bd-utilizator-modal-lg"
+            data-bs-target=".bd-partener-modal-lg"
           >
             <FeaturedProperty item={item} isGridOrList={isGridOrList} />
           </a>

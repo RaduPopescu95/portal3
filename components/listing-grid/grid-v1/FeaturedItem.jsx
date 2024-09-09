@@ -41,14 +41,16 @@ import {
 import FeaturedProperty from "./Item";
 import { useAuth } from "@/context/AuthContext";
 import SkeletonLoader from "@/components/common/SkeletonLoader";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Router } from "next/router";
 
 const FeaturedItem = ({ params, searchQuery }) => {
   const { statusType, featured, isGridOrList } = useSelector(
     (state) => state.filter
   );
   const searchParams = useSearchParams();
-  const { currentUser } = useAuth();
+  const { currentUser, userData } = useAuth();
+  const router = useRouter()
 
   const [parteneri, setParteneri] = useState([]);
   const [anunturiCadre, setAnunturiCadre] = useState([]);
@@ -226,9 +228,26 @@ const FeaturedItem = ({ params, searchQuery }) => {
   //   handleGetAnunturi(params);
   // }, [searchParams]);
   useEffect(() => {
-    console.log("test............");
+    // Verificăm tipul de utilizator și actualizăm query-ul URL-ului
+    const tAnunt =
+      userData?.userType === "Partener"
+        ? "Anunturi Cadre Medicale"
+        : userData?.userType === "Doctor"
+        ? "Clinica"
+        : "";
+  
+    // Dacă avem un tip de anunț, actualizăm query-ul
+    if (tAnunt) {
+      const currentUrl = router.pathname;
+      const newQuery = `?tipAnunt=${tAnunt}`;
+      router.push(`${currentUrl}${newQuery}`, undefined, { shallow: true });
+  
+      // După ce URL-ul a fost actualizat, apelăm din nou funcția pentru a obține anunțurile
+    }
     handleGetAnunturi();
-  }, [searchParams]);
+  }, [searchParams, userData]); // Efectul va rula de fiecare dată când se schimbă userData
+  
+
 
   // Funcție pentru schimbarea paginilor
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -242,6 +261,8 @@ const FeaturedItem = ({ params, searchQuery }) => {
   // status handler
 
   let content = paginatedParteneri().map((item) => {
+
+    
     const pathname =
       item.tipAnunt === "Clinica"
         ? `/partener/${toUrlSlug(item?.titluOferta)}_${item?.cadruMedical?.id}`
@@ -260,8 +281,9 @@ const FeaturedItem = ({ params, searchQuery }) => {
               pathname: pathname,
               query: {
                 slug: item.cadruMedical
-                  ? item.cadruMedical?.id
-                  : item?.clinica?.id,
+                  ? item.cadruMedical?.user_uid
+                  : item?.clinica?.user_uid,
+                an:item.documentId
               },
             }}
             passHref
@@ -269,7 +291,7 @@ const FeaturedItem = ({ params, searchQuery }) => {
             <FeaturedProperty item={item} isGridOrList={isGridOrList} />
           </Link>
         ) : (
-          <a data-bs-toggle="modal" data-bs-target=".bd-utilizator-modal-lg">
+          <a data-bs-toggle="modal" data-bs-target={item.cadruMedical ? ".bd-partener-modal-lg" : ".bd-utilizator-modal-lg"}>
             <FeaturedProperty item={item} isGridOrList={isGridOrList} />
           </a>
         )}

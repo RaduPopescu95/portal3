@@ -55,7 +55,7 @@ const DetailsContentCadruMedical = ({ partener, oferta, titulatura }) => {
         </div> */}
         {/* End .lsd_list */}
 
-        <h4 className="mb30">Desriere Post</h4>
+        <h4 className="mb30">Prezentare generala</h4>
         <PropertyDescriptions oferta={oferta} />
       </div>
       {/* <div className="listing_single_description mt30">

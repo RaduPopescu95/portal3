@@ -242,7 +242,7 @@ const ListaAnunturiClinici = ({ params }) => {
           </Link>
         ) : (
           <a
-            key={item?.id}
+            key={item?.user_uid}
             data-bs-toggle="modal"
             data-bs-target=".bd-utilizator-modal-lg"
           >
