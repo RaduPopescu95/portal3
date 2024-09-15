@@ -7,13 +7,19 @@ import "../public/assets/scss/index.scss";
 import { AuthProvider } from "@/context/AuthContext";
 import { LoadScript } from "@react-google-maps/api";
 import WhatsAppComponent from "@/components/WhatsAppComponent/whatsAppComponent";
+import { useEffect, useState } from "react";
 
 if (typeof window !== "undefined") {
   require("bootstrap/dist/js/bootstrap");
 }
 
 export default function RootLayout({ children }) {
+  const [isClient, setIsClient] = useState(false);
   const libraries = ["places"];
+  useEffect(() => {
+    // Setăm flag-ul pentru client atunci când componenta este montată
+    setIsClient(true);
+  }, []);
   return (
     <html lang="en">
       <head>
@@ -29,6 +35,7 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body>
+
         <LoadScript
           googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
           libraries={libraries}
@@ -38,7 +45,7 @@ export default function RootLayout({ children }) {
           </AuthProvider>
         </LoadScript>
         {/* <ScrollToTop /> */}
-        <WhatsAppComponent />
+        {isClient && <WhatsAppComponent />}
       </body>
     </html>
   );
