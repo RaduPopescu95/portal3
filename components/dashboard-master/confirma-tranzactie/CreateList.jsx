@@ -21,7 +21,6 @@ const CreateList = ({ oferta }) => {
   const [fullPrice, setFullPrice] = useState("");
   const [discountedPrice, setDiscountedPrice] = useState("");
   const [discountPercentage, setDiscountPercentage] = useState("");
-  const [status, setStatus] = useState(oferta.status || ""); // Starea pentru select
   const [fidelitySilver, setFidelitySilver] = useState(
     oferta?.oferta?.gradeFidelitate?.includes("Silver") ? true : false
   );

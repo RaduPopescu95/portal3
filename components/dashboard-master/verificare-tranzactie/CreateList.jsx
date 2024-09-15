@@ -8,7 +8,7 @@ import {
 import { uploadImage } from "@/utils/storageUtils";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import LogoUpload from "../my-profile/LogoUpload";
+
 import CommonLoader from "@/components/common/CommonLoader";
 
 const CreateList = ({ cerere }) => {
@@ -331,6 +331,20 @@ const CreateList = ({ cerere }) => {
       {/* End .col */}
 
       <div className="col-lg-12">
+        <div className="my_profile_setting_input form-group">
+          <label htmlFor="propertyTitle">Nume Clinica</label>
+          <input
+            type="text"
+            className="form-control"
+            id="propertyTitle"
+            value={cerere?.partener?.denumireBrand}
+            readOnly
+          />
+        </div>
+      </div>
+      {/* End .col */}
+
+      <div className="col-lg-12">
         <div className="my_profile_setting_textarea">
           <label htmlFor="propertyDescription">Mesaj</label>
           <textarea
@@ -346,7 +360,7 @@ const CreateList = ({ cerere }) => {
 
       <div className="col-lg-12">
         <div className="my_profile_setting_input form-group">
-          <label htmlFor="propertyTitle">Detalii: </label>
+          <label htmlFor="propertyTitle">Detalii cadru medical: </label>
           <div className="d-block">
             <a href="tel:{cerere.contactNumber}" className="d-block">
               Telefon: {cerere.contactNumber}

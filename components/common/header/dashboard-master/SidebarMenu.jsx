@@ -141,12 +141,12 @@ const SidebarMenu = () => {
 
             <li
               className={`treeview ${
-                isSinglePageActive("/lista-tranzactii", pathname)
+                isSinglePageActive("/lista-aplicatii-portal", pathname)
                   ? "active"
                   : ""
               }`}
             >
-              <Link href="/lista-tranzactii">
+              <Link href="/lista-aplicatii-portal">
                 <i className="flaticon-layers"></i>
                 <span>Lista Aplicațiilor</span>
               </Link>
