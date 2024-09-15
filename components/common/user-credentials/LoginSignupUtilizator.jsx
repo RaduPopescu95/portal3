@@ -8,7 +8,7 @@ import {
   handleQueryFirestoreSubcollection,
   handleUploadFirestore,
 } from "@/utils/firestoreUtils";
-import { emailWithoutSpace } from "@/utils/strintText";
+import { emailWithoutSpace, formatTitulatura } from "@/utils/strintText";
 import { getCurrentDateTime } from "@/utils/timeUtils";
 import {
   createUserWithEmailAndPassword,
@@ -23,6 +23,7 @@ import { AlertModal } from "../AlertModal";
 import useDataNasterii from "@/hooks/useDataNasterii";
 import AutocompleteInput from "../AutocompleteInput";
 import { handleGetUserInfoJobs } from "@/utils/handleFirebaseQuery";
+import { TITLES_AND_SPECIALTIES } from "@/utils/constanteTitulatura";
 
 const LoginSignupUtilizator = () => {
   const { userData, currentUser, setCurrentUser, setUserData, judete } =
@@ -49,6 +50,10 @@ const LoginSignupUtilizator = () => {
   const [telefon, setTelefon] = useState("");
   // const [dataNasterii, setDataNasterii] = useState("");
   const [titulatura, setTitulatura] = useState("");
+  const [specialitate, setSpecialitate] = useState("");
+  const [specialitati, setSpecialitati] = useState(
+   []
+  );
   const [tipEnitate, setTipEnitate] = useState("");
   const [specializare, setSpecializare] = useState("");
   const [cuim, setCuim] = useState("");
@@ -135,6 +140,24 @@ const LoginSignupUtilizator = () => {
     // Aici poți actualiza starea sau trimite aceste date către backend
   };
 
+  const handleTitleChange = (event) => {
+    let title = event.target.value;
+    if(title === "Selectează o titulatură"){
+      title = ""
+    }
+    setTitulatura(title);
+    setSpecialitati(TITLES_AND_SPECIALTIES[title] || []);
+    setSpecialitate(""); // Reset specialty when title changes
+  };
+
+  const handleSpecialtyChange = (event) => {
+    let spec = event.target.value
+    if(spec === "Selectează o specialitate"){
+      spec = ""
+    }
+    setSpecialitate(event.target.value);
+  };
+
   const handleLogIn = async (event) => {
     event.preventDefault();
     setButtonPressed(true);
@@ -209,19 +232,23 @@ const LoginSignupUtilizator = () => {
       !dataNasterii ||
       !judet ||
       !localitate ||
+      !titulatura ||
+      !specialitate ||
       !password ||
       !adresaSediu
     ) {
-      console.log("noo...", email);
-      console.log("noo...", numeUtilizator);
-      console.log("noo...", telefon);
-      console.log("noo...", judet);
-      console.log("noo...", localitate);
-      console.log("noo...", dataNasterii);
-      console.log("noo...", adresaSediu);
+      console.log("noo...email", email);
+      console.log("noo...numeUtilizator", numeUtilizator);
+      console.log("noo...telefon", telefon);
+      console.log("noo...judet", judet);
+      console.log("noo...localitate", localitate);
+      console.log("noo...titulatura", titulatura);
+      console.log("noo...specialitate", specialitate);
+      console.log("noo...dataNasterii", dataNasterii);
+      console.log("noo...adresaSediu", adresaSediu);
 
-      console.log("noo...", password);
-      console.log("noo...", confirmPassword);
+      console.log("noo...password", password);
+      console.log("noo...confirmPassword", confirmPassword);
       return;
     }
 
@@ -274,6 +301,8 @@ const LoginSignupUtilizator = () => {
         adresaSediu,
         googleMapsLink,
         coordonate,
+        titulatura,
+        specialitate
       };
 
       const collectionId = "UsersJobs";
@@ -729,6 +758,42 @@ const LoginSignupUtilizator = () => {
                     </div>
                   </div>
                   {/* End .row */}
+                  <div className="form-group ui_kit_select_search mb-3">
+                    <select
+                      className={`form-select ${
+                        !titulatura && buttonPressed && "border-danger"
+                      }`}
+                      data-live-search="true"
+                      data-width="100%"
+                      value={titulatura}
+                      onChange={handleTitleChange}
+                    >
+                      <option data-tokens="SelectRole">Selectează o titulatură</option>
+                      {Object.keys(TITLES_AND_SPECIALTIES).map((title) => (
+              <option key={title} value={title}>
+                {formatTitulatura(title)}
+              </option>
+            ))}
+                  </select>
+                  </div>
+                  <div className="form-group ui_kit_select_search mb-3">
+                    <select
+                      className={`form-select ${
+                        !specialitate && buttonPressed && "border-danger"
+                      }`}
+                      data-live-search="true"
+                      data-width="100%"
+                      value={specialitate}
+                      onChange={handleSpecialtyChange}
+                    >
+                      <option data-tokens="SelectRole">Selectează o specialitate</option>
+                      {specialitati.map((specialty) => (
+              <option key={specialty} value={specialty}>
+                {specialty}
+              </option>
+            ))}
+                    </select>
+                  </div>
                   <div className="form-group ui_kit_select_search mb-3">
                     <select
                       className={`form-select ${

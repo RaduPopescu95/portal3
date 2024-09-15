@@ -74,6 +74,8 @@ const ProfileInfo = () => {
   const [isJudetSelected, setIsJudetSelected] = useState(true);
   const [isLocalitateSelected, setIsLocalitateSelected] = useState(true);
   const [isCateogireSelected, setIsCategorieSelected] = useState(true);
+  const [acceptaEmail, setAcceptEmail] = useState(userData?.acceptaEmail || true); // Starea checkbox-ului
+
 
   const params = useParams();
   const router = useRouter();
@@ -279,6 +281,7 @@ const ProfileInfo = () => {
         logo: lg,
         images,
         descriere,
+        acceptaEmail
       };
       setUserData(data);
       const actionText = describeChanges();
@@ -662,6 +665,22 @@ const ProfileInfo = () => {
         buttonPressed={buttonPressed}
       />
       {/* End .col */}
+
+      <div className="col-lg-12 col-xl-12">
+      <div className="form-check mb-4">
+      <label className="form-check-label" htmlFor="trimiteNotificariEmail">
+    Trimite Notificări E-mail
+  </label>
+  <input
+    className="form-check-input"
+    type="checkbox"
+    id="trimiteNotificariEmail"
+    checked={acceptaEmail}
+    onChange={() => setAcceptEmail(!acceptaEmail)}
+  />
+
+</div>
+</div>
 
       <div className="col-xl-12 text-right mt-4">
         <div className="my_profile_setting_input">

@@ -9,11 +9,12 @@ import {
   handleQueryFirestoreSubcollection,
   handleUpdateFirestore,
 } from "@/utils/firestoreUtils";
-import { emailWithoutSpace } from "@/utils/strintText";
+import { emailWithoutSpace, formatTitulatura } from "@/utils/strintText";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import LogoUpload from "./LogoUpload";
 import { uploadImage } from "@/utils/storageUtils";
+import { TITLES_AND_SPECIALTIES } from "@/utils/constanteTitulatura";
 
 const ProfileInfo = () => {
   const [initialData, setInitialData] = useState({});
@@ -39,6 +40,10 @@ const ProfileInfo = () => {
   const [localitate, setLocalitate] = useState(userData?.localitate || "");
   const [sector, setSector] = useState(userData?.sector || "");
   const [titulatura, setTitulatura] = useState(userData?.titulatura || "");
+  const [specialitate, setSpecialitate] = useState(userData?.specialitate || "");
+  const [specialitati, setSpecialitati] = useState(
+    userData?.titulatura ? TITLES_AND_SPECIALTIES[userData?.titulatura] : []
+  );
   const [specializare, setSpecializare] = useState(
     userData?.specializare || ""
   );
@@ -60,6 +65,8 @@ const ProfileInfo = () => {
   const [isNewLogo, setIsNewLogo] = useState(false);
   const [logo, setLogo] = useState(userData?.logo ? [userData?.logo] : []);
   const [deletedLogo, setDeletedLogo] = useState(null);
+  const [acceptaEmail, setAcceptEmail] = useState(userData?.acceptaEmail || true); // Starea checkbox-ului
+
 
   const handleLocationSelect = (lat, lng, adresa, urlMaps) => {
     console.log(`Selected location - Lat: ${lat}, Lng: ${lng}`);
@@ -147,6 +154,7 @@ const ProfileInfo = () => {
         cif,
         codParafa,
         specializare,
+        specialitate,
         titulatura,
         localitate: judet === "Bucuresti" ? "Bucuresti" : localitate,
         sector: judet === "Bucuresti" ? sector : "",
@@ -162,10 +170,12 @@ const ProfileInfo = () => {
         googleMapsLink,
         coordonate,
         logo: lg,
+        acceptaEmail
       };
       if (
         !numeUtilizator ||
-        // !titulatura ||
+        !titulatura ||
+        !specialitate ||
         // titulatura === "Titulatura" ||
         !telefon ||
         !judet ||
@@ -198,6 +208,26 @@ const ProfileInfo = () => {
       console.error("Error signing up: ", error);
     }
   };
+
+  
+  const handleTitleChange = (event) => {
+    let title = event.target.value;
+    if(title === "Selectează o titulatură"){
+      title = ""
+    }
+    setTitulatura(title);
+    setSpecialitati(TITLES_AND_SPECIALTIES[title] || []);
+    setSpecialitate(""); // Reset specialty when title changes
+  };
+
+  const handleSpecialtyChange = (event) => {
+    let spec = event.target.value
+    if(spec === "Selectează o specialitate"){
+      spec = ""
+    }
+    setSpecialitate(event.target.value);
+  };
+
 
   const handleJudetChange = async (e) => {
     const judetSelectedName = e; // Numele județului selectat, un string
@@ -327,7 +357,7 @@ const ProfileInfo = () => {
       />
       {/* End .col */}
 
-      <div className="col-lg-6 col-xl-6">
+      <div className="col-lg-12 col-xl-12">
         <div className="my_profile_setting_input form-group">
           <label htmlFor="formGroupExampleInput1">Nume utilizator</label>
           <input
@@ -344,6 +374,59 @@ const ProfileInfo = () => {
       </div>
       {/* End .col */}
 
+
+
+
+
+      <div className="col-lg-6 col-xl-6">
+        <div className="my_profile_setting_input ui_kit_select_search form-group">
+          <label>Titulatura</label>
+          <select
+            className={`selectpicker form-select ${
+              (!titulatura && buttonPressed)
+                ? "border-danger"
+                : null
+            }`}
+            data-live-search="true"
+            data-width="100%"
+            value={titulatura}
+            onChange={handleTitleChange}
+          >
+                 <option value="">Selectează o titulatură</option>
+            {Object.keys(TITLES_AND_SPECIALTIES).map((title) => (
+              <option key={title} value={title}>
+                {formatTitulatura(title)}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      {/* End .col */}
+
+      <div className="col-lg-6 col-xl-6">
+        <div className="my_profile_setting_input ui_kit_select_search form-group">
+          <label>Specialitate</label>
+          <select
+            className={`selectpicker form-select ${
+              (!specialitate && buttonPressed)
+                ? "border-danger"
+                : null
+            }`}
+            data-live-search="true"
+            data-width="100%"
+            value={specialitate}
+            onChange={handleSpecialtyChange}
+          >
+            <option value="">Selectează o specialitate</option>
+            {specialitati.map((specialty) => (
+              <option key={specialty} value={specialty}>
+                {specialty}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      {/* End .col */}
 
 
 
@@ -477,6 +560,21 @@ const ProfileInfo = () => {
         buttonPressed={buttonPressed}
       />
       {/* End .col */}
+      <div className="col-lg-12 col-xl-12">
+      <div className="form-check mb-4">
+      <label className="form-check-label" htmlFor="trimiteNotificariEmail">
+    Trimite Notificări E-mail
+  </label>
+  <input
+    className="form-check-input"
+    type="checkbox"
+    id="trimiteNotificariEmail"
+    checked={acceptaEmail}
+    onChange={() => setAcceptEmail(!acceptaEmail)}
+  />
+
+</div>
+</div>
 
       <div className="col-xl-12 text-right">
         <div className="my_profile_setting_input">

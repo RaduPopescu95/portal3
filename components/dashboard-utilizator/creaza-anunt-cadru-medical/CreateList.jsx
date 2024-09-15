@@ -95,6 +95,7 @@ const CreateList = ({ oferta }) => {
   const [isLocalitateSelected, setIsLocalitateSelected] = useState(true);
   const [isCateogireSelected, setIsCategorieSelected] = useState(true);
 
+
   const validateForm = () => {
     // Check for required fields
 
@@ -609,7 +610,7 @@ const CreateList = ({ oferta }) => {
         isNewImage={isNewLogo}
         text={"Adauga imagine profil"}
       />
-
+{files.length === 0 &&
       <div className="form-group mb10 file-color">
         <label htmlFor="documentUpload" className="btn btn-primary file-color">
           <span className="file-color">Încarcă CV</span>
@@ -622,6 +623,7 @@ const CreateList = ({ oferta }) => {
           />
         </label>
       </div>
+}
 
       {files.length > 0 && (
         <ul className="list-group mb-3">
